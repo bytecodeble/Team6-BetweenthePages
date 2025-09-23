@@ -1,32 +1,63 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
-    void Start()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+    
+    public int maxHealth = 5;
+    private int currentHealth;
 
-    // Update is called once per frame
-    void Update()
+    public List<Image> hearts;       
+    public Sprite fullHeart;        
+    public Sprite emptyHeart;       
+
+    private void Start()
     {
-        
+        currentHealth = maxHealth;
+        UpdateHearts();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            PlayerInjured();
+            TakeDamage(1);
         }
     }
 
-    private void PlayerInjured()
+    public void TakeDamage(int damage)
     {
-        if (spriteRenderer != null)
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        UpdateHearts();
+
+        if (currentHealth <= 0)
         {
-            spriteRenderer.color = Color.gray;
+            Die();
         }
     }
+
+    private void UpdateHearts()
+    {
+        for (int i = 0; i < hearts.Count; i++)
+        {
+            if (i < currentHealth)
+            {
+                hearts[i].sprite = fullHeart;
+            }
+            else
+            {
+                hearts[i].sprite = emptyHeart;
+            }
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player Died!");
+        Destroy(gameObject);
+    }
 }
+
