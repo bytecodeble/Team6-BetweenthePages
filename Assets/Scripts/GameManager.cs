@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        //Make sure the player instance on the field has been destroyed
+        //Make sure the player instance on the field has been destroyed.
         if (currentPlayer != null)
         {
             Destroy(currentPlayer);

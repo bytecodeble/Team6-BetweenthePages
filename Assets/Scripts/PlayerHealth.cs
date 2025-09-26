@@ -70,6 +70,8 @@ public class PlayerHealth : MonoBehaviour
 
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(flashTime);
+
+        //after flash, color switch to original color
         spriteRenderer.color = originalColor;
 
         //get into invincibale time
