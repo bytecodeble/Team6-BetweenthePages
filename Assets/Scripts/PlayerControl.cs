@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public Rigidbody2D RB;
+    private Rigidbody2D RB;
 
-    public float walkSpeed;
-    public float jumpForce;
+    [SerializeField]private float walkSpeed;
+    [SerializeField] private float jumpForce;
 
-    public Transform groundPoint;
-    private bool isOnGround;
-    public LayerMask whatIsGround;
+    [SerializeField] private Transform groundPoint;
+    [SerializeField] private bool isOnGround;
+    [SerializeField] private LayerMask whatIsGround;
     void Start()
     {
-        
+        RB = GetComponent<Rigidbody2D>();
     }
 
     void Update()

@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+    //animation for sword
     private Animator animator;
-    public GameObject sword; 
+    [SerializeField] private GameObject sword; 
 
     private Collider2D swordCollider;
 
@@ -13,6 +14,7 @@ public class PlayerAttack : MonoBehaviour
         if (sword != null)
         {
             swordCollider = sword.GetComponent<Collider2D>();
+            //When not in attack mode, the sword's collider is closed.
             swordCollider.enabled = false; 
         }
     }
@@ -25,17 +27,22 @@ public class PlayerAttack : MonoBehaviour
         
         }
     }
+
+    //The attack animation now has three frames, and the collider is turned on after the sword is swung.
     public void EnableSword()
     {
         if (swordCollider != null)
             swordCollider.enabled = true;
     }
 
+    //The last frame of the sword swing is closed by collider
     public void DisableSword()
     {
         if (swordCollider != null)
             swordCollider.enabled = false;
     }
+
+    //attack object"Enemy", enemy distory
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
