@@ -212,7 +212,7 @@ MonoBehaviour:
   jumpForce: 6
   theRB: {fileID: 3164885381747568604}
   anim: {fileID: 0}
-  player: {fileID: 6006808813203700423, guid: bc3aa41302787a14ba22e00563e91742, type: 3}
+  player: {fileID: 1867572441429106723, guid: 8a5f1c2dc3b05be45bd22768eaad1788, type: 3}
   chaseRadius: 15
   chaseSpeed: 3.5
   maxChaseDistance: 15
