@@ -16,6 +16,11 @@ public class EnemyPatroller : MonoBehaviour
     public Rigidbody2D theRB;             // Reference to the Rigidbody2D component
     public Animator anim;                 // Reference to the Animator component
 
+    [Header("Ground Check")]
+    public Transform groundCheck;       // Detection point under the feet
+    public float groundCheckDistance = 0.2f; // Detection lenth
+    public LayerMask groundLayer;      // GroundLayer
+
     [Header("Player Detection / Chase")]
     public Transform player;              // Reference to the Player (assign in Inspector)
     public float chaseRadius = 3f;        // Distance at which enemy starts chasing the player
@@ -74,6 +79,15 @@ public class EnemyPatroller : MonoBehaviour
             }
             else
             {
+
+                // Check if grounded
+                bool isGroundAhead = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
+                if (!isGroundAhead)
+                {
+                    theRB.linearVelocity = new Vector2(0f, theRB.linearVelocity.y);
+                    transform.localScale = new Vector3(transform.localScale.x * -1f, 1f, 1f);
+                    return; // Don't go down
+                }
                 // Move horizontally towards the player
                 float dir = Mathf.Sign(player.position.x - transform.position.x);
                 theRB.linearVelocity = new Vector2(dir * chaseSpeed, theRB.linearVelocity.y);
@@ -81,11 +95,7 @@ public class EnemyPatroller : MonoBehaviour
                 // Flip sprite to face movement direction
                 transform.localScale = new Vector3(dir > 0 ? -1f : 1f, 1f, 1f);
 
-                // Jump if player is above enemy and horizontally close
-                if (transform.position.y < player.position.y - 0.5f && theRB.linearVelocity.y < 1f)
-                {
-                    theRB.linearVelocity = new Vector2(theRB.linearVelocity.x, jumpForce);
-                }
+               
             }
         }
         else
@@ -103,20 +113,34 @@ public class EnemyPatroller : MonoBehaviour
                 {
                     if (transform.position.x < patrolPoints[currentPoint].position.x)
                     {
+                        // Check if grounded
+                        bool isGroundAhead = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
+                        if (!isGroundAhead)
+                        {
+                            theRB.linearVelocity = new Vector2(0f, theRB.linearVelocity.y);
+                            transform.localScale = new Vector3(transform.localScale.x * -1f, 1f, 1f);
+                            return; // Don't go down
+                        }
+
                         theRB.linearVelocity = new Vector2(moveSpeed, theRB.linearVelocity.y);
                         transform.localScale = new Vector3(-1f, 1f, 1f);
                     }
                     else
                     {
+
+                        // Check if grounded
+                        bool isGroundAhead = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
+                        if (!isGroundAhead)
+                        {
+                            theRB.linearVelocity = new Vector2(0f, theRB.linearVelocity.y);
+                            transform.localScale = new Vector3(transform.localScale.x * -1f, 1f, 1f);
+                            return; // Don't go down
+                        }
                         theRB.linearVelocity = new Vector2(-moveSpeed, theRB.linearVelocity.y);
                         transform.localScale = new Vector3(1f, 1f, 1f);
                     }
 
-                    // Jump if patrol point is above enemy
-                    if (transform.position.y < patrolPoints[currentPoint].position.y - 0.5f && theRB.linearVelocity.y < 1f)
-                    {
-                        theRB.linearVelocity = new Vector2(theRB.linearVelocity.x, jumpForce);
-                    }
+                  
                 }
                 else
                 {
