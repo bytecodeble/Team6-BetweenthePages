@@ -21,10 +21,17 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float fallAcceleration = 50.625f;
     [SerializeField] private float jumpCutMultiplier = 2.5f; // The gravity multiplier added when jump is released early
     [SerializeField] private float fallingMultiplier = 2.2f; // make falling faster
-    [SerializeField] private float coyoteTime = 0.15f;
-    [SerializeField] private float jumpBufferTime = 0.12f;
+    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
+
+    [Header("Double Jump")]
+    [SerializeField] private float doubleJumpPower = 18.25f;
+    [SerializeField] private int maxDoubleJump = 1;
+
     private float accelerationRate; // this value will be calculated
     private bool isJumping;
+    private int doubleJumpRemaining;
+    [HideInInspector] public bool hasDoubleJump = true; // TODO: change this with actual ability upgrade function
 
     #endregion
 
@@ -75,8 +82,16 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            jumpBufferTimer = jumpBufferTime;
+            if(!isOnGround && doubleJumpRemaining > 0 && hasDoubleJump)
+            {
+                ExecuteDoubleJump();
+            }
+            else
+            {
+                jumpBufferTimer = jumpBufferTime;
+            }
         }
+
         // If player released jump button while jumping
         if (Input.GetKeyUp(KeyCode.Space) && isJumping && frameVelocity.y > 0)
         {
@@ -96,6 +111,7 @@ public class PlayerControl : MonoBehaviour
         {
             coyoteTimer = 0f; // reset coyote timer
             isJumping = false;
+            doubleJumpRemaining = maxDoubleJump; // reset double jump
         }
 
         // Just left the ground
@@ -207,9 +223,20 @@ public class PlayerControl : MonoBehaviour
     {
         frameVelocity.y = jumpPower;
         jumpBufferTimer = 0;
-        coyoteTime = 0;
+        coyoteTimer = 0f;
         isJumping = true;
     }
+
+    private void ExecuteDoubleJump()
+    {
+        frameVelocity.y = 0f; // reset vertical velocity to keep the jump force clean
+        frameVelocity.y = doubleJumpPower;
+        doubleJumpRemaining--;
+        isJumping = true;
+
+        Debug.Log("Double jumping");
+    }
+
 
     private void ApplyMovement()
     {
