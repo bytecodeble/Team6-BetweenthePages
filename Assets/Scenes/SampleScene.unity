@@ -667,37 +667,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2020149134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &375894063
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 375894064}
-  m_Layer: 7
-  m_Name: GroundCheck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &375894064
+--- !u!4 &375894064 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 8777185934484786332, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
+  m_PrefabInstance: {fileID: 4391365137666446039}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 375894063}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.51, y: -1.01, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 612224718}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &487336539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,11 +1037,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &612224718 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 423992224962923247, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
-  m_PrefabInstance: {fileID: 4391365137666446039}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1510,10 +1479,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 375894064}
     - target: {fileID: 261579160842407021, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
-      propertyPath: maxChaseDistance
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 261579160842407021, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
@@ -1563,10 +1528,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 423992224962923247, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 375894064}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aefa2d03cb87304aad6448f877bb343, type: 3}
 --- !u!1001 &5957525145222056336
