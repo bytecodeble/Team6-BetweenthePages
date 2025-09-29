@@ -99,8 +99,8 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player Died!");
-        //When player died. Call GameManager's RespawnPlayer()
-        FindFirstObjectByType<GameManager>().RespawnPlayer();
+        //When player died. Call GameManager's OnPlayerDeath()
+        GameManager.Instance.OnPlayerDeath();
     }
 }
 
