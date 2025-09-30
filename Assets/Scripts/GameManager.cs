@@ -10,8 +10,11 @@ public class GameManager : MonoBehaviour
     //The position where the player spawns (an empty object)
     [SerializeField]private Transform respawnPoint;
 
-    //Player instance in the current scene
+    //Current player instance
     private GameObject currentPlayer;
+
+    // Nullable: last saved position by SaveManager
+    private Vector3? savedPosition = null;
     void Start()
     {
         RespawnPlayer();
@@ -44,6 +47,12 @@ public class GameManager : MonoBehaviour
         RespawnPlayer();
     }
 
+    //get position values from SaveManager
+    public void SetSavePoint(Vector3 position)
+    {
+        savedPosition = position;
+    }
+
     public void RespawnPlayer()
     {
         //Make sure the player instance on the field has been destroyed.
@@ -52,8 +61,20 @@ public class GameManager : MonoBehaviour
             Destroy(currentPlayer);
         }
 
+        Vector3 spawnPos;
+
+        //if player click the save point
+        if(savedPosition != null)
+        {
+            spawnPos = (Vector3)savedPosition;
+        }
+        else
+        {
+            spawnPos = respawnPoint.position;
+        }
+            
         // Spawn a new player Prefab at the respawn point
-        currentPlayer = Instantiate(playerPrefab, respawnPoint.position, Quaternion.identity);
+        currentPlayer = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
     }
 
    
