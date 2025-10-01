@@ -156,7 +156,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         // smooth speed transform
-        frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate);
+        frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.fixedDeltaTime);
 
         // player direction
         if (frameVelocity.x < 0f)
@@ -229,12 +229,10 @@ public class PlayerControl : MonoBehaviour
 
     private void ExecuteDoubleJump()
     {
-        frameVelocity.y = 0f; // reset vertical velocity to keep the jump force clean
-        frameVelocity.y = doubleJumpPower;
+        frameVelocity.y = Mathf.Max(frameVelocity.y, doubleJumpPower);
         doubleJumpRemaining--;
         isJumping = true;
 
-        Debug.Log("Double jumping");
     }
 
 
