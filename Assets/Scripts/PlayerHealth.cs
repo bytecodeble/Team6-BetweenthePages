@@ -102,5 +102,12 @@ public class PlayerHealth : MonoBehaviour
         //When player died. Call GameManager's OnPlayerDeath()
         GameManager.Instance.OnPlayerDeath();
     }
+
+    public void RestoreFullHealth()
+    {
+        currentHealth = maxHealth;
+        UpdateHearts();
+        Debug.Log("Health fully restored!");
+    }
 }
 

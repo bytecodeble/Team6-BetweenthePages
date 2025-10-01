@@ -36,8 +36,15 @@ public class SaveManager : MonoBehaviour
         {
             //Record the player's save coordinates,and send values to GameManager
             GameManager.Instance.SetSavePoint(player.transform.position);
-           
-            Debug.Log("Player saved at: " + player.transform.position);
+
+            //Recover health when save is activated
+            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.RestoreFullHealth();
+            }
+
+            Debug.Log("Player saved at: " + player.transform.position + "Health restored");
         }
     }
 
