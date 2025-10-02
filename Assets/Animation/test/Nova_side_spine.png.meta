@@ -1,0 +1,663 @@
+fileFormatVersion: 2
+guid: ca2192130c9580f429a0794b6a59d6ab
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2104702404857149745
+    second: Nova_side_spine_0
+  - first:
+      213: 589708327722601542
+    second: Nova_side_spine_1
+  - first:
+      213: 2545399478557886402
+    second: Nova_side_spine_2
+  - first:
+      213: -1890279097382250640
+    second: Nova_side_spine_3
+  - first:
+      213: 3623465133032249354
+    second: Nova_side_spine_4
+  - first:
+      213: 5725301927040543627
+    second: Nova_side_spine_5
+  - first:
+      213: -2688491698463922442
+    second: Nova_side_spine_6
+  - first:
+      213: 5472761541643185408
+    second: Nova_side_spine_7
+  - first:
+      213: -1870700453215845305
+    second: Nova_side_spine_8
+  - first:
+      213: -6214376586725924113
+    second: Nova_side_spine_9
+  - first:
+      213: 693080941019801215
+    second: Nova_side_spine_10
+  - first:
+      213: -721594831515280510
+    second: Nova_side_spine_11
+  - first:
+      213: 8387285110038909567
+    second: Nova_side_spine_12
+  - first:
+      213: -2520601756382536005
+    second: Nova_side_spine_13
+  - first:
+      213: 3608268929068063833
+    second: Nova_side_spine_14
+  - first:
+      213: -6543148747891305091
+    second: Nova_side_spine_15
+  - first:
+      213: 1430788869499014635
+    second: Nova_side_spine_16
+  - first:
+      213: 1256218164672949756
+    second: Nova_side_spine_17
+  - first:
+      213: -7452106744564544511
+    second: Nova_side_spine_18
+  - first:
+      213: -8167292061202523716
+    second: Nova_side_spine_19
+  - first:
+      213: 993099950574187695
+    second: Nova_side_spine_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Nova_side_spine_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 2
+        width: 296
+        height: 313
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc6449060589ac2e0800000000000000
+      internalID: -2104702404857149745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_1
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 263
+        width: 124
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64ccef289901f2800800000000000000
+      internalID: 589708327722601542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_2
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 263
+        width: 123
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c748e2f653135320800000000000000
+      internalID: 2545399478557886402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_3
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 257
+        width: 36
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0775f221d2164c5e0800000000000000
+      internalID: -1890279097382250640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_4
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 236
+        width: 94
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a08966e2752294230800000000000000
+      internalID: 3623465133032249354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_5
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 236
+        width: 90
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8b6c19c4cb547f40800000000000000
+      internalID: 5725301927040543627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_6
+      rect:
+        serializedVersion: 2
+        x: 809
+        y: 216
+        width: 80
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f6a8736b0f80bad0800000000000000
+      internalID: -2688491698463922442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_7
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 212
+        width: 73
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00daf0e40a723fb40800000000000000
+      internalID: 5472761541643185408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_8
+      rect:
+        serializedVersion: 2
+        x: 1059
+        y: 115
+        width: 117
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74448e469dfe906e0800000000000000
+      internalID: -1870700453215845305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_9
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 2
+        width: 156
+        height: 259
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe262b76b6912c9a0800000000000000
+      internalID: -6214376586725924113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_10
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 2
+        width: 161
+        height: 253
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f76241a91715e9900800000000000000
+      internalID: 693080941019801215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_11
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 2
+        width: 124
+        height: 232
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28b16cbe2516cf5f0800000000000000
+      internalID: -721594831515280510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_12
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 2
+        width: 133
+        height: 212
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f72dacdae5f956470800000000000000
+      internalID: 8387285110038909567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_13
+      rect:
+        serializedVersion: 2
+        x: 882
+        y: 2
+        width: 175
+        height: 208
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbed79aae06050dd0800000000000000
+      internalID: -2520601756382536005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_14
+      rect:
+        serializedVersion: 2
+        x: 1059
+        y: 83
+        width: 19
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95c5e2b3975231230800000000000000
+      internalID: 3608268929068063833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_15
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 86
+        width: 66
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d75956181e01235a0800000000000000
+      internalID: -6543148747891305091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_16
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 75
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bed421b65ee2bd310800000000000000
+      internalID: 1430788869499014635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_17
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 60
+        width: 10
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfd69b9d3cbfe6110800000000000000
+      internalID: 1256218164672949756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_18
+      rect:
+        serializedVersion: 2
+        x: 1186
+        y: 75
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10c00f5166cc49890800000000000000
+      internalID: -7452106744564544511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_19
+      rect:
+        serializedVersion: 2
+        x: 1059
+        y: 10
+        width: 21
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb9d72b7423f7ae80800000000000000
+      internalID: -8167292061202523716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_spine_20
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 2
+        width: 62
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa4be64b42338cd00800000000000000
+      internalID: 993099950574187695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Nova_side_spine_0: -2104702404857149745
+      Nova_side_spine_1: 589708327722601542
+      Nova_side_spine_10: 693080941019801215
+      Nova_side_spine_11: -721594831515280510
+      Nova_side_spine_12: 8387285110038909567
+      Nova_side_spine_13: -2520601756382536005
+      Nova_side_spine_14: 3608268929068063833
+      Nova_side_spine_15: -6543148747891305091
+      Nova_side_spine_16: 1430788869499014635
+      Nova_side_spine_17: 1256218164672949756
+      Nova_side_spine_18: -7452106744564544511
+      Nova_side_spine_19: -8167292061202523716
+      Nova_side_spine_2: 2545399478557886402
+      Nova_side_spine_20: 993099950574187695
+      Nova_side_spine_3: -1890279097382250640
+      Nova_side_spine_4: 3623465133032249354
+      Nova_side_spine_5: 5725301927040543627
+      Nova_side_spine_6: -2688491698463922442
+      Nova_side_spine_7: 5472761541643185408
+      Nova_side_spine_8: -1870700453215845305
+      Nova_side_spine_9: -6214376586725924113
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
