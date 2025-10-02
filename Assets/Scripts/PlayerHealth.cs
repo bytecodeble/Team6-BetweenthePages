@@ -15,21 +15,15 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Sprite emptyHeart;
 
     //setting DamageEffect
-    [SerializeField] private float flashTime = 0.5f;
     [SerializeField] private float invincibleTime = 2f;
 
     private bool isInvincible = false;
-    private SpriteRenderer spriteRenderer;
-    private Color originalColor;
+
     private void Start()
     {
         currentHealth = maxHealth;
         UpdateHearts();
 
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
-        //record origial color of player
-        originalColor = spriteRenderer.color; 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -68,11 +62,6 @@ public class PlayerHealth : MonoBehaviour
         //when player damaged, start invincible status
         isInvincible = true;
 
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(flashTime);
-
-        //after flash, color switch to original color
-        spriteRenderer.color = originalColor;
 
         //get into invincibale time
         yield return new WaitForSeconds(invincibleTime);
