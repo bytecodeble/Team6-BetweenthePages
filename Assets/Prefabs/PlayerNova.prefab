@@ -133,7 +133,6 @@ MonoBehaviour:
   - {fileID: 3441540584538457325}
   fullHeart: {fileID: 7354856336511833822, guid: 45377c084d144df4b80cf761a28ee948, type: 3}
   emptyHeart: {fileID: -5128850884273562437, guid: e772b2ec336020d46b80833b5b445304, type: 3}
-  flashTime: 0.5
   invincibleTime: 2
 --- !u!95 &5014453100139446744
 Animator:
@@ -219,7 +218,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4084c3ab5c973154c9c762a4ebd01e48, type: 2}
+  - {fileID: 2100000, guid: f582362c7429f4d4c9587b130cc7903f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -254,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonAnimation
-  skeletonDataAsset: {fileID: 11400000, guid: ada6a8fcd4b92444dac2fbdec0236bc4, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 6d36cb4be25003340a2f93a527c0793e, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -282,7 +281,7 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: idle
+  _animationName: run
   loop: 1
   timeScale: 1
 --- !u!1 &5382804903734575421
