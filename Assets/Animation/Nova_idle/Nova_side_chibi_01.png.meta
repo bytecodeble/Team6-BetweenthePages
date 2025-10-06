@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 19721bbae82546a468d9787a3f06d4fe
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8807746650598154084
+    second: Nova_side_chibi_01_0
+  - first:
+      213: -2262102384606126009
+    second: Nova_side_chibi_01_1
+  - first:
+      213: 8261962798788566084
+    second: Nova_side_chibi_01_2
+  - first:
+      213: 5660973166600758636
+    second: Nova_side_chibi_01_3
+  - first:
+      213: 2988636093707811990
+    second: Nova_side_chibi_01_4
+  - first:
+      213: 5345836236911837984
+    second: Nova_side_chibi_01_5
+  - first:
+      213: -5070597016109254065
+    second: Nova_side_chibi_01_6
+  - first:
+      213: 1701495556738022246
+    second: Nova_side_chibi_01_7
+  - first:
+      213: -3413195156552253025
+    second: Nova_side_chibi_01_8
+  - first:
+      213: 5240279485744798281
+    second: Nova_side_chibi_01_9
+  - first:
+      213: -309992100987543903
+    second: Nova_side_chibi_01_10
+  - first:
+      213: 2785227010711141257
+    second: Nova_side_chibi_01_11
+  - first:
+      213: 2510254796953591922
+    second: Nova_side_chibi_01_12
+  - first:
+      213: 3178993638883456390
+    second: Nova_side_chibi_01_13
+  - first:
+      213: -5530395976266986826
+    second: Nova_side_chibi_01_14
+  - first:
+      213: -6321686316787669425
+    second: Nova_side_chibi_01_15
+  - first:
+      213: -580776679251117214
+    second: Nova_side_chibi_01_16
+  - first:
+      213: -597376533649754502
+    second: Nova_side_chibi_01_17
+  - first:
+      213: -2217484518402674408
+    second: Nova_side_chibi_01_18
+  - first:
+      213: 7211209237733271898
+    second: Nova_side_chibi_01_19
+  - first:
+      213: 7168588266525513126
+    second: Nova_side_chibi_01_20
+  - first:
+      213: 5067042439914499608
+    second: Nova_side_chibi_01_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 2
+        width: 282
+        height: 283
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c90e573361994c580800000000000000
+      internalID: -8807746650598154084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_1
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 173
+        width: 147
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 740ecf7cdd56b90e0800000000000000
+      internalID: -2262102384606126009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_2
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 167
+        width: 103
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44cd849446368a270800000000000000
+      internalID: 8261962798788566084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_3
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 173
+        width: 95
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c65a1461a11df8e40800000000000000
+      internalID: 5660973166600758636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_4
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 159
+        width: 85
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69c7d5851b4c97920800000000000000
+      internalID: 2988636093707811990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_5
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 225
+        width: 33
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0238a88ebb9303a40800000000000000
+      internalID: 5345836236911837984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_6
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 2
+        width: 139
+        height: 169
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4af6a701ee91a9b0800000000000000
+      internalID: -5070597016109254065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_7
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 112
+        width: 82
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66b7646a13dec9710800000000000000
+      internalID: 1701495556738022246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_8
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 112
+        width: 56
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f918e98c615e1a0d0800000000000000
+      internalID: -3413195156552253025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_9
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 57
+        width: 53
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94ad5979d6639b840800000000000000
+      internalID: 5240279485744798281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_10
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 57
+        width: 54
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aed57993dfa2bbf0800000000000000
+      internalID: -309992100987543903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_11
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 151
+        width: 44
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98bb240a53d17a620800000000000000
+      internalID: 2785227010711141257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_12
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 115
+        width: 64
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 270a32c107736d220800000000000000
+      internalID: 2510254796953591922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_13
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 5
+        width: 88
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 685ffdc1fdd0e1c20800000000000000
+      internalID: 3178993638883456390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_14
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 5
+        width: 29
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ba4b5f29261043b0800000000000000
+      internalID: -5530395976266986826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_15
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 30
+        width: 26
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f466c62e9cbd448a0800000000000000
+      internalID: -6321686316787669425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_16
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 38
+        width: 95
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26bf763ffaaa0f7f0800000000000000
+      internalID: -580776679251117214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_17
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 2
+        width: 33
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a76f6aa2531b5b7f0800000000000000
+      internalID: -597376533649754502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_18
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 2
+        width: 33
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8113ea94499e931e0800000000000000
+      internalID: -2217484518402674408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_19
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 2
+        width: 40
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a596b18589c531460800000000000000
+      internalID: 7211209237733271898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_20
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 2
+        width: 43
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a5594f2c01fb7360800000000000000
+      internalID: 7168588266525513126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nova_side_chibi_01_21
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 4
+        width: 42
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81eaee4b040c15640800000000000000
+      internalID: 5067042439914499608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Nova_side_chibi_01_0: -8807746650598154084
+      Nova_side_chibi_01_1: -2262102384606126009
+      Nova_side_chibi_01_10: -309992100987543903
+      Nova_side_chibi_01_11: 2785227010711141257
+      Nova_side_chibi_01_12: 2510254796953591922
+      Nova_side_chibi_01_13: 3178993638883456390
+      Nova_side_chibi_01_14: -5530395976266986826
+      Nova_side_chibi_01_15: -6321686316787669425
+      Nova_side_chibi_01_16: -580776679251117214
+      Nova_side_chibi_01_17: -597376533649754502
+      Nova_side_chibi_01_18: -2217484518402674408
+      Nova_side_chibi_01_19: 7211209237733271898
+      Nova_side_chibi_01_2: 8261962798788566084
+      Nova_side_chibi_01_20: 7168588266525513126
+      Nova_side_chibi_01_21: 5067042439914499608
+      Nova_side_chibi_01_3: 5660973166600758636
+      Nova_side_chibi_01_4: 2988636093707811990
+      Nova_side_chibi_01_5: 5345836236911837984
+      Nova_side_chibi_01_6: -5070597016109254065
+      Nova_side_chibi_01_7: 1701495556738022246
+      Nova_side_chibi_01_8: -3413195156552253025
+      Nova_side_chibi_01_9: 5240279485744798281
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
