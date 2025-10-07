@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Nova_side_spine_SkeletonData
+  m_Name: Nova_test_SkeletonData
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonDataAsset
   atlasAssets:
-  - {fileID: 11400000, guid: 4e676ada4c47bb048b04e7349b125c45, type: 2}
-  scale: 0.0025
-  skeletonJSON: {fileID: 4900000, guid: 5d4f41d86d10ac94694da9fdcca7606e, type: 3}
+  - {fileID: 11400000, guid: 933598eceeda73949ba9cebf13c0c375, type: 2}
+  scale: 0.003
+  skeletonJSON: {fileID: 4900000, guid: 0d0aae4add038294fa3b4d101bf8ea9e, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
