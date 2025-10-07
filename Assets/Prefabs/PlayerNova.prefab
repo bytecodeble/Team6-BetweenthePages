@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -6099145413082219654}
   - component: {fileID: 5074890530026709608}
   - component: {fileID: -7893490021097444168}
+  - component: {fileID: 5863836093747502686}
   m_Layer: 8
   m_Name: PlayerNova
   m_TagString: Player
@@ -81,25 +82,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212976d81d1db414eafa0ef7a3362bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
-  maxHorizontalSpeed: 7.5
-  horizontalAcceleration: 140
-  groundFriction: 80
-  airFriction: 20
-  jumpPower: 20.25
-  maxFallSpeed: 50
-  fallAcceleration: 50.625
-  jumpCutMultiplier: 2.5
-  fallingMultiplier: 2.2
-  coyoteTime: 0.15
-  jumpBufferTime: 0.1
-  doubleJumpPower: 18.25
-  maxDoubleJump: 1
   hasDoubleJump: 1
   groundPoint: {fileID: 8136481306993496983}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  enableJumpLogging: 1
+  enableJumpLogging: 0
 --- !u!114 &5481222083647259442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,8 +179,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.8}
-  m_Size: {x: 0.8, y: 1.6}
+  m_Offset: {x: -0.04, y: 0.7}
+  m_Size: {x: 0.7, y: 1.4}
   m_Direction: 0
 --- !u!23 &5074890530026709608
 MeshRenderer:
@@ -219,7 +207,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 0a4f1f635dd0c494a962467481cb2857, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -282,9 +270,17 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: run
+  _animationName: idle
   loop: 1
   timeScale: 1
+--- !u!33 &5863836093747502686
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751652449643466997}
+  m_Mesh: {fileID: 0}
 --- !u!1 &5382804903734575421
 GameObject:
   m_ObjectHideFlags: 0

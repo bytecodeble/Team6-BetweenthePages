@@ -12,23 +12,23 @@ public class PlayerControl : MonoBehaviour
     #region Movement Variables
 
     [Header("Walk")]
-    [SerializeField] private float maxHorizontalSpeed = 7.5f;
-    [SerializeField] private float horizontalAcceleration = 140;
-    [SerializeField] private float groundFriction = 80;
-    [SerializeField] private float airFriction = 20;
+    private float maxHorizontalSpeed = 7.5f;
+    private float horizontalAcceleration = 140;
+    private float groundFriction = 80;
+    private float airFriction = 20;
 
     [Header("Jump")]
-    [SerializeField] private float jumpPower = 20.25f;
-    [SerializeField] private float maxFallSpeed = 50;
-    [SerializeField] private float fallAcceleration = 50.625f;
-    [SerializeField] private float jumpCutMultiplier = 2.5f; // The gravity multiplier added when jump is released early
-    [SerializeField] private float fallingMultiplier = 2.2f; // make falling faster
-    [SerializeField] private float coyoteTime = 0.2f;
-    [SerializeField] private float jumpBufferTime = 0.15f;
+    private float jumpPower = 20.25f;
+    private float maxFallSpeed = 50;
+    private float fallAcceleration = 50.625f;
+    private float jumpCutMultiplier = 2.5f; // The gravity multiplier added when jump is released early
+    private float fallingMultiplier = 2.2f; // make falling faster
+    private float coyoteTime = 0.2f;
+    private float jumpBufferTime = 0.15f;
 
     [Header("Double Jump")]
-    [SerializeField] private float doubleJumpPower = 18.25f;
-    [SerializeField] private int maxDoubleJump = 0;
+    private float doubleJumpPower = 18.25f;
+    private int maxDoubleJump = 0;
 
     private float accelerationRate; // this value will be calculated
     private bool isJumping;
