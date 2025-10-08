@@ -1,4 +1,4 @@
-Nova_side_chibi_01.png
+Nova_Animation.png
 size:787,299
 filter:Linear,Linear
 arm_L

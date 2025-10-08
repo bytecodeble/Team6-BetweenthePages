@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Nova_side_chibi_01_SkeletonData
+  m_Name: Nova_Animation_SkeletonData
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonDataAsset
   atlasAssets:
-  - {fileID: 11400000, guid: 29a2b8a4dee6c0941b418afda4756952, type: 2}
+  - {fileID: 11400000, guid: ce62d29c6e0851a4483104eab087967d, type: 2}
   scale: 0.003
-  skeletonJSON: {fileID: 4900000, guid: 93ad0aeb5c55628449e9dff6c88e89bd, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: f537becbe90e3b24fb76f7de95eb4a2d, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
