@@ -68,6 +68,24 @@ TextureImporter:
   - first:
       213: -336192933959269795
     second: Nova_Animation_21
+  - first:
+      213: -3270299533165141110
+    second: Nova_Animation_22
+  - first:
+      213: 1465753372842596463
+    second: Nova_Animation_23
+  - first:
+      213: 8511983151583214633
+    second: Nova_Animation_24
+  - first:
+      213: -548269899534783407
+    second: Nova_Animation_25
+  - first:
+      213: 5428275157500960161
+    second: Nova_Animation_26
+  - first:
+      213: -2764092495653725366
+    second: Nova_Animation_27
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
