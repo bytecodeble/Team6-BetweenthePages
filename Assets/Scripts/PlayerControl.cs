@@ -1,7 +1,8 @@
-using System.Runtime.CompilerServices;
-using UnityEngine;
+using Spine.Unity;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -53,6 +54,15 @@ public class PlayerControl : MonoBehaviour
     private float coyoteTimer;
     private float jumpBufferTimer;
 
+    [Header("Animation")]
+    [SerializeField] private SkeletonAnimation spineAnimation;
+
+    private const string ANIM_IDLE = "idle";
+    private const string ANIM_RUN = "run";
+
+    private const int TRACK_INDEX = 0;
+
+
     #endregion
 
     #region Jump Debugging / Tracking
@@ -88,6 +98,11 @@ public class PlayerControl : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         Collider = GetComponent<BoxCollider2D>();
         RB.gravityScale = 0; // We use our own calculations instead of the default gravity
+        if (spineAnimation == null)
+        {
+            spineAnimation = GetComponent<SkeletonAnimation>();
+        }
+
     }
 
     void Update()
@@ -113,6 +128,8 @@ public class PlayerControl : MonoBehaviour
             float absXDelta = Mathf.Abs(transform.position.x - airborneStartPos.x);
             if (absXDelta > airborneMaxHorizontalDelta) airborneMaxHorizontalDelta = absXDelta;
         }
+
+        UpdateAnimationState();
     }
 
     private void GatherInput()
@@ -333,6 +350,37 @@ public class PlayerControl : MonoBehaviour
         RB.linearVelocity = frameVelocity; // changed to RB.velocity for clarity with physics
     }
 
+    public void IdleAnimation()
+    {
+        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true); // true means loop is enabled
+    }
+
+    public void RunAnimation()
+    {
+        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_RUN, true);
+    }
+
+    private void UpdateAnimationState()
+    {
+        if (!isOnGround)
+            return; // don’t switch animations midair
+
+        float horizontalSpeed = Mathf.Abs(frameVelocity.x);
+
+        if (horizontalSpeed > 0.1f)
+        {
+            if (spineAnimation.AnimationName != ANIM_RUN)
+                RunAnimation();
+        }
+        else
+        {
+            if (spineAnimation.AnimationName != ANIM_IDLE)
+                IdleAnimation();
+        }
+    }
+
+
+
     private void OnDrawGizmos()
     {
         if (groundPoint != null)
@@ -342,8 +390,6 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    // Optional: call this from a debug UI or keystroke to dump CSV to persistentDataPath:
-    // Example call: DumpJumpRecordsToCSV("MyJumpData.csv");
     public void DumpJumpRecordsToCSV(string filename = "JumpRecords.csv")
     {
         if (jumpRecords.Count == 0)
