@@ -1,7 +1,6 @@
 using Spine.Unity;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
@@ -9,9 +8,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D RB;
     private BoxCollider2D Collider;
 
-
     #region Movement Variables
-
     [Header("Walk")]
     private float maxHorizontalSpeed = 7.5f;
     private float horizontalAcceleration = 140;
@@ -22,8 +19,8 @@ public class PlayerControl : MonoBehaviour
     private float jumpPower = 20.25f;
     private float maxFallSpeed = 50;
     private float fallAcceleration = 50.625f;
-    private float jumpCutMultiplier = 2.5f; // The gravity multiplier added when jump is released early
-    private float fallingMultiplier = 2.2f; // make falling faster
+    private float jumpCutMultiplier = 2.5f;
+    private float fallingMultiplier = 2.2f;
     private float coyoteTime = 0.2f;
     private float jumpBufferTime = 0.15f;
 
@@ -31,16 +28,13 @@ public class PlayerControl : MonoBehaviour
     private float doubleJumpPower = 18.25f;
     private int maxDoubleJump = 0;
 
-    private float accelerationRate; // this value will be calculated
+    private float accelerationRate;
     private bool isJumping;
     private int doubleJumpRemaining;
-    [HideInInspector] public bool hasDoubleJump = false; // TODO: change this with actual ability upgrade function
-
+    [HideInInspector] public bool hasDoubleJump = false;
     #endregion
 
-
     #region Stats
-
     [Header("Ground Detection")]
     [SerializeField] private Transform groundPoint;
     [SerializeField] private LayerMask whatIsGround;
@@ -54,55 +48,52 @@ public class PlayerControl : MonoBehaviour
     private float coyoteTimer;
     private float jumpBufferTimer;
 
+    #endregion
+
+    #region Animation
+
     [Header("Animation")]
     [SerializeField] private SkeletonAnimation spineAnimation;
 
     private const string ANIM_IDLE = "idle";
     private const string ANIM_RUN = "run";
+    private const string ANIM_JUMPSTART = "jump_start";
+    private const string ANIM_JUMPRISE = "jump_rise";
+    private const string ANIM_JUMPFALL = "jump_fall";
+    private const string ANIM_JUMPLAND = "jump_land";
+    private const string ANIM_DOUBLEJUMPRISE = "double_jump";
 
     private const int TRACK_INDEX = 0;
 
 
-    #endregion
 
-    #region Jump Debugging / Tracking
+    // animation debugger
+    private string lastAnimName = "";
+    private bool playingJumpStart = false;
+    private bool playingDoubleJump = false;
+    private bool playingJumpLand = false;
 
-    [Header("Debug Jump Stats")]
-    [SerializeField] private bool enableJumpLogging = true; // toggle from Inspector
-    // internal tracking for a whole airborne session (initial jump -> any double jumps -> landing)
-    private bool isTrackingAirborne = false;
-    private float airborneStartTime;
-    private Vector2 airborneStartPos;
-    private float airbornePeakY;
-    private float airborneMaxHorizontalDelta;
-
-    // collected records for further analysis
-    private struct JumpRecord
-    {
-        public float startTime;
-        public float airtime;
-        public float peakHeight; // units above start Y
-        public float horizontalDisplacementLanding; // landingX - startX
-        public float maxHorizontalDelta; // maximum abs(x - startX) reached during airborne
-        public Vector2 startPos;
-        public Vector2 landingPos;
-    }
-    private List<JumpRecord> jumpRecords = new List<JumpRecord>();
 
     #endregion
-
-
 
     private void Awake()
     {
         RB = GetComponent<Rigidbody2D>();
         Collider = GetComponent<BoxCollider2D>();
-        RB.gravityScale = 0; // We use our own calculations instead of the default gravity
+        RB.gravityScale = 0;
+
         if (spineAnimation == null)
-        {
             spineAnimation = GetComponent<SkeletonAnimation>();
+
+        if (spineAnimation != null && spineAnimation.AnimationState != null && spineAnimation.AnimationState.Data != null)
+        {
+            spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPSTART, ANIM_JUMPRISE, 0.05f);
+            spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPRISE, ANIM_JUMPFALL, 0.1f);
+            spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPFALL, ANIM_JUMPLAND, 0.05f);
+            spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPLAND, ANIM_IDLE, 0.15f);
         }
 
+        doubleJumpRemaining = maxDoubleJump;
     }
 
     void Update()
@@ -114,22 +105,22 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // For physics logic
         HandleHorizontalMovement();
         HandleVerticalMovement();
         ApplyMovement();
 
-        // update airborne peak tracking every physics frame (so it catches true maxY while in air)
-        if (isTrackingAirborne)
-        {
-            float currentY = transform.position.y;
-            if (currentY > airbornePeakY) airbornePeakY = currentY;
-
-            float absXDelta = Mathf.Abs(transform.position.x - airborneStartPos.x);
-            if (absXDelta > airborneMaxHorizontalDelta) airborneMaxHorizontalDelta = absXDelta;
-        }
-
+        
         UpdateAnimationState();
+
+        // fixed animation debug
+        if (spineAnimation != null)
+        {
+            if (spineAnimation.AnimationName != lastAnimName)
+            {
+                Debug.Log($"[AnimChange] {lastAnimName} -> {spineAnimation.AnimationName}");
+                lastAnimName = spineAnimation.AnimationName;
+            }
+        }
     }
 
     private void GatherInput()
@@ -148,7 +139,6 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        // If player released jump button while jumping
         if (Input.GetKeyUp(KeyCode.Space) && isJumping && frameVelocity.y > 0)
         {
             frameVelocity.y /= jumpCutMultiplier;
@@ -159,126 +149,83 @@ public class PlayerControl : MonoBehaviour
     private void CheckGround()
     {
         bool wasOnGround = isOnGround;
-
         isOnGround = Physics2D.OverlapCircle(groundPoint.position, .2f, whatIsGround);
 
-        // Just landed from jumping or falling
         if (!wasOnGround && isOnGround)
         {
-            // finalize airborne tracking if we were tracking a jump sequence
-            if (isTrackingAirborne)
+            // play land anim and then idle
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPLAND, false);
+            entry.Complete += (te) =>
             {
-                EndAirborneTracking();
-            }
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+            };
 
-            coyoteTimer = 0f; // reset coyote timer
+            coyoteTimer = 0f;
             isJumping = false;
-            doubleJumpRemaining = maxDoubleJump; // reset double jump
+            doubleJumpRemaining = maxDoubleJump;
+            playingJumpStart = false;
+            playingDoubleJump = false;
         }
-
-        // Just left the ground
         else if (wasOnGround && !isOnGround)
         {
-            coyoteTimer = coyoteTime; // start coyote timer
+            coyoteTimer = coyoteTime;
         }
 
-        if (coyoteTimer > 0f)
-        {
-            coyoteTimer -= Time.deltaTime;
-        }
-
+        if (coyoteTimer > 0f) coyoteTimer -= Time.deltaTime;
     }
 
     private void HandleJumpBuffer()
     {
-        if (jumpBufferTimer > 0)
-        {
-            jumpBufferTimer -= Time.deltaTime;
-        }
+        if (jumpBufferTimer > 0) jumpBufferTimer -= Time.deltaTime;
     }
 
     private void HandleHorizontalMovement()
     {
         float targetSpeed = horizontalInput * maxHorizontalSpeed;
-
         float currentSpeed = frameVelocity.x;
 
-
-        // accelerate
         if (horizontalInput != 0f)
-        {
             accelerationRate = horizontalAcceleration;
-        }
         else
         {
-            // Decelerate due to friction force
             accelerationRate = isOnGround ? groundFriction : airFriction;
-            // If player stopped input, speed will approach 0
             targetSpeed = 0;
         }
 
-        // smooth speed transform
         frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.fixedDeltaTime);
 
-        // player direction
-        if (frameVelocity.x < 0f)
-        {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-        else if (frameVelocity.x > 0f)
-        {
-            transform.localScale = Vector3.one;
-        }
+        if (frameVelocity.x < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
+        else if (frameVelocity.x > 0f) transform.localScale = Vector3.one;
     }
 
     private void HandleVerticalMovement()
     {
-        // Jump check, prioritize checking jump buffer timer, then grounded or coyote timer
         if (jumpBufferTimer > 0 && (isOnGround || coyoteTimer > 0))
         {
             ExecuteJump();
         }
 
-        // If grounded, add a tiny downward force to make sure collider check is stable
         if (isOnGround)
         {
-            if (frameVelocity.y < 0)
-            {
-                frameVelocity.y = -0.5f;
-            }
-
+            if (frameVelocity.y < 0) frameVelocity.y = -0.5f;
         }
 
-
         bool isHoldingJump = Input.GetKey(KeyCode.Space);
-        float currentGravity = fallAcceleration; // base gravity when rising
-
+        float currentGravity = fallAcceleration;
 
         if (frameVelocity.y > 0)
         {
-            if (!isHoldingJump)
-            {
-                // release early, stronger gravity
-                currentGravity = fallAcceleration * jumpCutMultiplier;
-            }
-            else
-            {
-                currentGravity = fallAcceleration;
-            }
+            currentGravity = isHoldingJump ? fallAcceleration : (fallAcceleration * jumpCutMultiplier);
         }
         else if (frameVelocity.y < 0)
         {
-            // make gravity stronger than rising
             currentGravity = fallAcceleration * fallingMultiplier;
         }
-
 
         float currentYSpeed = frameVelocity.y;
         float targetYSpeed = -maxFallSpeed;
         float fallMaxDelta = currentGravity * Time.fixedDeltaTime;
         frameVelocity.y = Mathf.MoveTowards(currentYSpeed, targetYSpeed, fallMaxDelta);
-
-
     }
 
     private void ExecuteJump()
@@ -288,8 +235,7 @@ public class PlayerControl : MonoBehaviour
         coyoteTimer = 0f;
         isJumping = true;
 
-        // start tracking the whole airborne sequence (initial jump -> possibly double jumps -> landing)
-        BeginAirborneTrackingIfNeeded();
+        JumpStartAnimation();
     }
 
     private void ExecuteDoubleJump()
@@ -298,75 +244,123 @@ public class PlayerControl : MonoBehaviour
         doubleJumpRemaining--;
         isJumping = true;
 
-        // ensure that a tracking session is started even if initial jump was missed (e.g., fall + double jump)
-        BeginAirborneTrackingIfNeeded();
+        DoubleJumpAnimation();
     }
-
-    private void BeginAirborneTrackingIfNeeded()
-    {
-        if (!enableJumpLogging) return;
-
-        if (!isTrackingAirborne)
-        {
-            isTrackingAirborne = true;
-            airborneStartTime = Time.time;
-            airborneStartPos = transform.position;
-            airbornePeakY = transform.position.y;
-            airborneMaxHorizontalDelta = 0f;
-        }
-    }
-
-    private void EndAirborneTracking()
-    {
-        // compute and store stats for the just-finished airborne session
-        isTrackingAirborne = false;
-        float airtime = Time.time - airborneStartTime;
-        float peakHeight = airbornePeakY - airborneStartPos.y;
-        float landingXDisplacement = transform.position.x - airborneStartPos.x;
-        float maxHorizontalDelta = airborneMaxHorizontalDelta;
-
-        JumpRecord rec = new JumpRecord
-        {
-            startTime = airborneStartTime,
-            airtime = airtime,
-            peakHeight = peakHeight,
-            horizontalDisplacementLanding = landingXDisplacement,
-            maxHorizontalDelta = maxHorizontalDelta,
-            startPos = airborneStartPos,
-            landingPos = transform.position
-        };
-
-        jumpRecords.Add(rec);
-
-        if (enableJumpLogging)
-        {
-            Debug.Log($"[JumpStats #{jumpRecords.Count}] airtime={airtime:F3}s | peakHeight={peakHeight:F3}u | landingHorizontal={landingXDisplacement:F3}u | maxHorizontalDelta={maxHorizontalDelta:F3}u | startY={airborneStartPos.y:F3} | peakY={airbornePeakY:F3}");
-        }
-    }
-
 
     private void ApplyMovement()
     {
-        RB.linearVelocity = frameVelocity; // changed to RB.velocity for clarity with physics
+        RB.linearVelocity = frameVelocity;
     }
 
     public void IdleAnimation()
     {
-        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true); // true means loop is enabled
+        if (spineAnimation.AnimationName != ANIM_IDLE)
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
     }
 
     public void RunAnimation()
     {
-        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_RUN, true);
+        if (spineAnimation.AnimationName != ANIM_RUN)
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_RUN, true);
+    }
+
+    private void JumpStartAnimation()
+    {
+        if (spineAnimation == null) return;
+        playingJumpStart = true;
+        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPSTART, false);
+        entry.Complete += (te) =>
+        {
+            playingJumpStart = false;
+            // if still moving up, go to rise, otherwise fall
+            if (frameVelocity.y > 0.1f)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
+            else
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
+        };
+    }
+
+    private void JumpFallAnimation()
+    {
+        // cancel any jumpstart or doublejump playing flags so falling takes over
+        playingJumpStart = false;
+        playingDoubleJump = false;
+        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
+    }
+
+    private void JumpLandAnimation()
+    {
+        if (spineAnimation == null) return;
+
+        playingJumpLand = true;
+        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPLAND, false);
+        entry.Complete += (te) =>
+        {
+            playingJumpLand = false;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        };
+    }
+
+    private void DoubleJumpAnimation()
+    {
+        if (spineAnimation == null) return;
+        playingDoubleJump = true;
+        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DOUBLEJUMPRISE, false);
+        entry.Complete += (te) =>
+        {
+            playingDoubleJump = false;
+            if (frameVelocity.y > 0.1f)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
+            else
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
+        };
     }
 
     private void UpdateAnimationState()
     {
-        if (!isOnGround)
-            return; // don’t switch animations midair
+
+        if (spineAnimation == null) return;
+
+
+
+        if (spineAnimation.AnimationName == ANIM_JUMPLAND && Mathf.Abs(horizontalInput) > 0.1f)
+        {
+            playingJumpLand = false;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_RUN, true);
+            return;
+        }
+
+        if (playingJumpLand)
+            return;
+
+
 
         float horizontalSpeed = Mathf.Abs(frameVelocity.x);
 
+        // if we currently in a locked animation, skip auto transitions
+        if (playingJumpStart || playingDoubleJump)
+            return;
+
+        if (!isOnGround)
+        {
+            if (frameVelocity.y > 0.1f)
+            {
+                if (spineAnimation.AnimationName != ANIM_JUMPRISE)
+                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
+            }
+            else if (frameVelocity.y < -0.1f)
+            {
+                if (spineAnimation.AnimationName != ANIM_JUMPFALL)
+                    JumpFallAnimation();
+            }
+            return;
+        }
+
+        // Prevent overriding the land animation before it finishes
+        if (spineAnimation.AnimationName == ANIM_JUMPLAND)
+            return;
+
+        // Ground animations
         if (horizontalSpeed > 0.1f)
         {
             if (spineAnimation.AnimationName != ANIM_RUN)
@@ -380,7 +374,6 @@ public class PlayerControl : MonoBehaviour
     }
 
 
-
     private void OnDrawGizmos()
     {
         if (groundPoint != null)
@@ -390,31 +383,5 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void DumpJumpRecordsToCSV(string filename = "JumpRecords.csv")
-    {
-        if (jumpRecords.Count == 0)
-        {
-            Debug.Log("[JumpStats] no records to export.");
-            return;
-        }
-
-        string path = Path.Combine(Application.persistentDataPath, filename);
-        try
-        {
-            using (var sw = new StreamWriter(path, false))
-            {
-                sw.WriteLine("index,startTime,airtime,peakHeight,startX,startY,landingX,landingY,landingHorizontal,maxHorizontalDelta");
-                for (int i = 0; i < jumpRecords.Count; i++)
-                {
-                    var r = jumpRecords[i];
-                    sw.WriteLine($"{i + 1},{r.startTime:F3},{r.airtime:F3},{r.peakHeight:F3},{r.startPos.x:F3},{r.startPos.y:F3},{r.landingPos.x:F3},{r.landingPos.y:F3},{r.horizontalDisplacementLanding:F3},{r.maxHorizontalDelta:F3}");
-                }
-            }
-            Debug.Log($"[JumpStats] Exported {jumpRecords.Count} records to: {path}");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[JumpStats] Failed to export CSV: {ex.Message}");
-        }
-    }
+    
 }
