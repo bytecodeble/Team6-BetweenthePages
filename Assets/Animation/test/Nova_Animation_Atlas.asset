@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: Nova_test_Atlas
+  m_Name: Nova_Animation_Atlas
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SpineAtlasAsset
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: 56833a605d583af4aa19ea88d8d71da9, type: 3}
+  atlasFile: {fileID: 4900000, guid: 5610f4ad49477b442a3bd8080c857995, type: 3}
   materials:
-  - {fileID: 2100000, guid: 0a4f1f635dd0c494a962467481cb2857, type: 2}
+  - {fileID: 2100000, guid: f9eb786e8e654ec43a16fee9efc68d47, type: 2}
