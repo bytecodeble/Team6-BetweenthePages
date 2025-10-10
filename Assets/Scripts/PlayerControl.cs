@@ -7,6 +7,8 @@ public class PlayerControl : MonoBehaviour
 {
     private Rigidbody2D RB;
     private BoxCollider2D Collider;
+    private PlayerHealth health;
+    private PlayerAttack attack;
 
     #region Movement Variables
     [Header("Walk")]
@@ -17,10 +19,10 @@ public class PlayerControl : MonoBehaviour
 
     [Header("Jump")]
     private float jumpPower = 20.25f;
-    private float maxFallSpeed = 50;
-    private float fallAcceleration = 50.625f;
-    private float jumpCutMultiplier = 2.5f;
-    private float fallingMultiplier = 2.2f;
+    private float maxFallSpeed = 35f;
+    private float fallAcceleration = 25f;
+    private float jumpCutMultiplier = 2.5f; // gravity multiplier added when jump is released early
+    private float fallingMultiplier = 2f; // make falling faster
     private float coyoteTime = 0.2f;
     private float jumpBufferTime = 0.15f;
 
@@ -31,7 +33,7 @@ public class PlayerControl : MonoBehaviour
     private float accelerationRate;
     private bool isJumping;
     private int doubleJumpRemaining;
-    [HideInInspector] public bool hasDoubleJump = false;
+    [HideInInspector] public bool hasDoubleJump = false; // TODO: change this with actual ability upgrade function
     #endregion
 
     #region Stats
@@ -55,6 +57,10 @@ public class PlayerControl : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private SkeletonAnimation spineAnimation;
 
+    private const int TRACK_INDEX = 0;
+    private bool animationLocked = false;
+
+
     private const string ANIM_IDLE = "idle";
     private const string ANIM_RUN = "run";
     private const string ANIM_JUMPSTART = "jump_start";
@@ -62,8 +68,9 @@ public class PlayerControl : MonoBehaviour
     private const string ANIM_JUMPFALL = "jump_fall";
     private const string ANIM_JUMPLAND = "jump_land";
     private const string ANIM_DOUBLEJUMPRISE = "double_jump";
-
-    private const int TRACK_INDEX = 0;
+    //private const string ANIM_ATTACK = "attack";
+    private const string ANIM_HURT = "hurt";
+    //private const string ANIM_DEATH = "death";
 
 
 
@@ -80,7 +87,11 @@ public class PlayerControl : MonoBehaviour
     {
         RB = GetComponent<Rigidbody2D>();
         Collider = GetComponent<BoxCollider2D>();
-        RB.gravityScale = 0;
+        health = GetComponent<PlayerHealth>();
+        attack = GetComponent<PlayerAttack>();
+
+        RB.gravityScale = 0; // We use our own calculations instead of the default gravity
+
 
         if (spineAnimation == null)
             spineAnimation = GetComponent<SkeletonAnimation>();
@@ -91,6 +102,8 @@ public class PlayerControl : MonoBehaviour
             spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPRISE, ANIM_JUMPFALL, 0.1f);
             spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPFALL, ANIM_JUMPLAND, 0.05f);
             spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPLAND, ANIM_IDLE, 0.15f);
+            spineAnimation.AnimationState.Data.SetMix(ANIM_IDLE, ANIM_HURT, 0.05f);
+            //spineAnimation.AnimationState.Data.SetMix(ANIM_IDLE, ANIM_ATTACK, 0.1f);
         }
 
         doubleJumpRemaining = maxDoubleJump;
@@ -108,9 +121,8 @@ public class PlayerControl : MonoBehaviour
         HandleHorizontalMovement();
         HandleVerticalMovement();
         ApplyMovement();
-
-        
         UpdateAnimationState();
+
 
         // fixed animation debug
         if (spineAnimation != null)
@@ -139,6 +151,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
+        // If player released jump button while jumping
         if (Input.GetKeyUp(KeyCode.Space) && isJumping && frameVelocity.y > 0)
         {
             frameVelocity.y /= jumpCutMultiplier;
@@ -151,6 +164,7 @@ public class PlayerControl : MonoBehaviour
         bool wasOnGround = isOnGround;
         isOnGround = Physics2D.OverlapCircle(groundPoint.position, .2f, whatIsGround);
 
+        // just landed from jumping or falling
         if (!wasOnGround && isOnGround)
         {
             // play land anim and then idle
@@ -162,10 +176,11 @@ public class PlayerControl : MonoBehaviour
 
             coyoteTimer = 0f;
             isJumping = false;
-            doubleJumpRemaining = maxDoubleJump;
+            doubleJumpRemaining = maxDoubleJump; // reset double jump
             playingJumpStart = false;
             playingDoubleJump = false;
         }
+        // just left ground
         else if (wasOnGround && !isOnGround)
         {
             coyoteTimer = coyoteTime;
@@ -184,37 +199,44 @@ public class PlayerControl : MonoBehaviour
         float targetSpeed = horizontalInput * maxHorizontalSpeed;
         float currentSpeed = frameVelocity.x;
 
+        // accelerate
         if (horizontalInput != 0f)
             accelerationRate = horizontalAcceleration;
         else
         {
+            // decelerate
             accelerationRate = isOnGround ? groundFriction : airFriction;
             targetSpeed = 0;
         }
 
+        // smooth speed transform
         frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.fixedDeltaTime);
 
+        // player direction
         if (frameVelocity.x < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
         else if (frameVelocity.x > 0f) transform.localScale = Vector3.one;
     }
 
     private void HandleVerticalMovement()
     {
+        // jump check
         if (jumpBufferTimer > 0 && (isOnGround || coyoteTimer > 0))
         {
             ExecuteJump();
         }
 
+        // add a tiny downward force to make sure collider check is stable
         if (isOnGround)
         {
             if (frameVelocity.y < 0) frameVelocity.y = -0.5f;
         }
 
         bool isHoldingJump = Input.GetKey(KeyCode.Space);
-        float currentGravity = fallAcceleration;
+        float currentGravity = fallAcceleration; // base gravity when rising
 
         if (frameVelocity.y > 0)
         {
+            // release early, stronger gravity
             currentGravity = isHoldingJump ? fallAcceleration : (fallAcceleration * jumpCutMultiplier);
         }
         else if (frameVelocity.y < 0)
@@ -372,6 +394,46 @@ public class PlayerControl : MonoBehaviour
                 IdleAnimation();
         }
     }
+
+    private void LockAnimation(float duration)
+    {
+        animationLocked = true;
+        CancelInvoke(nameof(UnlockAnimation));
+        Invoke(nameof(UnlockAnimation), duration);
+    }
+
+    private void UnlockAnimation() => animationLocked = false;
+
+
+
+    public void PlayerAttackAnimation()
+    {
+        if (spineAnimation == null) return;
+        //LockAnimation(0.41f); // lock brief to prevent override
+        //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_ATTACK, false);
+        //entry.Complete += (e) =>
+        //{
+        //    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        //};
+    }
+
+    public void PlayHurtAnimation()
+    {
+        if (spineAnimation == null) return;
+        LockAnimation(0.25f);
+        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
+        entry.Complete += (e) =>
+        {
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        };
+    }
+
+    public void PlayDeathAnimation()
+    {
+        if (spineAnimation == null) return;
+        //spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
+    }
+
 
 
     private void OnDrawGizmos()

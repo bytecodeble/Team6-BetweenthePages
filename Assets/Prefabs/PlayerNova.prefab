@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2739367927663786249}
   - component: {fileID: 5481222083647259442}
   - component: {fileID: 4167250967627337135}
-  - component: {fileID: 5014453100139446744}
   - component: {fileID: -6099145413082219654}
   - component: {fileID: 5074890530026709608}
   - component: {fileID: -7893490021097444168}
@@ -100,7 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a363a4d70f4961b479dfe93aa11ee8a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  sword: {fileID: 5382804903734575421}
+  attackHitbox: {fileID: 1599291260836444165, guid: 89393c98ca2ccc548a62302974185f45, type: 3}
+  attackDuration: 0.4
 --- !u!114 &4167250967627337135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,29 +122,8 @@ MonoBehaviour:
   - {fileID: 3441540584538457325}
   fullHeart: {fileID: 7354856336511833822, guid: 45377c084d144df4b80cf761a28ee948, type: 3}
   emptyHeart: {fileID: -5128850884273562437, guid: e772b2ec336020d46b80833b5b445304, type: 3}
-  invincibleTime: 2
---- !u!95 &5014453100139446744
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751652449643466997}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bbbfcaa9a7efabd479f0a5078daca92a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  invincibleTime: 1.5
+  isInvincible: 0
 --- !u!70 &-6099145413082219654
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -207,7 +186,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: f9eb786e8e654ec43a16fee9efc68d47, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

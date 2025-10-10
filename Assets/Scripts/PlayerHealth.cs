@@ -15,9 +15,12 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Sprite emptyHeart;
 
     //setting DamageEffect
-    [SerializeField] private float invincibleTime = 2f;
+    [SerializeField] private float invincibleTime = 1.5f;
+    public bool isInvincible = false;
 
-    private bool isInvincible = false;
+    public delegate void PlayerEvent();
+    public event PlayerEvent OnDamageTaken;
+    public event PlayerEvent OnDeath;
 
     private void Start()
     {
@@ -49,10 +52,12 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            OnDeath?.Invoke();
             Die();
         }
         else
         {
+            OnDamageTaken?.Invoke();
             StartCoroutine(DamageEffect());
         }
     }
@@ -74,14 +79,7 @@ public class PlayerHealth : MonoBehaviour
     {
         for (int i = 0; i < hearts.Count; i++)
         {
-            if (i < currentHealth)
-            {
-                hearts[i].sprite = fullHeart;
-            }
-            else
-            {
-                hearts[i].sprite = emptyHeart;
-            }
+            hearts[i].sprite = i < currentHealth ? fullHeart : emptyHeart;
         }
     }
 
@@ -96,7 +94,6 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         UpdateHearts();
-        Debug.Log("Health fully restored!");
     }
 }
 
