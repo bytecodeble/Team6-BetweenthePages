@@ -7,8 +7,8 @@ public class PlayerControl : MonoBehaviour
 {
     private Rigidbody2D RB;
     private BoxCollider2D Collider;
-    private PlayerHealth health;
-    private PlayerAttack attack;
+    private PlayerHealth playerHealth;
+    private PlayerAttack playerAttack;
 
     #region Movement Variables
     [Header("Walk")]
@@ -58,8 +58,9 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private SkeletonAnimation spineAnimation;
 
     private const int TRACK_INDEX = 0;
-    private bool animationLocked = false;
 
+    private bool inputLocked = false;
+    private bool animationLocked = false;
 
     private const string ANIM_IDLE = "idle";
     private const string ANIM_RUN = "run";
@@ -68,9 +69,9 @@ public class PlayerControl : MonoBehaviour
     private const string ANIM_JUMPFALL = "jump_fall";
     private const string ANIM_JUMPLAND = "jump_land";
     private const string ANIM_DOUBLEJUMPRISE = "double_jump";
-    //private const string ANIM_ATTACK = "attack";
+    private const string ANIM_ATTACK = "attack";
     private const string ANIM_HURT = "hurt";
-    //private const string ANIM_DEATH = "death";
+    private const string ANIM_DEATH = "death";
 
 
 
@@ -83,15 +84,18 @@ public class PlayerControl : MonoBehaviour
 
     #endregion
 
+
+
     private void Awake()
     {
         RB = GetComponent<Rigidbody2D>();
         Collider = GetComponent<BoxCollider2D>();
-        health = GetComponent<PlayerHealth>();
-        attack = GetComponent<PlayerAttack>();
+        playerHealth = GetComponent<PlayerHealth>();
+        playerAttack = GetComponent<PlayerAttack>();
 
         RB.gravityScale = 0; // We use our own calculations instead of the default gravity
 
+        doubleJumpRemaining = maxDoubleJump;
 
         if (spineAnimation == null)
             spineAnimation = GetComponent<SkeletonAnimation>();
@@ -103,14 +107,19 @@ public class PlayerControl : MonoBehaviour
             spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPFALL, ANIM_JUMPLAND, 0.05f);
             spineAnimation.AnimationState.Data.SetMix(ANIM_JUMPLAND, ANIM_IDLE, 0.15f);
             spineAnimation.AnimationState.Data.SetMix(ANIM_IDLE, ANIM_HURT, 0.05f);
-            //spineAnimation.AnimationState.Data.SetMix(ANIM_IDLE, ANIM_ATTACK, 0.1f);
         }
 
-        doubleJumpRemaining = maxDoubleJump;
+        playerHealth.OnDamageTaken += PlayHurtAnimation;
+        playerHealth.OnDeath += PlayDeathAnimation;
+        playerAttack.OnAttackPerformed += PlayerAttackAnimation;
+
+
     }
 
     void Update()
     {
+        if (inputLocked) return;
+
         GatherInput();
         CheckGround();
         HandleJumpBuffer();
@@ -118,11 +127,14 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleHorizontalMovement();
-        HandleVerticalMovement();
+        if (!animationLocked)
+        {
+            HandleHorizontalMovement();
+            HandleVerticalMovement();
+        }
+
         ApplyMovement();
         UpdateAnimationState();
-
 
         // fixed animation debug
         if (spineAnimation != null)
@@ -310,18 +322,6 @@ public class PlayerControl : MonoBehaviour
         spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
     }
 
-    private void JumpLandAnimation()
-    {
-        if (spineAnimation == null) return;
-
-        playingJumpLand = true;
-        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPLAND, false);
-        entry.Complete += (te) =>
-        {
-            playingJumpLand = false;
-            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-        };
-    }
 
     private void DoubleJumpAnimation()
     {
@@ -340,10 +340,9 @@ public class PlayerControl : MonoBehaviour
 
     private void UpdateAnimationState()
     {
-
         if (spineAnimation == null) return;
 
-
+        if (animationLocked) return;
 
         if (spineAnimation.AnimationName == ANIM_JUMPLAND && Mathf.Abs(horizontalInput) > 0.1f)
         {
@@ -355,14 +354,9 @@ public class PlayerControl : MonoBehaviour
         if (playingJumpLand)
             return;
 
-
-
         float horizontalSpeed = Mathf.Abs(frameVelocity.x);
 
-        // if we currently in a locked animation, skip auto transitions
-        if (playingJumpStart || playingDoubleJump)
-            return;
-
+        // airborne
         if (!isOnGround)
         {
             if (frameVelocity.y > 0.1f)
@@ -378,11 +372,10 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
-        // Prevent overriding the land animation before it finishes
+        // grounded
         if (spineAnimation.AnimationName == ANIM_JUMPLAND)
             return;
 
-        // Ground animations
         if (horizontalSpeed > 0.1f)
         {
             if (spineAnimation.AnimationName != ANIM_RUN)
@@ -402,19 +395,22 @@ public class PlayerControl : MonoBehaviour
         Invoke(nameof(UnlockAnimation), duration);
     }
 
-    private void UnlockAnimation() => animationLocked = false;
-
+    private void UnlockAnimation()
+    {
+        animationLocked = false;
+    }
 
 
     public void PlayerAttackAnimation()
     {
         if (spineAnimation == null) return;
-        //LockAnimation(0.41f); // lock brief to prevent override
-        //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_ATTACK, false);
-        //entry.Complete += (e) =>
-        //{
-        //    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-        //};
+        LockAnimation(0.4f);
+        var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
+        entry.Complete += (e) =>
+        {
+            UnlockAnimation();
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        };
     }
 
     public void PlayHurtAnimation()
@@ -424,6 +420,7 @@ public class PlayerControl : MonoBehaviour
         var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
         entry.Complete += (e) =>
         {
+            UnlockAnimation();
             spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
         };
     }
@@ -431,7 +428,8 @@ public class PlayerControl : MonoBehaviour
     public void PlayDeathAnimation()
     {
         if (spineAnimation == null) return;
-        //spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
+        LockAnimation(999f); // keep it locked until respawn
+        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "death", false);
     }
 
 
