@@ -15,21 +15,18 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Sprite emptyHeart;
 
     //setting DamageEffect
-    [SerializeField] private float flashTime = 0.5f;
-    [SerializeField] private float invincibleTime = 2f;
+    [SerializeField] private float invincibleTime = 1.5f;
+    public bool isInvincible = false;
 
-    private bool isInvincible = false;
-    private SpriteRenderer spriteRenderer;
-    private Color originalColor;
+    public delegate void PlayerEvent();
+    public event PlayerEvent OnDamageTaken;
+    public event PlayerEvent OnDeath;
+
     private void Start()
     {
         currentHealth = maxHealth;
         UpdateHearts();
 
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
-        //record origial color of player
-        originalColor = spriteRenderer.color; 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -55,10 +52,12 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            OnDeath?.Invoke();
             Die();
         }
         else
         {
+            OnDamageTaken?.Invoke();
             StartCoroutine(DamageEffect());
         }
     }
@@ -68,11 +67,6 @@ public class PlayerHealth : MonoBehaviour
         //when player damaged, start invincible status
         isInvincible = true;
 
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(flashTime);
-
-        //after flash, color switch to original color
-        spriteRenderer.color = originalColor;
 
         //get into invincibale time
         yield return new WaitForSeconds(invincibleTime);
@@ -85,22 +79,21 @@ public class PlayerHealth : MonoBehaviour
     {
         for (int i = 0; i < hearts.Count; i++)
         {
-            if (i < currentHealth)
-            {
-                hearts[i].sprite = fullHeart;
-            }
-            else
-            {
-                hearts[i].sprite = emptyHeart;
-            }
+            hearts[i].sprite = i < currentHealth ? fullHeart : emptyHeart;
         }
     }
 
     private void Die()
     {
         Debug.Log("Player Died!");
-        //When player died. Call GameManager's RespawnPlayer()
-        FindFirstObjectByType<GameManager>().RespawnPlayer();
+        //When player died. Call GameManager's OnPlayerDeath()
+        GameManager.Instance.OnPlayerDeath();
+    }
+
+    public void RestoreFullHealth()
+    {
+        currentHealth = maxHealth;
+        UpdateHearts();
     }
 }
 

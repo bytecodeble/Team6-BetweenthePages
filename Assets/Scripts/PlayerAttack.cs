@@ -1,53 +1,55 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    //animation for sword
-    private Animator animator;
-    [SerializeField] private GameObject sword; 
+    [SerializeField] private GameObject attackHitbox;
+    [SerializeField] private float attackDuration = 0.4f;
+    private Vector2 hitboxOffset= new Vector2(1f, 0.5f);
 
-    private Collider2D swordCollider;
+    private GameObject activeHitbox;
+    private Transform playerTransform;
 
-    void Start()
+
+    public delegate void AttackEvent();
+    public event AttackEvent OnAttackPerformed;
+
+    private bool isAttacking = false;
+
+
+    void Awake()
     {
-        animator = GetComponent<Animator>();
-        if (sword != null)
-        {
-            swordCollider = sword.GetComponent<Collider2D>();
-            //When not in attack mode, the sword's collider is closed.
-            swordCollider.enabled = false; 
-        }
+        playerTransform = transform;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J)) 
+        if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
         {
-            animator.SetTrigger("Attack");
+            StartCoroutine(PerformAttack());
+        }
+    }
+
+    private IEnumerator PerformAttack()
+    {
+        isAttacking = true;
+        OnAttackPerformed?.Invoke();
         
-        }
-    }
+        activeHitbox = Instantiate(attackHitbox, playerTransform);
 
-    //The attack animation now has three frames, and the collider is turned on after the sword is swung.
-    public void EnableSword()
-    {
-        if (swordCollider != null)
-            swordCollider.enabled = true;
-    }
-
-    //The last frame of the sword swing is closed by collider
-    public void DisableSword()
-    {
-        if (swordCollider != null)
-            swordCollider.enabled = false;
-    }
-
-    //attack object"Enemy", enemy distory
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Enemy"))
+        float elapsed = 0f;
+        while (elapsed < attackDuration)
         {
-            Destroy(collision.gameObject);
+            activeHitbox.transform.localPosition = hitboxOffset;
+
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
+
+        Destroy(activeHitbox);
+
+        isAttacking = false;
+
     }
 }
