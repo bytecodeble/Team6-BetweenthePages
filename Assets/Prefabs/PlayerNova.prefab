@@ -86,7 +86,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  spineAnimation: {fileID: 0}
+  spineAnimation: {fileID: -7893490021097444168}
 --- !u!114 &5481222083647259442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +186,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 086dc168b60c4d143b395f250dc568e1, type: 2}
+  - {fileID: 2100000, guid: 938f2ada0a0fabf46bce434ce6249767, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

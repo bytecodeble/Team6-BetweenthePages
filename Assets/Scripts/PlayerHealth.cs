@@ -67,6 +67,12 @@ public class PlayerHealth : MonoBehaviour
         //when player damaged, start invincible status
         isInvincible = true;
 
+        PlayerControl pc = GetComponent<PlayerControl>();
+        if (pc != null)
+        {
+            pc.StartInvincibleFlicker(invincibleTime);
+        }
+
 
         //get into invincibale time
         yield return new WaitForSeconds(invincibleTime);

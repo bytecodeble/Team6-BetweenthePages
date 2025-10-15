@@ -1,4 +1,5 @@
 using Spine.Unity;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -73,6 +74,10 @@ public class PlayerControl : MonoBehaviour
     private const string ANIM_HURT = "hurt";
     private const string ANIM_DEATH = "death";
 
+    // flickers
+    private Coroutine flickerRoutine;
+    private Color originalColor;
+    private MeshRenderer spineRenderer;
 
 
     // animation debugger
@@ -92,6 +97,8 @@ public class PlayerControl : MonoBehaviour
         Collider = GetComponent<BoxCollider2D>();
         playerHealth = GetComponent<PlayerHealth>();
         playerAttack = GetComponent<PlayerAttack>();
+        spineRenderer = spineAnimation.GetComponent<MeshRenderer>();
+        originalColor = spineRenderer.material.color;
 
         RB.gravityScale = 0; // We use our own calculations instead of the default gravity
 
@@ -424,6 +431,49 @@ public class PlayerControl : MonoBehaviour
             spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
         };
     }
+
+
+    // invincible frame flashing flicker
+    public void StartInvincibleFlicker(float duration, float flickerInterval = 0.1f)
+    {
+        if (flickerRoutine != null)
+            StopCoroutine(flickerRoutine);
+        flickerRoutine = StartCoroutine(FlickerCoroutine(duration, flickerInterval));
+    }
+
+    private IEnumerator FlickerCoroutine(float duration, float flickerInterval)
+    {
+        float timer = 0f;
+        bool fadingOut = true;
+
+        var skeleton = spineAnimation.Skeleton;
+        float startAlpha, endAlpha;
+
+        while (timer < duration)
+        {
+            float fadeTimer = 0f;
+            startAlpha = fadingOut ? 1f : 0.5f;
+            endAlpha = fadingOut ? 0.5f : 1f;
+
+            while (fadeTimer < flickerInterval)
+            {
+                fadeTimer += Time.deltaTime;
+                float t = fadeTimer / flickerInterval;
+                float newAlpha = Mathf.Lerp(startAlpha, endAlpha, t);
+                skeleton.A = newAlpha;
+                yield return null;
+            }
+
+            fadingOut = !fadingOut;
+            timer += flickerInterval;
+        }
+
+        skeleton.A = 1f;
+        flickerRoutine = null;
+    }
+
+
+
 
     public void PlayDeathAnimation()
     {
