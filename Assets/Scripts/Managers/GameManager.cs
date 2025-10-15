@@ -34,7 +34,7 @@ namespace Game.Managers
 
         void Start()
         {
-            RespawnPlayer();
+            RespawnPlayer(Invinci: false);
         }
 
         void Update()
@@ -49,7 +49,7 @@ namespace Game.Managers
             savedPosition = position;
         }
 
-        public void RespawnPlayer()
+        public void RespawnPlayer(bool Invinci = false)
         {
             //Make sure the player instance on the field has been destroyed.
             if (currentPlayer != null)
@@ -60,13 +60,22 @@ namespace Game.Managers
 
             // Spawn a new player Prefab at the respawn point
             currentPlayer = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
+
+            if (Invinci)
+            {
+                PlayerHealth newPH = currentPlayer.GetComponent<PlayerHealth>();
+                if (newPH != null)
+                {
+                    newPH.isInvincible = true;
+                }
+            }
         }
 
 
         public IEnumerator DeathSequence(GameObject deadPlayer)
         {
-            float fadeDuration = 0.6f;
-            float postRespawnSettle = 0.05f;
+            float fadeDuration = 1.0f;
+            float postRespawnSettle = 0.5f;
 
             // stop input and play death animation
             PlayerControl pc = deadPlayer.GetComponent<PlayerControl>();
@@ -79,7 +88,7 @@ namespace Game.Managers
             }
             else
             {
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.4f);
             }
 
             // fade out
@@ -92,7 +101,7 @@ namespace Game.Managers
                 yield return new WaitForSeconds(0.1f);
             }
 
-            RespawnPlayer();
+            RespawnPlayer(Invinci: true);
 
             // same frame to ensure player exists
             yield return new WaitForSeconds(postRespawnSettle);
@@ -115,15 +124,13 @@ namespace Game.Managers
 
                 float invTime = newPH != null ? newPH.GetInvincibleTime() : 1.5f;
 
-                if (newPH != null)
-                {
-                    newPH.isInvincible = true;
-                }
 
                 if (newPC != null)
                 {
                     newPC.LockInput();
                     newPC.StartInvincibleFlicker(invTime);
+                    yield return new WaitForSeconds(0.5f);
+                    newPC.UnlockInput();
                 }
 
                 yield return new WaitForSeconds(invTime);
@@ -131,11 +138,6 @@ namespace Game.Managers
                 if (newPH != null)
                 {
                     newPH.isInvincible = false;
-                }
-
-                if (newPC != null)
-                {
-                    newPC.UnlockInput();
                 }
 
 
