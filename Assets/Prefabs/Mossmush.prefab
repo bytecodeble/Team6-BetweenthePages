@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3490a37b488de7140b313ce853c4e735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Enemies.Mossmush
-  maxHealth: 3
+  maxHealth: 2
   moveSpeed: 2
   player: {fileID: 1867572441429106723, guid: 8a5f1c2dc3b05be45bd22768eaad1788, type: 3}
   detectionRange: 6
@@ -180,6 +180,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   rb: {fileID: 7049245497032318747}
+  leftLimit: {fileID: 0}
+  rightLimit: {fileID: 0}
   groundCheck: {fileID: 3262213968068134721}
   wallCheck: {fileID: 2904860984871130188}
   groundLayer:

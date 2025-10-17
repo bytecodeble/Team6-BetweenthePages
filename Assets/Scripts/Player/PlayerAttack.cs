@@ -43,14 +43,16 @@ namespace Game.Player
             float elapsed = 0f;
             while (elapsed < attackDuration)
             {
-                activeHitbox.transform.localPosition = hitboxOffset;
+                if (activeHitbox != null)
+                    activeHitbox.transform.localPosition = hitboxOffset;
 
 
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
-            Destroy(activeHitbox);
+            if (activeHitbox != null)
+                Destroy(activeHitbox);
 
             isAttacking = false;
 

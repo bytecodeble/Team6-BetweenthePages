@@ -4,10 +4,13 @@ namespace Game.Enemies
 {
     public class Mossmush : BaseEnemy
     {
-        //raycast
+        public Transform leftLimit;
+        public Transform rightLimit;
         public Transform groundCheck;
         public Transform wallCheck;
+
         public LayerMask groundLayer;
+
         public float groundCheckDistance = 1.0f;
         public float wallCheckDistance = 0.2f;
 
@@ -27,9 +30,13 @@ namespace Game.Enemies
         public void Flip()
         {
             movingRight = !movingRight;
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
         }
 
         public bool IsMovingRight() => movingRight;
+        public Transform GetLeftLimit() => leftLimit;
+        public Transform GetRightLimit() => rightLimit;
     }
 }
