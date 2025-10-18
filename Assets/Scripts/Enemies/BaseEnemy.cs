@@ -9,7 +9,7 @@ namespace Game.Enemies
         public float moveSpeed = 2f;
 
         public Transform player;
-        public float detectionRange = 6f;
+        public float detectionRange = 4f;
         public LayerMask playerLayer;
         public LayerMask obstacleLayer;
 
@@ -59,6 +59,19 @@ namespace Game.Enemies
                 Die();
             }
         }
+
+        public virtual void ApplyKnockback(Vector2 hitSource, float force = 5f, float duration = 0.2f)
+        {
+            Vector2 knockbackDir = (transform.position - (Vector3)hitSource).normalized;
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(knockbackDir * force, ForceMode2D.Impulse);
+
+            Debug.Log("Knockback velocity: " + rb.linearVelocity);
+
+            ChangeState(new KnockbackState(this, duration, currentState));
+        }
+
 
         protected virtual void Die()
         {

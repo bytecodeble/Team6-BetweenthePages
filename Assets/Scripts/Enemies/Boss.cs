@@ -24,6 +24,10 @@ namespace Game.Enemies
             stepBackState = new StepBackState(this);
         }
 
+        public override void ApplyKnockback(Vector2 hitSource, float force = 7f, float duration = 0.3f)
+        {
+            // no knock back for boss so leave this empty
+        }
 
         public override EnemyState GetInitialState() => idleState;
     }

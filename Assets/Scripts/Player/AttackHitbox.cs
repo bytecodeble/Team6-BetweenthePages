@@ -18,6 +18,7 @@ namespace Game.Player
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+                enemy.ApplyKnockback(transform.position);
             }
         }
     }
