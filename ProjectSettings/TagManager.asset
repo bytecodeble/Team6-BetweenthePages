@@ -55,5 +55,8 @@ TagManager:
   - name: foreground_bush_rock
     uniqueID: 2396865829
     locked: 0
+  - name: 5Fireflies
+    uniqueID: 1639490553
+    locked: 0
   m_RenderingLayers:
   - Default
