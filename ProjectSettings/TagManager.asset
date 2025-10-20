@@ -40,22 +40,22 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: 0far_background
+  - name: BackgroundFar
     uniqueID: 2986999437
     locked: 0
-  - name: 1background
+  - name: Background
     uniqueID: 3110704825
     locked: 0
-  - name: 2middleground
+  - name: Midground
     uniqueID: 2342287223
     locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: 4foreground_bush_rock
+  - name: Foreground
     uniqueID: 2396865829
     locked: 0
-  - name: 5Fireflies
+  - name: VFX
     uniqueID: 1639490553
     locked: 0
   m_RenderingLayers:
