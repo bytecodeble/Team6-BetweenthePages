@@ -40,19 +40,19 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: background
+  - name: 0far_background
     uniqueID: 2986999437
     locked: 0
-  - name: background_mountains
+  - name: 1background
     uniqueID: 3110704825
     locked: 0
-  - name: middleground
+  - name: 2middleground
     uniqueID: 2342287223
     locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: foreground_bush_rock
+  - name: 4foreground_bush_rock
     uniqueID: 2396865829
     locked: 0
   - name: 5Fireflies
