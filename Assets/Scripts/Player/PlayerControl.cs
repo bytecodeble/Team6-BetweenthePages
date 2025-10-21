@@ -22,10 +22,10 @@ namespace Game.Player
 
         [Header("Jump")]
         private float jumpPower = 20.25f;
-        private float maxFallSpeed = 35f;
-        private float fallAcceleration = 25f;
+        private float maxFallSpeed = 50f;
+        private float riseGravity = 50.625f;
         private float jumpCutMultiplier = 2.5f; // gravity multiplier added when jump is released early
-        private float fallingMultiplier = 2f; // make falling faster
+        private float fallingMultiplier = 1.6f; // make falling faster
         private float coyoteTime = 0.2f;
         private float jumpBufferTime = 0.15f;
 
@@ -91,6 +91,31 @@ namespace Game.Player
 
         #endregion
 
+        #region Jump Debugging
+
+        [Header("Debug Jump Stats")]
+        [SerializeField] private bool enableJumpLogging = true; // toggle from Inspector
+        private bool isTrackingAirborne = false;
+        private float airborneStartTime;
+        private Vector2 airborneStartPos;
+        private float airbornePeakY;
+        private float airborneMaxHorizontalDelta;
+
+        // collected records for further analysis
+        private struct JumpRecord
+        {
+            public float startTime;
+            public float airtime;
+            public float peakHeight; // units above start Y
+            public float horizontalDisplacementLanding; // landingX - startX
+            public float maxHorizontalDelta; // maximum abs(x - startX) reached during airborne
+            public Vector2 startPos;
+            public Vector2 landingPos;
+        }
+        private List<JumpRecord> jumpRecords = new List<JumpRecord>();
+
+        #endregion
+
 
 
         private void Awake()
@@ -119,7 +144,6 @@ namespace Game.Player
 
             playerHealth.OnDamageTaken += PlayHurtAnimation;
             playerAttack.OnAttackPerformed += PlayerAttackAnimation;
-
 
         }
 
@@ -151,6 +175,16 @@ namespace Game.Player
                     Debug.Log($"[AnimChange] {lastAnimName} -> {spineAnimation.AnimationName}");
                     lastAnimName = spineAnimation.AnimationName;
                 }
+            }
+
+            // update airborne peak tracking every physics frame
+            if (isTrackingAirborne)
+            {
+                float currentY = transform.position.y;
+                if (currentY > airbornePeakY) airbornePeakY = currentY;
+
+                float absXDelta = Mathf.Abs(transform.position.x - airborneStartPos.x);
+                if (absXDelta > airborneMaxHorizontalDelta) airborneMaxHorizontalDelta = absXDelta;
             }
         }
 
@@ -198,6 +232,11 @@ namespace Game.Player
                 doubleJumpRemaining = maxDoubleJump; // reset double jump
                 playingJumpStart = false;
                 playingDoubleJump = false;
+
+                if (isTrackingAirborne)
+                {
+                    EndAirborneTracking();
+                }
             }
             // just left ground
             else if (wasOnGround && !isOnGround)
@@ -251,16 +290,16 @@ namespace Game.Player
             }
 
             bool isHoldingJump = Input.GetKey(KeyCode.Space);
-            float currentGravity = fallAcceleration; // base gravity when rising
+            float currentGravity = riseGravity; // base gravity when rising
 
             if (frameVelocity.y > 0)
             {
                 // release early, stronger gravity
-                currentGravity = isHoldingJump ? fallAcceleration : (fallAcceleration * jumpCutMultiplier);
+                currentGravity = isHoldingJump ? riseGravity : (riseGravity * jumpCutMultiplier);
             }
             else if (frameVelocity.y < 0)
             {
-                currentGravity = fallAcceleration * fallingMultiplier;
+                currentGravity = riseGravity * fallingMultiplier;
             }
 
             float currentYSpeed = frameVelocity.y;
@@ -277,6 +316,8 @@ namespace Game.Player
             isJumping = true;
 
             JumpStartAnimation();
+
+            BeginAirborneTrackingIfNeeded();
         }
 
         private void ExecuteDoubleJump()
@@ -286,6 +327,8 @@ namespace Game.Player
             isJumping = true;
 
             DoubleJumpAnimation();
+
+            BeginAirborneTrackingIfNeeded();
         }
 
         private void ApplyMovement()
@@ -513,6 +556,56 @@ namespace Game.Player
                 Gizmos.DrawWireSphere(groundPoint.position, .2f);
             }
         }
+
+
+        private void BeginAirborneTrackingIfNeeded()
+        {
+            if (!enableJumpLogging) return;
+
+            if (!isTrackingAirborne)
+            {
+                isTrackingAirborne = true;
+                airborneStartTime = Time.time;
+                airborneStartPos = transform.position;
+                airbornePeakY = transform.position.y;
+                airborneMaxHorizontalDelta = 0f;
+            }
+        }
+
+        private void EndAirborneTracking()
+        {
+            if (!enableJumpLogging)
+            {
+                isTrackingAirborne = false;
+                return;
+            }
+
+            isTrackingAirborne = false;
+            float airtime = Time.time - airborneStartTime;
+            float peakHeight = airbornePeakY - airborneStartPos.y;
+            float landingXDisplacement = transform.position.x - airborneStartPos.x;
+            float maxHorizontalDelta = airborneMaxHorizontalDelta;
+
+            JumpRecord rec = new JumpRecord
+            {
+                startTime = airborneStartTime,
+                airtime = airtime,
+                peakHeight = peakHeight,
+                horizontalDisplacementLanding = landingXDisplacement,
+                maxHorizontalDelta = maxHorizontalDelta,
+                startPos = airborneStartPos,
+                landingPos = transform.position
+            };
+
+            jumpRecords.Add(rec);
+
+            Debug.Log($"[JumpStats #{jumpRecords.Count}] airtime={airtime:F3}s | peakHeight={peakHeight:F3}u | landingHorizontal={landingXDisplacement:F3}u | maxHorizontalDelta={maxHorizontalDelta:F3}u | startY={airborneStartPos.y:F3} | peakY={airbornePeakY:F3}");
+        }
+
+
+
+
+
 
 
     }

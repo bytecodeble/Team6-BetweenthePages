@@ -86,6 +86,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   spineAnimation: {fileID: -7893490021097444168}
+  enableJumpLogging: 0
 --- !u!114 &5481222083647259442
 MonoBehaviour:
   m_ObjectHideFlags: 0
