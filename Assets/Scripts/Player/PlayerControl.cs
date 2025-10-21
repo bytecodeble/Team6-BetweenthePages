@@ -53,6 +53,13 @@ namespace Game.Player
         private float coyoteTimer;
         private float jumpBufferTimer;
 
+        [Header("Knockback")]
+        private float knockbackHorizontal = 12f;
+        private float knockbackVertical = 8f; 
+        private float knockbackDuration = 0.25f;
+        private float knockbackHorizontalDecay = 20f;
+        private bool isKnockback = false;
+
         #endregion
 
         #region Animation
@@ -158,11 +165,12 @@ namespace Game.Player
 
         private void FixedUpdate()
         {
-            if (!animationLocked)
+            if (!animationLocked && !isKnockback)
             {
                 HandleHorizontalMovement();
                 HandleVerticalMovement();
             }
+            else if (!animationLocked && isKnockback) HandleVerticalMovement();
 
             ApplyMovement();
             UpdateAnimationState();
@@ -271,8 +279,13 @@ namespace Game.Player
             frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.fixedDeltaTime);
 
             // player direction
-            if (frameVelocity.x < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
-            else if (frameVelocity.x > 0f) transform.localScale = Vector3.one;
+            if (!isKnockback)
+            {
+                if (horizontalInput < 0)
+                    transform.localScale = new Vector3(-1f, 1f, 1f);
+                else if (horizontalInput > 0)
+                    transform.localScale = Vector3.one;
+            }
         }
 
         private void HandleVerticalMovement()
@@ -487,6 +500,60 @@ namespace Game.Player
         }
 
 
+
+        public void ApplyKnockback(Vector2 sourcePosition)
+        {
+            isKnockback = true;
+            // only horizontal direction needed
+            float dirX = transform.position.x - sourcePosition.x;
+            float sign = Mathf.Sign(dirX);
+            if (sign == 0) sign = transform.localScale.x >= 0 ? 1f : -1f; //fallback
+
+            Vector2 initialForce = new Vector2(sign * knockbackHorizontal, knockbackVertical);
+
+            StartCoroutine(KnockbackCoroutine(initialForce, knockbackDuration));
+
+        }
+
+        private IEnumerator KnockbackCoroutine(Vector2 initialForce, float duration)
+        {
+            inputLocked = true;
+            LockAnimation(duration);
+
+            float timer = 0f;
+            frameVelocity.x = initialForce.x;
+            frameVelocity.y = Mathf.Max(frameVelocity.y, initialForce.y);
+
+
+            while (timer < duration)
+            {
+                yield return new WaitForFixedUpdate();
+                timer += Time.fixedDeltaTime;
+
+                float targetX = 0f;
+                frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, targetX, knockbackHorizontalDecay * Time.fixedDeltaTime);
+
+                float gravityThisFrame;
+                if (frameVelocity.y > 0)
+                    gravityThisFrame = riseGravity * Time.fixedDeltaTime;
+                else
+                    gravityThisFrame = riseGravity * fallingMultiplier * Time.fixedDeltaTime;
+
+                frameVelocity.y -= gravityThisFrame;
+
+                // clamp vertical fall speed
+                if (frameVelocity.y < -maxFallSpeed) frameVelocity.y = -maxFallSpeed;
+
+
+                // apply to rigidbody so physics & collisions update visually
+                RB.linearVelocity = frameVelocity;
+            }
+            inputLocked = false;
+            isKnockback = false;
+        }
+
+
+
         // invincible frame flashing flicker
         public void StartInvincibleFlicker(float duration, float flickerInterval = 0.1f)
         {
@@ -532,6 +599,10 @@ namespace Game.Player
         public IEnumerator PlayDeathAndWait()
         {
             if (spineAnimation == null) yield break;
+
+            frameVelocity.x = 0f;
+            RB.linearVelocity = new Vector2(0f, RB.linearVelocity.y);
+
             LockAnimation(999f); // keep it locked until respawn
 
             bool finished = false;
@@ -601,11 +672,6 @@ namespace Game.Player
 
             Debug.Log($"[JumpStats #{jumpRecords.Count}] airtime={airtime:F3}s | peakHeight={peakHeight:F3}u | landingHorizontal={landingXDisplacement:F3}u | maxHorizontalDelta={maxHorizontalDelta:F3}u | startY={airborneStartPos.y:F3} | peakY={airbornePeakY:F3}");
         }
-
-
-
-
-
 
 
     }

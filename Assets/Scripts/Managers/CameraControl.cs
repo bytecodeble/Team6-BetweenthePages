@@ -8,7 +8,7 @@ namespace Game.Managers
         // Transform used to track players
         private Transform player;
         private GameObject playerObject;
-        [SerializeField] private BoxCollider2D cameraBounds;
+        [SerializeField] private Collider2D cameraBounds;
 
         // Limit the boundary of the camera's movement range (put a BoxCollider2D in the scene)
         private float halfHeight;
