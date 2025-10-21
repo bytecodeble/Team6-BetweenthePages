@@ -27554,7 +27554,7 @@ MonoBehaviour:
   cam: {fileID: 903172761}
   layerIndex: 1
   totalLayers: 4
-  globalScale: 0.5
+  globalScale: 0.25
 --- !u!1 &1610559775
 GameObject:
   m_ObjectHideFlags: 0

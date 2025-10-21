@@ -30,8 +30,10 @@ namespace Game.Environment
 
         void LateUpdate()
         {
-        
-            float distance = cam.transform.position.x * parallaxEffect * globalScale;
+            // Calculate camera movement relative to initial position
+            float cameraDeltaX = cam.transform.position.x - startPos;
+            //background layer move in opposite
+            float distance = -cameraDeltaX * parallaxEffect * globalScale;
 
             //update new position of backgrounds
             transform.position = new Vector3(startPos + distance, transform.position.y, transform.position.z);
