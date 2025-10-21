@@ -17266,6 +17266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 677389910}
   - component: {fileID: 677389909}
+  - component: {fileID: 677389911}
   m_Layer: 0
   m_Name: flower_02 (1)
   m_TagString: Untagged
@@ -17298,7 +17299,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: c87894a23916ef2479a9e49e543552be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17346,6 +17347,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1868540742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &677389911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677389908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6209d3e36acf0ef41a3ab6ba9c16308d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.FlowerGlowContol
+  glowTex: {fileID: 2800000, guid: c377e50840a4508469080b29b13c4138, type: 3}
+  glowColor: {r: 0, g: 0, b: 0, a: 0}
+  glowSpeed: 0.6
 --- !u!1 &730667601
 GameObject:
   m_ObjectHideFlags: 0
@@ -27745,6 +27761,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1719226123}
   - component: {fileID: 1719226122}
+  - component: {fileID: 1719226124}
   m_Layer: 0
   m_Name: flower_01 (2)
   m_TagString: Untagged
@@ -27777,7 +27794,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: c87894a23916ef2479a9e49e543552be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27800,7 +27817,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a4b73314ae9e8974b888aed6c15857f9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9622642, g: 0.9531862, b: 0.9531862, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -27825,6 +27842,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1868540742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1719226124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719226121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6209d3e36acf0ef41a3ab6ba9c16308d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.FlowerGlowContol
+  glowTex: {fileID: 2800000, guid: a4b73314ae9e8974b888aed6c15857f9, type: 3}
+  glowColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  glowSpeed: 0.7
 --- !u!1 &1774778897
 GameObject:
   m_ObjectHideFlags: 0
