@@ -59,7 +59,7 @@ namespace Game.Enemies
             if (sr == null) yield break;
 
             Color original = sr.color;
-            Color flash = Color.white;
+            Color flash = Color.grey;
 
             for (int i = 0; i < 3; i++)
             {
