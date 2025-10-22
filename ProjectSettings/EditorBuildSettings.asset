@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TutorialRoom.unity
     guid: 824a5bc33bc59cd4fa194d1c8e3cb754
   - enabled: 1
+    path: Assets/Scenes/PlatformRoom.unity
+    guid: 764b9c376e9c64e449db2cb702630d7d
+  - enabled: 1
     path: Assets/Scenes/BossRoom.unity
     guid: 9d10c649f0f9756409c6df3680e866c1
   m_configObjects:
