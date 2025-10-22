@@ -1085,7 +1085,7 @@ MonoBehaviour:
   cam: {fileID: 903172761}
   layerIndex: 0
   totalLayers: 4
-  globalScale: 0.5
+  globalScale: 0.2
 --- !u!1 &307250647
 GameObject:
   m_ObjectHideFlags: 0
@@ -19966,7 +19966,7 @@ MonoBehaviour:
   cam: {fileID: 903172761}
   layerIndex: 3
   totalLayers: 4
-  globalScale: 0.5
+  globalScale: 0.1
 --- !u!1 &773097740
 GameObject:
   m_ObjectHideFlags: 0
@@ -20471,7 +20471,7 @@ Transform:
   m_GameObject: {fileID: 903172761}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.04, z: -10}
+  m_LocalPosition: {x: 0, y: -0.29999995, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20494,8 +20494,8 @@ MonoBehaviour:
   IgnoreTimeScale: 0
   WorldUpOverride: {fileID: 0}
   ChannelMask: -1
-  UpdateMethod: 2
-  BlendUpdateMethod: 1
+  UpdateMethod: 0
+  BlendUpdateMethod: 0
   LensModeOverride:
     Enabled: 0
     DefaultMode: 2
@@ -21205,7 +21205,7 @@ MonoBehaviour:
   cam: {fileID: 903172761}
   layerIndex: 2
   totalLayers: 4
-  globalScale: 0.5
+  globalScale: 0.15
 --- !u!1 &1365401806
 GameObject:
   m_ObjectHideFlags: 0
@@ -30307,7 +30307,7 @@ MonoBehaviour:
   cam: {fileID: 903172761}
   layerIndex: 1
   totalLayers: 4
-  globalScale: 0.15
+  globalScale: 0.1
 --- !u!1 &1610559775
 GameObject:
   m_ObjectHideFlags: 0
@@ -31541,13 +31541,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Damping.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Damping.y
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Damping.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: TargetOffset.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Composition.DeadZone.Size.y
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788419223572475233, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Composition.ScreenPosition.y
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420634539328975019, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
+      propertyPath: Damping
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6136695796274930905, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6136695796274930905, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.04
+      value: -0.29999995
       objectReference: {fileID: 0}
     - target: {fileID: 6136695796274930905, guid: fbb0edb5262099b449df8b8594518de6, type: 3}
       propertyPath: m_LocalPosition.z
