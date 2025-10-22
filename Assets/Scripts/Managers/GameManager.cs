@@ -2,6 +2,7 @@ using Game.Player;
 using Game.UI;
 using System.Collections;
 using UnityEngine;
+using Unity.Cinemachine;
 
 namespace Game.Managers
 {
@@ -12,6 +13,11 @@ namespace Game.Managers
 
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private Transform respawnPoint;
+
+        // setting cinecamera
+        [Header("Camera Settings")]
+        [SerializeField] private CinemachineCamera cineCamera;
+        [SerializeField] private PolygonCollider2D cameraBounds;
 
         private GameObject currentPlayer;
 
@@ -69,8 +75,21 @@ namespace Game.Managers
                     newPH.isInvincible = true;
                 }
             }
-        }
 
+            
+            if (cineCamera != null)
+            {
+                ////cinecamera follow player instance automatically everytime
+                cineCamera.Target.TrackingTarget = currentPlayer.transform;
+
+                //If Confiner exists and has boundaries, dynamic binding
+                var confiner = cineCamera.GetComponent<CinemachineConfiner2D>();
+                if (confiner != null && cameraBounds != null)
+                {
+                    confiner.BoundingShape2D = cameraBounds;
+                }
+            }
+        }
 
         public IEnumerator DeathSequence(GameObject deadPlayer)
         {
