@@ -79,7 +79,7 @@ namespace Game.Player
         private const string ANIM_JUMPFALL = "jump_fall";
         private const string ANIM_JUMPLAND = "jump_land";
         private const string ANIM_DOUBLEJUMPRISE = "double_jump";
-        //private const string ANIM_ATTACK = "attack";
+        private const string ANIM_ATTACK = "attack";
         private const string ANIM_HURT = "hurt";
         private const string ANIM_DEATH = "death";
 
@@ -478,13 +478,13 @@ namespace Game.Player
         public void PlayerAttackAnimation()
         {
             if (spineAnimation == null) return;
-            //LockAnimation(0.4f);
-            //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
-            //entry.Complete += (e) =>
-            //{
-            //    UnlockAnimation();
-            //    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-            //};
+            LockAnimation(0.4f);
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
+            entry.Complete += (e) =>
+            {
+                UnlockAnimation();
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+            };
         }
 
         public void PlayHurtAnimation()
