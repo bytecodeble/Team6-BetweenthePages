@@ -37,17 +37,15 @@ namespace Game.Player
         {
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                TakeDamage(1);
+                TakeDamage(1, collision.transform.position);
             }
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, Vector2? sourcePosition = null)
         {
             //if player in invincible status,jump out of the TakeDamage()
-            if (isInvincible)
-            {
-                return;
-            }
+            if (isInvincible) return;
+
             //if player is not vincible,go on
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
@@ -62,8 +60,21 @@ namespace Game.Player
             else
             {
                 OnDamageTaken?.Invoke();
+
+                // trigger knockback if source provided
+                if (sourcePosition.HasValue)
+                {
+                    PlayerControl pc = GetComponent<PlayerControl>();
+                    if (pc != null)
+                    {
+                        pc.ApplyKnockback(sourcePosition.Value);
+                    }
+                }
+
                 StartCoroutine(DamageEffect());
             }
+
+
         }
 
         private IEnumerator DamageEffect()

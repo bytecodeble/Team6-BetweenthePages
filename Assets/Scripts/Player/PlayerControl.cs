@@ -22,10 +22,10 @@ namespace Game.Player
 
         [Header("Jump")]
         private float jumpPower = 20.25f;
-        private float maxFallSpeed = 35f;
-        private float fallAcceleration = 25f;
+        private float maxFallSpeed = 50f;
+        private float riseGravity = 50.625f;
         private float jumpCutMultiplier = 2.5f; // gravity multiplier added when jump is released early
-        private float fallingMultiplier = 2f; // make falling faster
+        private float fallingMultiplier = 1.6f; // make falling faster
         private float coyoteTime = 0.2f;
         private float jumpBufferTime = 0.15f;
 
@@ -53,6 +53,13 @@ namespace Game.Player
         private float coyoteTimer;
         private float jumpBufferTimer;
 
+        [Header("Knockback")]
+        private float knockbackHorizontal = 12f;
+        private float knockbackVertical = 8f; 
+        private float knockbackDuration = 0.25f;
+        private float knockbackHorizontalDecay = 20f;
+        private bool isKnockback = false;
+
         #endregion
 
         #region Animation
@@ -72,7 +79,7 @@ namespace Game.Player
         private const string ANIM_JUMPFALL = "jump_fall";
         private const string ANIM_JUMPLAND = "jump_land";
         private const string ANIM_DOUBLEJUMPRISE = "double_jump";
-        private const string ANIM_ATTACK = "attack";
+        //private const string ANIM_ATTACK = "attack";
         private const string ANIM_HURT = "hurt";
         private const string ANIM_DEATH = "death";
 
@@ -88,6 +95,31 @@ namespace Game.Player
         private bool playingDoubleJump = false;
         private bool playingJumpLand = false;
 
+
+        #endregion
+
+        #region Jump Debugging
+
+        [Header("Debug Jump Stats")]
+        [SerializeField] private bool enableJumpLogging = true; // toggle from Inspector
+        private bool isTrackingAirborne = false;
+        private float airborneStartTime;
+        private Vector2 airborneStartPos;
+        private float airbornePeakY;
+        private float airborneMaxHorizontalDelta;
+
+        // collected records for further analysis
+        private struct JumpRecord
+        {
+            public float startTime;
+            public float airtime;
+            public float peakHeight; // units above start Y
+            public float horizontalDisplacementLanding; // landingX - startX
+            public float maxHorizontalDelta; // maximum abs(x - startX) reached during airborne
+            public Vector2 startPos;
+            public Vector2 landingPos;
+        }
+        private List<JumpRecord> jumpRecords = new List<JumpRecord>();
 
         #endregion
 
@@ -120,7 +152,6 @@ namespace Game.Player
             playerHealth.OnDamageTaken += PlayHurtAnimation;
             playerAttack.OnAttackPerformed += PlayerAttackAnimation;
 
-
         }
 
         void Update()
@@ -134,11 +165,12 @@ namespace Game.Player
 
         private void FixedUpdate()
         {
-            if (!animationLocked)
+            if (!animationLocked && !isKnockback)
             {
                 HandleHorizontalMovement();
                 HandleVerticalMovement();
             }
+            else if (!animationLocked && isKnockback) HandleVerticalMovement();
 
             ApplyMovement();
             UpdateAnimationState();
@@ -151,6 +183,16 @@ namespace Game.Player
                     Debug.Log($"[AnimChange] {lastAnimName} -> {spineAnimation.AnimationName}");
                     lastAnimName = spineAnimation.AnimationName;
                 }
+            }
+
+            // update airborne peak tracking every physics frame
+            if (isTrackingAirborne)
+            {
+                float currentY = transform.position.y;
+                if (currentY > airbornePeakY) airbornePeakY = currentY;
+
+                float absXDelta = Mathf.Abs(transform.position.x - airborneStartPos.x);
+                if (absXDelta > airborneMaxHorizontalDelta) airborneMaxHorizontalDelta = absXDelta;
             }
         }
 
@@ -198,6 +240,11 @@ namespace Game.Player
                 doubleJumpRemaining = maxDoubleJump; // reset double jump
                 playingJumpStart = false;
                 playingDoubleJump = false;
+
+                if (isTrackingAirborne)
+                {
+                    EndAirborneTracking();
+                }
             }
             // just left ground
             else if (wasOnGround && !isOnGround)
@@ -232,8 +279,13 @@ namespace Game.Player
             frameVelocity.x = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.fixedDeltaTime);
 
             // player direction
-            if (frameVelocity.x < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
-            else if (frameVelocity.x > 0f) transform.localScale = Vector3.one;
+            if (!isKnockback)
+            {
+                if (horizontalInput < 0)
+                    transform.localScale = new Vector3(-1f, 1f, 1f);
+                else if (horizontalInput > 0)
+                    transform.localScale = Vector3.one;
+            }
         }
 
         private void HandleVerticalMovement()
@@ -251,16 +303,16 @@ namespace Game.Player
             }
 
             bool isHoldingJump = Input.GetKey(KeyCode.Space);
-            float currentGravity = fallAcceleration; // base gravity when rising
+            float currentGravity = riseGravity; // base gravity when rising
 
             if (frameVelocity.y > 0)
             {
                 // release early, stronger gravity
-                currentGravity = isHoldingJump ? fallAcceleration : (fallAcceleration * jumpCutMultiplier);
+                currentGravity = isHoldingJump ? riseGravity : (riseGravity * jumpCutMultiplier);
             }
             else if (frameVelocity.y < 0)
             {
-                currentGravity = fallAcceleration * fallingMultiplier;
+                currentGravity = riseGravity * fallingMultiplier;
             }
 
             float currentYSpeed = frameVelocity.y;
@@ -277,6 +329,8 @@ namespace Game.Player
             isJumping = true;
 
             JumpStartAnimation();
+
+            BeginAirborneTrackingIfNeeded();
         }
 
         private void ExecuteDoubleJump()
@@ -286,6 +340,8 @@ namespace Game.Player
             isJumping = true;
 
             DoubleJumpAnimation();
+
+            BeginAirborneTrackingIfNeeded();
         }
 
         private void ApplyMovement()
@@ -422,13 +478,13 @@ namespace Game.Player
         public void PlayerAttackAnimation()
         {
             if (spineAnimation == null) return;
-            LockAnimation(0.4f);
-            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
-            entry.Complete += (e) =>
-            {
-                UnlockAnimation();
-                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-            };
+            //LockAnimation(0.4f);
+            //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
+            //entry.Complete += (e) =>
+            //{
+            //    UnlockAnimation();
+            //    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+            //};
         }
 
         public void PlayHurtAnimation()
@@ -442,6 +498,60 @@ namespace Game.Player
                 spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
             };
         }
+
+
+
+        public void ApplyKnockback(Vector2 sourcePosition)
+        {
+            isKnockback = true;
+            // only horizontal direction needed
+            float dirX = transform.position.x - sourcePosition.x;
+            float sign = Mathf.Sign(dirX);
+            if (sign == 0) sign = transform.localScale.x >= 0 ? 1f : -1f; //fallback
+
+            Vector2 initialForce = new Vector2(sign * knockbackHorizontal, knockbackVertical);
+
+            StartCoroutine(KnockbackCoroutine(initialForce, knockbackDuration));
+
+        }
+
+        private IEnumerator KnockbackCoroutine(Vector2 initialForce, float duration)
+        {
+            inputLocked = true;
+            LockAnimation(duration);
+
+            float timer = 0f;
+            frameVelocity.x = initialForce.x;
+            frameVelocity.y = Mathf.Max(frameVelocity.y, initialForce.y);
+
+
+            while (timer < duration)
+            {
+                yield return new WaitForFixedUpdate();
+                timer += Time.fixedDeltaTime;
+
+                float targetX = 0f;
+                frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, targetX, knockbackHorizontalDecay * Time.fixedDeltaTime);
+
+                float gravityThisFrame;
+                if (frameVelocity.y > 0)
+                    gravityThisFrame = riseGravity * Time.fixedDeltaTime;
+                else
+                    gravityThisFrame = riseGravity * fallingMultiplier * Time.fixedDeltaTime;
+
+                frameVelocity.y -= gravityThisFrame;
+
+                // clamp vertical fall speed
+                if (frameVelocity.y < -maxFallSpeed) frameVelocity.y = -maxFallSpeed;
+
+
+                // apply to rigidbody so physics & collisions update visually
+                RB.linearVelocity = frameVelocity;
+            }
+            inputLocked = false;
+            isKnockback = false;
+        }
+
 
 
         // invincible frame flashing flicker
@@ -489,6 +599,10 @@ namespace Game.Player
         public IEnumerator PlayDeathAndWait()
         {
             if (spineAnimation == null) yield break;
+
+            frameVelocity.x = 0f;
+            RB.linearVelocity = new Vector2(0f, RB.linearVelocity.y);
+
             LockAnimation(999f); // keep it locked until respawn
 
             bool finished = false;
@@ -512,6 +626,51 @@ namespace Game.Player
                 Gizmos.color = isOnGround ? Color.green : Color.red;
                 Gizmos.DrawWireSphere(groundPoint.position, .2f);
             }
+        }
+
+
+        private void BeginAirborneTrackingIfNeeded()
+        {
+            if (!enableJumpLogging) return;
+
+            if (!isTrackingAirborne)
+            {
+                isTrackingAirborne = true;
+                airborneStartTime = Time.time;
+                airborneStartPos = transform.position;
+                airbornePeakY = transform.position.y;
+                airborneMaxHorizontalDelta = 0f;
+            }
+        }
+
+        private void EndAirborneTracking()
+        {
+            if (!enableJumpLogging)
+            {
+                isTrackingAirborne = false;
+                return;
+            }
+
+            isTrackingAirborne = false;
+            float airtime = Time.time - airborneStartTime;
+            float peakHeight = airbornePeakY - airborneStartPos.y;
+            float landingXDisplacement = transform.position.x - airborneStartPos.x;
+            float maxHorizontalDelta = airborneMaxHorizontalDelta;
+
+            JumpRecord rec = new JumpRecord
+            {
+                startTime = airborneStartTime,
+                airtime = airtime,
+                peakHeight = peakHeight,
+                horizontalDisplacementLanding = landingXDisplacement,
+                maxHorizontalDelta = maxHorizontalDelta,
+                startPos = airborneStartPos,
+                landingPos = transform.position
+            };
+
+            jumpRecords.Add(rec);
+
+            Debug.Log($"[JumpStats #{jumpRecords.Count}] airtime={airtime:F3}s | peakHeight={peakHeight:F3}u | landingHorizontal={landingXDisplacement:F3}u | maxHorizontalDelta={maxHorizontalDelta:F3}u | startY={airborneStartPos.y:F3} | peakY={airbornePeakY:F3}");
         }
 
 

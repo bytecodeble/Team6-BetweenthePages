@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4968216253904266263}
   - component: {fileID: 5126982927428569625}
   - component: {fileID: 3408894896178410426}
-  m_Layer: 0
+  - component: {fileID: -7899489858603330282}
+  m_Layer: 9
   m_Name: AttackHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,3 +221,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PolygonColliderVisualizer
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 0.05
+--- !u!114 &-7899489858603330282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1599291260836444165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f364c19c73e98944be1664edd18cf71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.AttackHitbox
+  damage: 1
+  lifetime: 0.4
