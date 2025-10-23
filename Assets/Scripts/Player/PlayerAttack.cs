@@ -7,55 +7,123 @@ namespace Game.Player
     public class PlayerAttack : MonoBehaviour
     {
         [SerializeField] private GameObject attackHitbox;
-        [SerializeField] private float attackDuration = 0.4f;
+        private float hitboxWindow = 0.10f;
+        private float hardstun = 0.15f;
+        private float attackLockDuration = 0.41f;
+        private float recovery = 0.16f;
+        private float inputBufferWindow = 0.12f;
         private Vector2 hitboxOffset = new Vector2(1f, 0.5f);
+
 
         private GameObject activeHitbox;
         private Transform playerTransform;
-
 
         public delegate void AttackEvent();
         public event AttackEvent OnAttackPerformed;
 
         private bool isAttacking = false;
+        private bool queuedAttack = false;
+        private float attackStartTime = 0f;
 
 
         void Awake()
         {
             playerTransform = transform;
+
+            // clamp sensible values
+            hitboxWindow = Mathf.Max(0f, hitboxWindow);
+            hardstun = Mathf.Max(0f, hardstun);
+            recovery = Mathf.Max(0f, recovery);
+
+            attackLockDuration = hitboxWindow + hardstun + recovery;
+            inputBufferWindow = Mathf.Clamp(inputBufferWindow, 0f, attackLockDuration);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
+            if (Input.GetKeyDown(KeyCode.J))
             {
-                StartCoroutine(PerformAttack());
+                if (!isAttacking)
+                {
+                    StartCoroutine(PerformAttack());
+                }
+                else
+                {
+                    // if already attacking, allow buffer or queue only within the inputBuffer near the end
+                    float t = Time.time - attackStartTime;
+                    float timeUntilLockEnds = attackLockDuration - t;
+                    if (timeUntilLockEnds <= inputBufferWindow && timeUntilLockEnds > 0f)
+                    {
+                        queuedAttack = true;
+                    }
+                }
             }
         }
 
         private IEnumerator PerformAttack()
         {
             isAttacking = true;
-            OnAttackPerformed?.Invoke();
 
-            activeHitbox = Instantiate(attackHitbox, playerTransform);
-
-            float elapsed = 0f;
-            while (elapsed < attackDuration)
+            while (true)
             {
+                queuedAttack = false;
+                attackStartTime = Time.time;
+                OnAttackPerformed?.Invoke();
+
+                //spawn hitbox
+                if (attackHitbox != null)
+                {
+                    activeHitbox = Instantiate(attackHitbox, playerTransform);
+                }
+
+                //active hitbox window
+                float elapsed = 0f;
+                while (elapsed < hitboxWindow)
+                {
+                    if (activeHitbox != null)
+                        activeHitbox.transform.localPosition = hitboxOffset;
+
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+
+                //destroy hitbox after damage window
                 if (activeHitbox != null)
-                    activeHitbox.transform.localPosition = hitboxOffset;
+                {
+                    Destroy(activeHitbox);
+                    activeHitbox = null;
+                }
 
+                float hardElapsed = 0f;
+                while (hardElapsed < hardstun)
+                {
+                    hardElapsed += Time.deltaTime;
+                    yield return null;
+                }
 
-                elapsed += Time.deltaTime;
-                yield return null;
+                float recoveryElapsed = 0f;
+                float remianingRecovery = recovery;
+                while (recoveryElapsed < remianingRecovery)
+                {
+                    if (queuedAttack) break;
+                    
+                    recoveryElapsed += Time.deltaTime;
+                    yield return null;
+                }
+
+                if (queuedAttack)
+                {
+                    yield return null;
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+
             }
-
-            if (activeHitbox != null)
-                Destroy(activeHitbox);
-
             isAttacking = false;
-
+            queuedAttack = false;
         }
     }
 

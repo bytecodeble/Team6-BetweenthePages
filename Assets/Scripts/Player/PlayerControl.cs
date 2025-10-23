@@ -165,12 +165,15 @@ namespace Game.Player
 
         private void FixedUpdate()
         {
+            if (!isKnockback)
+            {
+                HandleVerticalMovement();
+            }
+
             if (!animationLocked && !isKnockback)
             {
                 HandleHorizontalMovement();
-                HandleVerticalMovement();
             }
-            else if (!animationLocked && isKnockback) HandleVerticalMovement();
 
             ApplyMovement();
             UpdateAnimationState();
@@ -478,7 +481,9 @@ namespace Game.Player
         public void PlayerAttackAnimation()
         {
             if (spineAnimation == null) return;
-            LockAnimation(0.4f);
+
+            LockAnimation(0.25f);
+
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
             entry.Complete += (e) =>
             {
