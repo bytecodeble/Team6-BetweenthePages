@@ -59,10 +59,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Brightness: 1.5
-    - _Density: 8
+    - _Density: 10
     - _Speed: 0.2
-    - _Strength: 10
+    - _Strength: 15
     m_Colors:
-    - _Color: {r: 5.185196, g: 14.752692, b: 366.4212, a: 1}
+    - _Color: {r: 2.7134244, g: 7.7201166, b: 191.74902, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
