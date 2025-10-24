@@ -31,12 +31,12 @@ namespace Game.Player
 
         [Header("Double Jump")]
         private float doubleJumpPower = 18.25f;
-        private int maxDoubleJump = 0;
+        private int maxDoubleJump = 1;
 
         private float accelerationRate;
         private bool isJumping;
         private int doubleJumpRemaining;
-        [HideInInspector] public bool hasDoubleJump = false; // TODO: change this with actual ability upgrade function
+        [HideInInspector] public bool hasDoubleJump = true; // TODO: change this with actual ability upgrade function
         #endregion
 
         #region Stats
