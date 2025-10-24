@@ -51,9 +51,6 @@ ponytail_L
 bounds:745,174,139,169
 ponytail_R
 bounds:753,12,114,148
-sword_back
-bounds:286,169,174,457
-rotate:90
 sword_hand
 bounds:286,169,174,457
 rotate:90
