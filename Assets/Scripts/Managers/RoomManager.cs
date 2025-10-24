@@ -141,7 +141,9 @@ namespace Game.Managers
                     var poly = boundsTransform.GetComponent<PolygonCollider2D>();
                     if (poly != null)
                     {
-                        ApplyCameraConfiner(poly);
+                        //ApplyCameraConfiner(poly);
+                        if (CameraManager.Instance != null)
+                            CameraManager.Instance.ApplyCameraConfiner(poly);
                     }
                     else
                     {
@@ -157,11 +159,17 @@ namespace Game.Managers
             {
                 // fallbakc: auto find the first polygon collider 2d in scene
                 var autoPoly = FindFirstPolygonColliderInScene(targetScene);
-                if (autoPoly != null) ApplyCameraConfiner(autoPoly);
+                //if (autoPoly != null) ApplyCameraConfiner(autoPoly);
+                if (autoPoly != null && CameraManager.Instance != null) CameraManager.Instance.ApplyCameraConfiner(autoPoly);
             }
 
             // wait a bit for camera and movement to settle
             yield return new WaitForSecondsRealtime(settleAfterMove);
+
+
+            //if (CameraManager.Instance != null)
+            //let camera follow current player
+            CameraManager.Instance.FollowPlayer(playerGO);
 
             // unload previous scene
             if (unloadOldScene && fromScene.isLoaded)
@@ -240,7 +248,7 @@ namespace Game.Managers
             }
             return null;
         }
-
+/*
         // apply new bounds to cinemachine confiner2d
         private void ApplyCameraConfiner(PolygonCollider2D boundsPoly)
         {
@@ -256,6 +264,6 @@ namespace Game.Managers
             {
                 Debug.LogWarning("[RoomManager] CinemachineConfiner2D not found!");
             }
-        }
+        }*/
     }
 }

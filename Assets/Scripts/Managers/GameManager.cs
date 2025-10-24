@@ -14,10 +14,6 @@ namespace Game.Managers
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private Transform respawnPoint;
 
-        // setting cinecamera
-        [Header("Camera Settings")]
-        [SerializeField] private CinemachineCamera cineCamera;
-        [SerializeField] private PolygonCollider2D cameraBounds;
 
         private GameObject currentPlayer;
 
@@ -76,18 +72,10 @@ namespace Game.Managers
                 }
             }
 
-            
-            if (cineCamera != null)
+            //setting cinecamera
+            if (CameraManager.Instance != null)
             {
-                ////cinecamera follow player instance automatically everytime
-                cineCamera.Target.TrackingTarget = currentPlayer.transform;
-
-                //If Confiner exists and has boundaries, dynamic binding
-                var confiner = cineCamera.GetComponent<CinemachineConfiner2D>();
-                if (confiner != null && cameraBounds != null)
-                {
-                    confiner.BoundingShape2D = cameraBounds;
-                }
+                CameraManager.Instance.FollowPlayer(currentPlayer);
             }
         }
 
