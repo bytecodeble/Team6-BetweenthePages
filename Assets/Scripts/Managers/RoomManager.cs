@@ -132,44 +132,16 @@ namespace Game.Managers
                 SceneManager.MoveGameObjectToScene(playerGO, targetScene);
             }
 
-            //handle camera confiner setup
-            if (!string.IsNullOrEmpty(cameraBoundsObjectName))
-            {
-                var boundsTransform = FindTransformInScene(targetScene, cameraBoundsObjectName);
-                if (boundsTransform != null)
-                {
-                    var poly = boundsTransform.GetComponent<PolygonCollider2D>();
-                    if (poly != null)
-                    {
-                        //ApplyCameraConfiner(poly);
-                        if (CameraManager.Instance != null)
-                            CameraManager.Instance.ApplyCameraConfiner(poly);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[RoomManager] PolygonCollider2D of '{cameraBoundsObjectName}' not found in '{targetSceneName}'");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"[RoomManager] camera bounds '{cameraBoundsObjectName}' not found in '{targetSceneName}'");
-                }
-            }
-            else
-            {
-                // fallbakc: auto find the first polygon collider 2d in scene
-                var autoPoly = FindFirstPolygonColliderInScene(targetScene);
-                //if (autoPoly != null) ApplyCameraConfiner(autoPoly);
-                if (autoPoly != null && CameraManager.Instance != null) CameraManager.Instance.ApplyCameraConfiner(autoPoly);
-            }
+
+            //call SetupCameraConfiner
+            yield return StartCoroutine(BindCameraConfinerWhenReady(targetScene, cameraBoundsObjectName));
 
             // wait a bit for camera and movement to settle
             yield return new WaitForSecondsRealtime(settleAfterMove);
 
-
-            //if (CameraManager.Instance != null)
             //let camera follow current player
-            CameraManager.Instance.FollowPlayer(playerGO);
+            if (CameraManager.Instance != null)
+                CameraManager.Instance.FollowPlayer(playerGO);
 
             // unload previous scene
             if (unloadOldScene && fromScene.isLoaded)
@@ -247,6 +219,52 @@ namespace Game.Managers
                 if (poly != null) return poly;
             }
             return null;
+        }
+
+        //handle camera confiner setup
+        private void SetupCameraConfiner(Scene targetScene, string cameraBoundsObjectName = null)
+        {
+            if (CameraManager.Instance == null) return;
+
+            PolygonCollider2D poly = null;
+
+            if (!string.IsNullOrEmpty(cameraBoundsObjectName))
+            {
+                Transform boundsTransform = FindTransformInScene(targetScene, cameraBoundsObjectName);
+                if (boundsTransform != null)
+                    poly = boundsTransform.GetComponent<PolygonCollider2D>();
+            }
+
+            // find object name "CameraBound" in current scene
+            if (poly == null)
+            {
+                Transform boundsTransform = FindTransformInScene(targetScene, "CameraBound");
+                if (boundsTransform != null)
+                    poly = boundsTransform.GetComponent<PolygonCollider2D>();
+            }
+
+            // find out first PolygonCollider2D in current scene
+            if (poly == null)
+                poly = FindFirstPolygonColliderInScene(targetScene);
+
+            if (poly != null)
+            {
+
+                Debug.Log($"[RoomManager] CameraConfiner set to: {poly.gameObject.name}");
+                CameraManager.Instance.ApplyCameraConfiner(poly);
+            }
+
+            else
+                Debug.LogWarning($"[RoomManager] No PolygonCollider2D found in scene '{targetScene.name}' for camera confiner");
+        }
+
+        // Before calling SetupCameraConfiner,make sure the scene is loaded
+        public IEnumerator BindCameraConfinerWhenReady(Scene targetScene, string cameraBoundsObjectName = null)
+        {
+
+            yield return new WaitUntil(() => targetScene.isLoaded && targetScene.rootCount > 0);
+
+            SetupCameraConfiner(targetScene, cameraBoundsObjectName);
         }
     }
 }
