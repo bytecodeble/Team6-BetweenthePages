@@ -20,12 +20,16 @@ namespace Game.Managers
                 Destroy(gameObject);
             }
         }
+
         //Cinecamera follow player in new scene
         public void FollowPlayer(GameObject player)
         {
             if (CineCamera != null && player != null)
             {
                 CineCamera.Target.TrackingTarget = player.transform;
+
+                //optimize exposure camera trajectory
+                CineCamera.ForceCameraPosition(player.transform.position, Quaternion.identity);
             }
         }
 
@@ -41,5 +45,7 @@ namespace Game.Managers
 #endif
             }
         }
+
+       
     }
 }

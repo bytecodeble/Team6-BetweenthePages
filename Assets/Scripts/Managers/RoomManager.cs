@@ -172,7 +172,8 @@ namespace Game.Managers
             yield return new WaitForSecondsRealtime(settleAfterMove);
 
             //let camera follow current player
-            CameraManager.Instance.FollowPlayer(playerGO);
+            if (CameraManager.Instance != null)
+                CameraManager.Instance.FollowPlayer(playerGO);
 
             // unload previous scene
             if (unloadOldScene && fromScene.isLoaded)

@@ -143,13 +143,15 @@ namespace Game.Managers
 
                 //Camera Confiner
                 if (RoomManager.Instance != null)
-                    StartCoroutine(RoomManager.Instance.BindCameraConfinerWhenReady(targetScene));
-
+                    //StartCoroutine(RoomManager.Instance.BindCameraConfinerWhenReady(targetScene));
+                    yield return StartCoroutine(RoomManager.Instance.BindCameraConfinerWhenReady(targetScene));
+                
                 // Camera follow player
                 if (CameraManager.Instance != null)
                     CameraManager.Instance.FollowPlayer(currentPlayer);
+               
             }
-            //
+            
             // set invincibility if requested
             if (Invinci)
             {
