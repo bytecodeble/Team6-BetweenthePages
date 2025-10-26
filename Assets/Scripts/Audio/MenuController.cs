@@ -1,15 +1,21 @@
+using Game.Managers;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    
-    public string gameSceneName = "TutorialRoom"; 
+
 
     
     public void OnPlayPressed()
     {
-        SceneManager.LoadScene(gameSceneName);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.StartNewGame();
+        }
+        else
+        {
+            Debug.LogError("[MenuController] GameManager instance not found!");
+        }
     }
 
     

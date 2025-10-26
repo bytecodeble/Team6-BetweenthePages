@@ -11,7 +11,7 @@ namespace Game.Managers
     {
         public static RoomManager Instance { get; private set; }
 
-        [SerializeField] private float fadeDuration = 0.6f;
+        [SerializeField] private float fadeDuration = 5f;
         [SerializeField] private float settleAfterMove = 0.05f;
         private bool isTransitioning = false;
 

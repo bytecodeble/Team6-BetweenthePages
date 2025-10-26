@@ -41,9 +41,13 @@ namespace Game.Managers
 
         void Start()
         {
-            StartCoroutine(RespawnPlayerCoroutine(false));
+            SceneManager.LoadScene("MenuScene");
         }
 
+        public void StartNewGame()
+        {
+            StartCoroutine(RespawnPlayerCoroutine(false));
+        }
 
         //get position values from SaveManager
         public void SetSavePoint(Vector3 position, string sceneName, string spawnObjectName)
