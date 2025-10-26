@@ -1,5 +1,6 @@
 using Game.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game.Managers
 {
@@ -37,8 +38,13 @@ namespace Game.Managers
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
+                // Record player's world position, current scene name, and this save object's name
+                Vector3 pos = player.transform.position;
+                string sceneName = SceneManager.GetActiveScene().name;
+                string spawnObjectName = this.gameObject.name;
+
                 //Record the player's save coordinates,and send values to GameManager
-                GameManager.Instance.SetSavePoint(player.transform.position);
+                GameManager.Instance.SetSavePoint(pos, sceneName, spawnObjectName);
 
                 //Recover health when save is activated
                 PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
@@ -47,7 +53,7 @@ namespace Game.Managers
                     playerHealth.RestoreFullHealth();
                 }
 
-                Debug.Log("Player saved at: " + player.transform.position + "Health restored");
+                Debug.Log($"Player saved at: {pos} in scene '{sceneName}' (object '{spawnObjectName}'). Health restored.");
             }
         }
 
@@ -57,7 +63,6 @@ namespace Game.Managers
             if (collision.CompareTag("Player"))
             {
                 playerInRange = true;
-                Debug.Log("Player entered save range");
 
                 if (saveHintUI != null)
                 {
@@ -72,7 +77,6 @@ namespace Game.Managers
             if (collision.CompareTag("Player"))
             {
                 playerInRange = false;
-                Debug.Log("Player entered save range");
 
                 if (saveHintUI != null)
                 {

@@ -31,12 +31,12 @@ namespace Game.Player
 
         [Header("Double Jump")]
         private float doubleJumpPower = 18.25f;
-        private int maxDoubleJump = 0;
+        private int maxDoubleJump = 1;
 
         private float accelerationRate;
         private bool isJumping;
         private int doubleJumpRemaining;
-        [HideInInspector] public bool hasDoubleJump = false; // TODO: change this with actual ability upgrade function
+        [HideInInspector] public bool hasDoubleJump = true; // TODO: change this with actual ability upgrade function
         #endregion
 
         #region Stats
@@ -79,7 +79,7 @@ namespace Game.Player
         private const string ANIM_JUMPFALL = "jump_fall";
         private const string ANIM_JUMPLAND = "jump_land";
         private const string ANIM_DOUBLEJUMPRISE = "double_jump";
-        //private const string ANIM_ATTACK = "attack";
+        private const string ANIM_ATTACK = "attack";
         private const string ANIM_HURT = "hurt";
         private const string ANIM_DEATH = "death";
 
@@ -165,12 +165,15 @@ namespace Game.Player
 
         private void FixedUpdate()
         {
+            if (!isKnockback)
+            {
+                HandleVerticalMovement();
+            }
+
             if (!animationLocked && !isKnockback)
             {
                 HandleHorizontalMovement();
-                HandleVerticalMovement();
             }
-            else if (!animationLocked && isKnockback) HandleVerticalMovement();
 
             ApplyMovement();
             UpdateAnimationState();
@@ -478,13 +481,15 @@ namespace Game.Player
         public void PlayerAttackAnimation()
         {
             if (spineAnimation == null) return;
-            //LockAnimation(0.4f);
-            //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
-            //entry.Complete += (e) =>
-            //{
-            //    UnlockAnimation();
-            //    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-            //};
+
+            LockAnimation(0.25f);
+
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
+            entry.Complete += (e) =>
+            {
+                UnlockAnimation();
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+            };
         }
 
         public void PlayHurtAnimation()

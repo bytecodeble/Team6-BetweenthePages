@@ -3,6 +3,8 @@ using Game.UI;
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
 
 namespace Game.Managers
 {
@@ -12,16 +14,15 @@ namespace Game.Managers
         public static GameManager Instance;
 
         [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private Transform respawnPoint;
+        private string defaultSceneName = "TutorialRoom";
+        private string defaultRespawnName = "Respawn Point";
 
-        // setting cinecamera
-        [Header("Camera Settings")]
-        [SerializeField] private CinemachineCamera cineCamera;
-        [SerializeField] private PolygonCollider2D cameraBounds;
 
         private GameObject currentPlayer;
 
         private Vector3? savedPosition = null;
+        private string savedSceneName = null;
+        private string savedSpawnName = null;
 
 
 
@@ -40,55 +41,126 @@ namespace Game.Managers
 
         void Start()
         {
-            RespawnPlayer(Invinci: false);
+            SceneManager.LoadScene("MenuScene");
         }
 
-        void Update()
+        public void StartNewGame()
         {
-
+            StartCoroutine(RespawnPlayerCoroutine(false));
         }
-
 
         //get position values from SaveManager
-        public void SetSavePoint(Vector3 position)
+        public void SetSavePoint(Vector3 position, string sceneName, string spawnObjectName)
         {
             savedPosition = position;
+            savedSceneName = sceneName;
+            savedSpawnName = spawnObjectName;
+
+            Debug.Log($"[GameManager] Save point stored: {position} @ '{sceneName}' ('{spawnObjectName}')");
+
         }
 
         public void RespawnPlayer(bool Invinci = false)
         {
-            //Make sure the player instance on the field has been destroyed.
+            StartCoroutine(RespawnPlayerCoroutine(Invinci));
+        }
+
+        private IEnumerator RespawnPlayerCoroutine(bool Invinci)
+        {
+            // determine target scene
+            string targetSceneName = !string.IsNullOrEmpty(savedSceneName) ? savedSceneName : defaultSceneName;
+            Vector3 spawnPos = Vector3.zero;
+            bool useSavedPosition = savedPosition.HasValue && savedSceneName == targetSceneName;
+
+            // record current scene
+            Scene fromScene = SceneManager.GetActiveScene();
+
+            // destroy existing player instance if any
             if (currentPlayer != null)
             {
                 Destroy(currentPlayer);
+                currentPlayer = null;
+                yield return null; // wait a frame to make sure destoryed
             }
-            Vector3 spawnPos = savedPosition ?? respawnPoint.position;
 
-            // Spawn a new player Prefab at the respawn point
+            // load target scene additive
+            Scene targetScene = SceneManager.GetSceneByName(targetSceneName);
+            if (!targetScene.isLoaded)
+            {
+                var loadOp = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
+                if (loadOp == null)
+                {
+                    Debug.LogError($"[GameManager] LoadSceneAsync returned null for '{targetSceneName}'");
+                    yield break;
+                }
+                yield return new WaitUntil(() => loadOp.isDone);
+                targetScene = SceneManager.GetSceneByName(targetSceneName);
+                if (!targetScene.isLoaded)
+                {
+                    Debug.LogError($"[GameManager] Failed to load scene '{targetSceneName}'. Aborting respawn.");
+                    yield break;
+                }
+            }
+
+            // decide spawn pos
+            if (useSavedPosition) spawnPos = savedPosition.Value;
+            else
+            {
+                // try to find spawn point in the target scene
+                string wantName = !string.IsNullOrEmpty(savedSpawnName) ? savedSpawnName : defaultRespawnName;
+                Transform respawnTransform = FindTransformInScene(targetScene, wantName);
+
+                if(respawnTransform != null)
+                {
+                    spawnPos = respawnTransform.position;
+                }
+                else
+                {
+                    if(wantName != defaultRespawnName)
+                    {
+                        Transform fallback = FindTransformInScene(targetScene, defaultRespawnName);
+                        if (fallback != null) spawnPos = fallback.position;
+                        else
+                        {
+                            spawnPos = Vector3.zero;
+                            Debug.LogWarning($"[GameManager] respawn object '{wantName}' or '{defaultRespawnName}' not found in '{targetSceneName}'");
+                        }
+                    }
+                    else
+                    {
+                        spawnPos = Vector3.zero;
+                        Debug.LogWarning($"[GameManager] respawn object '{defaultRespawnName}' not found in '{targetSceneName}'");
+                    }
+                }
+            }
+
             currentPlayer = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
+            
+            if (currentPlayer != null && targetScene.IsValid())
+            {
+                SceneManager.MoveGameObjectToScene(currentPlayer, targetScene);
+            }
 
+            // set invincibility if requested
             if (Invinci)
             {
-                PlayerHealth newPH = currentPlayer.GetComponent<PlayerHealth>();
-                if (newPH != null)
-                {
-                    newPH.isInvincible = true;
-                }
+                var ph = currentPlayer.GetComponent<PlayerHealth>();
+                if (ph != null) ph.isInvincible = true;
             }
 
-            
-            if (cineCamera != null)
+            yield return new WaitForSecondsRealtime(0.05f);
+
+            // optionally unload the fromScene if it's a different scene
+            Scene bootstrapScene = this.gameObject.scene;
+            if (fromScene.isLoaded && fromScene.name != targetSceneName && fromScene.name != bootstrapScene.name)
             {
-                ////cinecamera follow player instance automatically everytime
-                cineCamera.Target.TrackingTarget = currentPlayer.transform;
-
-                //If Confiner exists and has boundaries, dynamic binding
-                var confiner = cineCamera.GetComponent<CinemachineConfiner2D>();
-                if (confiner != null && cameraBounds != null)
-                {
-                    confiner.BoundingShape2D = cameraBounds;
-                }
+                var unloadOp = SceneManager.UnloadSceneAsync(fromScene);
+                if (unloadOp != null) yield return unloadOp;
             }
+
+            // tiny settle
+            yield return new WaitForSecondsRealtime(0.05f);
+
         }
 
         public IEnumerator DeathSequence(GameObject deadPlayer)
@@ -158,11 +230,34 @@ namespace Game.Managers
                 {
                     newPH.isInvincible = false;
                 }
-
-
             }
+        }
 
 
+        // search exact-named transform in a specific scene
+        private Transform FindTransformInScene(Scene scene, string exactObjectName)
+        {
+            if (string.IsNullOrEmpty(exactObjectName)) return null;
+            if (!scene.IsValid()) return null;
+            var roots = scene.GetRootGameObjects();
+            foreach (var go in roots)
+            {
+                var found = FindInChildrenRecursive(go.transform, exactObjectName);
+                if (found != null) return found;
+            }
+            return null;
+        }
+
+        private Transform FindInChildrenRecursive(Transform parent, string nameToFind)
+        {
+            if (parent.name == nameToFind) return parent;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                var t = parent.GetChild(i);
+                var r = FindInChildrenRecursive(t, nameToFind);
+                if (r != null) return r;
+            }
+            return null;
         }
 
     }
