@@ -248,22 +248,5 @@ namespace Game.Managers
             }
             return null;
         }
-/*
-        // apply new bounds to cinemachine confiner2d
-        private void ApplyCameraConfiner(PolygonCollider2D boundsPoly)
-        {
-            var confiner = FindAnyObjectByType<CinemachineConfiner2D>();
-            if (confiner != null)
-            {
-                confiner.BoundingShape2D = boundsPoly;
-#if UNITY_2021_2_OR_NEWER
-                confiner.InvalidateBoundingShapeCache();
-#endif
-            }
-            else
-            {
-                Debug.LogWarning("[RoomManager] CinemachineConfiner2D not found!");
-            }
-        }*/
     }
 }
