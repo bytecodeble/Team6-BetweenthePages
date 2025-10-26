@@ -136,11 +136,20 @@ namespace Game.Managers
 
             currentPlayer = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
             
+            // player move to target scene
             if (currentPlayer != null && targetScene.IsValid())
             {
                 SceneManager.MoveGameObjectToScene(currentPlayer, targetScene);
-            }
 
+                //Camera Confiner
+                if (RoomManager.Instance != null)
+                    StartCoroutine(RoomManager.Instance.BindCameraConfinerWhenReady(targetScene));
+
+                // Camera follow player
+                if (CameraManager.Instance != null)
+                    CameraManager.Instance.FollowPlayer(currentPlayer);
+            }
+            //
             // set invincibility if requested
             if (Invinci)
             {
