@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Game.UI
 {
@@ -11,8 +12,30 @@ namespace Game.UI
         [SerializeField] private Image overlay;
         private void Awake()
         {
-            if (Instance == null) Instance = this;
-            else Destroy(gameObject);
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+
+                SceneManager.sceneLoaded += OnSceneLoaded;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            // if not binding with overlay then attemp search
+            if (overlay == null)
+            {
+                overlay = GetComponentInChildren<Image>();
+            }
+            // search failed
+            if (overlay == null)
+            {
+                Debug.LogError("[ScreenFader] No Image found for overlay!");
+                return;
+            }
 
             if (overlay != null)
             {
@@ -20,6 +43,24 @@ namespace Game.UI
                 Color c = overlay.color;
                 c.a = 0f;
                 overlay.color = c;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+            }
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if(overlay == null)
+            {
+                overlay = GetComponentInChildren<Image>();
+                if (overlay != null)
+                    SetAlpha(0f);
             }
         }
 

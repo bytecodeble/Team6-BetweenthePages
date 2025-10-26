@@ -133,38 +133,6 @@ namespace Game.Managers
             }
 
 
-            //handle camera confiner setup
-            /*if (!string.IsNullOrEmpty(cameraBoundsObjectName))
-            {
-                var boundsTransform = FindTransformInScene(targetScene, cameraBoundsObjectName);
-                if (boundsTransform != null)
-                {
-                    var poly = boundsTransform.GetComponent<PolygonCollider2D>();
-                    if (poly != null)
-                    {
-                        //ApplyCameraConfiner(poly);
-                        if (CameraManager.Instance != null)
-                            CameraManager.Instance.ApplyCameraConfiner(poly);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[RoomManager] PolygonCollider2D of '{cameraBoundsObjectName}' not found in '{targetSceneName}'");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"[RoomManager] camera bounds '{cameraBoundsObjectName}' not found in '{targetSceneName}'");
-                }
-            }
-            else
-            {
-                // fallbakc: auto find the first polygon collider 2d in scene
-                var autoPoly = FindFirstPolygonColliderInScene(targetScene);
-                if (autoPoly != null && CameraManager.Instance != null) CameraManager.Instance.ApplyCameraConfiner(autoPoly);
-            }*/
-
-
-
             //call SetupCameraConfiner
             yield return StartCoroutine(BindCameraConfinerWhenReady(targetScene, cameraBoundsObjectName));
 
@@ -279,12 +247,13 @@ namespace Game.Managers
             if (poly == null)
                 poly = FindFirstPolygonColliderInScene(targetScene);
 
-            if (poly != null) {
+            if (poly != null)
+            {
 
                 Debug.Log($"[RoomManager] CameraConfiner set to: {poly.gameObject.name}");
                 CameraManager.Instance.ApplyCameraConfiner(poly);
             }
-                
+
             else
                 Debug.LogWarning($"[RoomManager] No PolygonCollider2D found in scene '{targetScene.name}' for camera confiner");
         }
@@ -292,7 +261,7 @@ namespace Game.Managers
         // Before calling SetupCameraConfiner,make sure the scene is loaded
         public IEnumerator BindCameraConfinerWhenReady(Scene targetScene, string cameraBoundsObjectName = null)
         {
-            
+
             yield return new WaitUntil(() => targetScene.isLoaded && targetScene.rootCount > 0);
 
             SetupCameraConfiner(targetScene, cameraBoundsObjectName);
