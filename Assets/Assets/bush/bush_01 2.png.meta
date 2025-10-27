@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e530b68402c631241bd6d721d97578e2
+guid: 399c25c7a58f2c94c825178c4198d0dd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1182130618217829511
-    second: tree_02_0
+      213: -5588644957047949505
+    second: bush_01 2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tree_02_0
+      name: bush_01 2_0
       rect:
         serializedVersion: 2
-        x: 804
-        y: 59
-        width: 758
-        height: 926
+        x: 83
+        y: 84
+        width: 418
+        height: 347
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 97b6307477a389fe0800000000000000
-      internalID: -1182130618217829511
+      spriteID: f37f06f75052172b0800000000000000
+      internalID: -5588644957047949505
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tree_02_0: -1182130618217829511
+      bush_01 2_0: -5588644957047949505
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
