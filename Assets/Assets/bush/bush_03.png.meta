@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6997353a7ffb5684eb25bac84d3d4d01
+guid: 83481107c64d5654c883eced9e24785b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5857608374534419999
-    second: mushroom_01_0
+      213: -3304289931749002107
+    second: bush_03_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mushroom_01_0
+      name: bush_03_0
       rect:
         serializedVersion: 2
-        x: 65
-        y: 16
-        width: 131
-        height: 192
+        x: 116
+        y: 78
+        width: 345
+        height: 304
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1e9c582e73895bea0800000000000000
-      internalID: -5857608374534419999
+      spriteID: 584733f50ddc422d0800000000000000
+      internalID: -3304289931749002107
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mushroom_01_0: -5857608374534419999
+      bush_03_0: -3304289931749002107
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
