@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e045418d4642f1b4092c56a4261a5124
+guid: 73bcc56e716aeb341bfe5a4624219a32
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -615919862706610482
-    second: pine_tree_01 1_0
+      213: -5023449195832307769
+    second: fence01_01_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pine_tree_01 1_0
+      name: fence01_01_0
       rect:
         serializedVersion: 2
-        x: 110
-        y: 0
-        width: 447
-        height: 1209
+        x: 195
+        y: 121
+        width: 326
+        height: 423
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eced34de520d377f0800000000000000
-      internalID: -615919862706610482
+      spriteID: 7cf813f529f194ab0800000000000000
+      internalID: -5023449195832307769
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pine_tree_01 1_0: -615919862706610482
+      fence01_01_0: -5023449195832307769
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
