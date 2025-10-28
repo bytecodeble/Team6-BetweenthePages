@@ -5,6 +5,7 @@ namespace Game.Enemies
     public class WolfChaseState : EnemyState
     {
         private Wolf wolf;
+        private Vector3 lastKnownPlayerPos;
 
         public WolfChaseState(Wolf wolf) : base(wolf)
         {
@@ -13,60 +14,45 @@ namespace Game.Enemies
 
         public override void EnterState()
         {
-            // immediate face player
-            wolf.FacePlayer();
-        }
-
-        public override void UpdateState()
-        {
-            // If player lost line-of-sight, out of range, or in dead zone -> stop chasing
-            if (wolf.player == null)
-            {
-                wolf.ChangeState(new WolfPatrolState(wolf));
-                return;
-            }
-
-            float dist = Vector2.Distance(wolf.transform.position, wolf.player.position);
-
-            // out of detection range
-            if (dist > wolf.detectionRange)
-            {
-                wolf.ChangeState(new WolfPatrolState(wolf));
-                return;
-            }
-
-            // blocked by obstacle
-            RaycastHit2D hit = Physics2D.Raycast(wolf.transform.position, (wolf.player.position - wolf.transform.position).normalized, dist, wolf.obstacleLayer);
-            if (hit.collider != null)
-            {
-                wolf.ChangeState(new WolfPatrolState(wolf));
-                return;
-            }
-
-            // horizontal dead zone check (can't reach)
-            if (wolf.InHorizontalDeadZone())
-            {
-                wolf.ChangeState(new WolfPatrolState(wolf));
-                return;
-            }
-
-            // else, keep chasing horizontally
-            wolf.FacePlayer();
+            // capture initial
+            if (wolf.player != null) lastKnownPlayerPos = wolf.player.position;
         }
 
         public override void FixedUpdateState()
         {
             if (wolf.player == null) return;
 
-            // move only horizontally toward player (wolf can't jump)
-            float sign = Mathf.Sign(wolf.player.position.x - wolf.transform.position.x);
-            wolf.rb.linearVelocity = new Vector2(sign * wolf.moveSpeed, wolf.rb.linearVelocity.y);
+            // If player enters dead zone -> stop chase and record last known
+            if (wolf.IsInHorizontalDeadZone())
+            {
+                lastKnownPlayerPos = wolf.player.position;
+                wolf.ChangeState(new WolfTrackingState(wolf, lastKnownPlayerPos));
+                return;
+            }
+
+            // If obstacle blocks view -> go to tracking
+            if (!wolf.CanSeePlayer(wolf.lossRange))
+            {
+                // store last known and start tracking
+                lastKnownPlayerPos = wolf.player.position;
+                wolf.ChangeState(new WolfTrackingState(wolf, lastKnownPlayerPos));
+                return;
+            }
+
+            // move horizontally toward player's x
+            wolf.MoveTowardsX(wolf.player.position.x, wolf.chaseSpeed);
         }
 
-        public override void ExitState()
+        public override void UpdateState()
         {
-            // stop horizontal movement smoothly when leaving chase (keep y velocity)
-            wolf.rb.linearVelocity = new Vector2(0f, wolf.rb.linearVelocity.y);
+            // If player too far (beyond lossRange) stop chasing and go back to patrol
+            if (wolf.player == null) { wolf.ChangeState(wolf.GetInitialState()); return; }
+
+            float dist = Vector2.Distance(wolf.transform.position, wolf.player.position);
+            if (dist > wolf.lossRange)
+            {
+                wolf.ChangeState(new WolfPatrolState(wolf));
+            }
         }
     }
 }
