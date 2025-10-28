@@ -4,38 +4,33 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
-    [Header("UI References")]
     public GameObject pausePanel;
     public Button pauseButton;
     public Button resumeButton;
     public Button returnToMenuButton;
     public Slider musicSlider;
-
-    [Header("Scene")]
     public string menuSceneName = "MenuScene";
 
     private bool isPaused = false;
 
     void Start()
     {
-        // 初始隐藏面板
         pausePanel.SetActive(false);
 
-        // 确保按钮引用已经拖好
-        if (pauseButton != null) pauseButton.onClick.AddListener(TogglePause);
-        if (resumeButton != null) resumeButton.onClick.AddListener(Resume);
-        if (returnToMenuButton != null) returnToMenuButton.onClick.AddListener(ReturnToMenu);
+        pauseButton.onClick.AddListener(TogglePause);
+        resumeButton.onClick.AddListener(Resume);
+        returnToMenuButton.onClick.AddListener(ReturnToMenu);
 
-        // 初始化 Slider
-        if (musicSlider != null)
+        if (MusicManager.instance != null)
         {
-            if (MusicManager.instance != null)
-                musicSlider.value = MusicManager.instance.GetVolume();
-            else
-                musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
-
-            musicSlider.onValueChanged.AddListener(ChangeMusicVolume);
+            musicSlider.value = MusicManager.instance.GetVolume();
         }
+        else
+        {
+            musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        }
+
+        musicSlider.onValueChanged.AddListener(ChangeMusicVolume);
     }
 
     void Update()
