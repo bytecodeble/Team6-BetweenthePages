@@ -44,6 +44,14 @@ namespace Game.Managers
             SceneManager.LoadScene("MenuScene");
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                SceneManager.LoadScene("Test");
+            }
+        }
+
         public void StartNewGame()
         {
             StartCoroutine(RespawnPlayerCoroutine(false));
