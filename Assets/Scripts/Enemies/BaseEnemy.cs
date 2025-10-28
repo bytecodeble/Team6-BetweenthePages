@@ -5,7 +5,7 @@ namespace Game.Enemies
     [RequireComponent(typeof(Rigidbody2D))]
     public abstract class BaseEnemy : MonoBehaviour
     {
-        public int maxHealth = 3;
+        public int maxHealth = 2;
         public float moveSpeed = 2f;
 
         public Transform player;
