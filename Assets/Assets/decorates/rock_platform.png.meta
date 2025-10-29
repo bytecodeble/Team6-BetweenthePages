@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7684f557e6f4261438d9ae748bad54f9
+guid: a9c39ec7e9d203e40a9b6b5932e95e0f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2482695061560149470
-    second: short_tree_01_0
+      213: -7525596091262972758
+    second: rock_platform_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: short_tree_01_0
+      name: rock_platform_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 52
-        width: 442
-        height: 504
+        x: 418
+        y: 337
+        width: 1289
+        height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ed5c8ed210e447220800000000000000
-      internalID: 2482695061560149470
+      spriteID: aacc3313a36bf8790800000000000000
+      internalID: -7525596091262972758
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      short_tree_01_0: 2482695061560149470
+      rock_platform_0: -7525596091262972758
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
