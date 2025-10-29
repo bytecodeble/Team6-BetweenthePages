@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c548e232d3e0bb445a6f9e655f3b365d
+guid: 739bb76d1049f974b9ab4f9baba9f437
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6034265332867948575
-    second: grass_coner_right_0
+      213: -7839835321010491853
+    second: grass_right_coner 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: grass_coner_right_0
+      name: grass_right_coner 1_0
       rect:
         serializedVersion: 2
-        x: 22
+        x: 17
         y: 0
-        width: 54
-        height: 425
+        width: 60
+        height: 431
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f106c0e69540eb350800000000000000
-      internalID: 6034265332867948575
+      spriteID: 33eeb91105f433390800000000000000
+      internalID: -7839835321010491853
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      grass_coner_right_0: 6034265332867948575
+      grass_right_coner 1_0: -7839835321010491853
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
