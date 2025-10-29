@@ -91,8 +91,8 @@ namespace Game.Player
 
         // animation debugger
         private string lastAnimName = "";
-        private bool playingJumpStart = false;
-        private bool playingDoubleJump = false;
+        //private bool playingJumpStart = false;
+        //private bool playingDoubleJump = false;
         private bool playingJumpLand = false;
 
 
@@ -241,8 +241,8 @@ namespace Game.Player
                 coyoteTimer = 0f;
                 isJumping = false;
                 doubleJumpRemaining = maxDoubleJump; // reset double jump
-                playingJumpStart = false;
-                playingDoubleJump = false;
+                //playingJumpStart = false;
+                //playingDoubleJump = false;
 
                 if (isTrackingAirborne)
                 {
@@ -378,11 +378,11 @@ namespace Game.Player
         private void JumpStartAnimation()
         {
             if (spineAnimation == null) return;
-            playingJumpStart = true;
+            //playingJumpStart = true;
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPSTART, false);
             entry.Complete += (te) =>
             {
-                playingJumpStart = false;
+                //playingJumpStart = false;
                 // if still moving up, go to rise, otherwise fall
                 if (frameVelocity.y > 0.1f)
                     spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
@@ -394,8 +394,8 @@ namespace Game.Player
         private void JumpFallAnimation()
         {
             // cancel any jumpstart or doublejump playing flags so falling takes over
-            playingJumpStart = false;
-            playingDoubleJump = false;
+            //playingJumpStart = false;
+            //playingDoubleJump = false;
             spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
         }
 
@@ -403,11 +403,11 @@ namespace Game.Player
         private void DoubleJumpAnimation()
         {
             if (spineAnimation == null) return;
-            playingDoubleJump = true;
+            //playingDoubleJump = true;
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DOUBLEJUMPRISE, false);
             entry.Complete += (te) =>
             {
-                playingDoubleJump = false;
+                //playingDoubleJump = false;
                 if (frameVelocity.y > 0.1f)
                     spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
                 else
