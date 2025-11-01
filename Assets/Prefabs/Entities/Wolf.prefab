@@ -261,7 +261,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &3507227152231372530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,11 +294,8 @@ MonoBehaviour:
     m_Bits: 64
   groundCheckDistance: 1
   wallCheckDistance: 0.2
-  maxVerticalChase: 1
+  chaseSpeed: 3
+  detectionRangeClose: 6
+  lossRange: 8
   horizontalDeadZone: 0.5
-  detectionEdgePadding: 0.12
-  postChaseDetectCooldown: 0.25
-  lastExitedChaseAt: -10
-  frontOffset: 0.16
-  facingDotThreshold: 0.25
-  movingRight: 1
+  verticalReach: 0.6
