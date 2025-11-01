@@ -1,36 +1,40 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VolumeSliderUI : MonoBehaviour
+namespace Game.Audio
 {
-    public Slider slider;
-
-    void Start()
+    public class VolumeSliderUI : MonoBehaviour
     {
-        if (slider == null) slider = GetComponent<Slider>();
+        public Slider slider;
 
-        
-        if (MusicManager.instance != null)
+        void Start()
         {
-            float current = MusicManager.instance.GetVolume();
-            slider.value = current;
+            if (slider == null) slider = GetComponent<Slider>();
+
+
+            if (MusicManager.instance != null)
+            {
+                float current = MusicManager.instance.GetVolume();
+                slider.value = current;
+            }
+
+
+            slider.onValueChanged.AddListener(OnSliderChanged);
         }
 
-       
-        slider.onValueChanged.AddListener(OnSliderChanged);
-    }
-
-    void OnSliderChanged(float value)
-    {
-        Debug.Log("Volume slider changed: " + value);
-        if (MusicManager.instance != null)
+        void OnSliderChanged(float value)
         {
-            MusicManager.instance.SetVolume(value);
+            Debug.Log("Volume slider changed: " + value);
+            if (MusicManager.instance != null)
+            {
+                MusicManager.instance.SetVolume(value);
+            }
+        }
+
+        void OnDestroy()
+        {
+            slider.onValueChanged.RemoveListener(OnSliderChanged);
         }
     }
 
-    void OnDestroy()
-    {
-        slider.onValueChanged.RemoveListener(OnSliderChanged);
-    }
 }
