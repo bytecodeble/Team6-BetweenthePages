@@ -12,6 +12,8 @@ namespace Game.Enemies
         private float totalDuration;
         private bool attackSpawned = false;
 
+        private Vector2 hitboxOffset = new Vector2(2f, 1.5f);
+        
         public BossMeleeState(Boss boss) : base(boss)
         {
             this.boss = boss;
@@ -49,15 +51,16 @@ namespace Game.Enemies
             attackSpawned = true;
             if (boss.attackHitboxPrefab != null)
             {
-                Vector3 spawnPosition = boss.transform.position;
-                float xOffset = 2.5f * Mathf.Sign(boss.transform.localScale.x);
-                float yOffset = 5f;
-                spawnPosition += new Vector3(xOffset, yOffset, 0f);
+                Vector3 dirToPlayer = boss.player.position - boss.transform.position;
+                float facingDir = Mathf.Sign(dirToPlayer.x);
 
-                var go = GameObject.Instantiate(boss.attackHitboxPrefab, boss.transform.position, Quaternion.identity);
-                go.transform.parent = boss.transform;
+                Vector3 spawnLocalOffset = new Vector3(hitboxOffset.x * facingDir, hitboxOffset.y, 0f);
+                Vector3 spawnWorldPos = boss.transform.position + spawnLocalOffset;
 
-                Debug.Log($"BossMeleeAttackState.SpawnAttackHitbox: spawned hitbox at {spawnPosition}");
+
+                GameObject hitbox = Object.Instantiate(boss.attackHitboxPrefab, spawnWorldPos, Quaternion.identity, boss.transform);
+
+                Debug.Log($"BossMeleeState.SpawnAttackHitbox: spawned hitbox at {spawnWorldPos}, facing {(facingDir > 0 ? "right" : "left")}");
             }
             else
             {
