@@ -31,12 +31,12 @@ namespace Game.Player
 
         [Header("Double Jump")]
         private float doubleJumpPower = 18.25f;
-        private int maxDoubleJump = 1;
+        public int maxDoubleJump = 0;
 
         private float accelerationRate;
         private bool isJumping;
         private int doubleJumpRemaining;
-        [HideInInspector] public bool hasDoubleJump = true; // TODO: change this with actual ability upgrade function
+        public bool hasDoubleJump = false;
         #endregion
 
         #region Stats
@@ -127,6 +127,8 @@ namespace Game.Player
 
         private void Awake()
         {
+            Debug.Log($"[Awake] hasDoubleJump={hasDoubleJump}, maxDoubleJump={maxDoubleJump}");
+
             RB = GetComponent<Rigidbody2D>();
             Collider = GetComponent<BoxCollider2D>();
             playerHealth = GetComponent<PlayerHealth>();
@@ -205,13 +207,13 @@ namespace Game.Player
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (!isOnGround && doubleJumpRemaining > 0 && hasDoubleJump)
-                {
-                    ExecuteDoubleJump();
-                }
-                else
+                if (isOnGround || coyoteTimer > 0)
                 {
                     jumpBufferTimer = jumpBufferTime;
+                }
+                else if (hasDoubleJump && doubleJumpRemaining > 0)
+                {
+                    ExecuteDoubleJump();
                 }
             }
 

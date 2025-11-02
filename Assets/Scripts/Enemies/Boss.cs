@@ -5,7 +5,7 @@ namespace Game.Enemies
     [RequireComponent(typeof(Rigidbody2D))]
     public class Boss : BaseEnemy
     {
-        [Header("Boss Settings")]
+        //Boss setting
         private float chaseSpeed = 3f;
         public float meleeRange = 4f;
         public float restMin = 3f;
@@ -15,8 +15,9 @@ namespace Game.Enemies
         public float jumpPause = 0.5f;
         public float jumpApexHeight = 4f;
         public GameObject attackHitboxPrefab;
+        [SerializeField] private GameObject redCloak;
 
-        [Header("Debug Gizmos")]
+        //Debug gizmos
         private Color detectionColor = Color.yellow;
         private Color meleeColor = Color.red;
         private float gizmoYOffset = 2.55f;
@@ -66,6 +67,13 @@ namespace Game.Enemies
         protected override void Die()
         {
             Debug.Log("Boss.Die: Boss defeated.");
+
+            Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
+            if (redCloak != null)
+            {
+                Instantiate(redCloak, cloakSpawnPos, Quaternion.identity);
+            }
+
             Destroy(gameObject, 0.5f);
         }
 

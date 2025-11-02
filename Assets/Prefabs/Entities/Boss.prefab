@@ -229,3 +229,4 @@ MonoBehaviour:
   jumpPause: 0.5
   jumpApexHeight: 4
   attackHitboxPrefab: {fileID: 1599291260836444165, guid: a4aa37678ad9311489626f8cebb49966, type: 3}
+  redCloak: {fileID: 8618084531564640110, guid: 6513fdbd14291f44f9c081969d95170b, type: 3}
