@@ -6,8 +6,8 @@ namespace Game.Enemies
     public class Boss : BaseEnemy
     {
         [Header("Boss Settings")]
-        public float chaseSpeed = 3f;
-        public float meleeRange = 6f;
+        private float chaseSpeed = 3f;
+        public float meleeRange = 4f;
         public float restMin = 3f;
         public float restMax = 5f;
         public float jumpChance = 0.5f;
@@ -17,9 +17,9 @@ namespace Game.Enemies
         public GameObject attackHitboxPrefab;
 
         [Header("Debug Gizmos")]
-        public Color detectionColor = Color.yellow;
-        public Color meleeColor = Color.red;
-        public float gizmoYOffset = 2.55f;
+        private Color detectionColor = Color.yellow;
+        private Color meleeColor = Color.red;
+        private float gizmoYOffset = 2.55f;
 
         protected override void Awake()
         {
@@ -29,7 +29,7 @@ namespace Game.Enemies
             rb = GetComponent<Rigidbody2D>();
 
             // use BaseEnemy.detectionRange, set it here to avoid hiding warning
-            detectionRange = 15f;
+            detectionRange = 10f;
 
             var p = GameObject.FindGameObjectWithTag("Player");
             if (p != null)

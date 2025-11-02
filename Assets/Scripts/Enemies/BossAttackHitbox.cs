@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Player;
 
 namespace Game.Enemies
 {
@@ -14,11 +15,10 @@ namespace Game.Enemies
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var playerHealth = collision.GetComponent<Game.Player.PlayerHealth>();
+            var playerHealth = collision.GetComponent<PlayerHealth>(); 
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(damage);
-                Debug.Log("Boss hit player for " + damage + " damage.");
+                playerHealth.TakeDamage(damage, transform.position);
             }
         }
     }

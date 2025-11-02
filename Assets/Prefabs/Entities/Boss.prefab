@@ -210,10 +210,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d46eb3e3971122419d8b2e04d97ea1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Enemies.Boss
-  maxHealth: 15
+  maxHealth: 30
   moveSpeed: 2
   player: {fileID: 0}
-  detectionRange: 4
+  detectionRange: 10
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -221,8 +221,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   rb: {fileID: 5341974400687987137}
-  chaseSpeed: 3
-  meleeRange: 6
+  meleeRange: 5
   restMin: 2
   restMax: 3
   jumpChance: 0.5
@@ -230,5 +229,3 @@ MonoBehaviour:
   jumpPause: 0.5
   jumpApexHeight: 4
   attackHitboxPrefab: {fileID: 1599291260836444165, guid: a4aa37678ad9311489626f8cebb49966, type: 3}
-  detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  meleeColor: {r: 1, g: 0, b: 0, a: 1}
