@@ -58,5 +58,8 @@ TagManager:
   - name: VFX
     uniqueID: 1639490553
     locked: 0
+  - name: Fore_Dark
+    uniqueID: 2143206391
+    locked: 0
   m_RenderingLayers:
   - Default

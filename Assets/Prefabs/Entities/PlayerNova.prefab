@@ -48,7 +48,7 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.604
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.8203794, b: 0.3443396, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackHitbox: {fileID: 1599291260836444165, guid: 89393c98ca2ccc548a62302974185f45, type: 3}
+  attackEffect: {fileID: 2687560823856420539, guid: 0b6f9d5a8cfe7f14da57526bb28adf54, type: 3}
 --- !u!114 &4167250967627337135
 MonoBehaviour:
   m_ObjectHideFlags: 0

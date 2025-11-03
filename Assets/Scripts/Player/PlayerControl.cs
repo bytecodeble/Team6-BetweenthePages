@@ -482,6 +482,7 @@ namespace Game.Player
 
         public void PlayerAttackAnimation()
         {
+            if (animationLocked) return;
             if (spineAnimation == null) return;
 
             LockAnimation(0.25f);
@@ -496,6 +497,7 @@ namespace Game.Player
 
         public void PlayHurtAnimation()
         {
+            if (animationLocked) return;
             if (spineAnimation == null) return;
             LockAnimation(0.25f);
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
