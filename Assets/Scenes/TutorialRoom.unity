@@ -3096,7 +3096,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 993962783}
   - {fileID: 413337454}
   - {fileID: 267468424}
   - {fileID: 1016016690}
@@ -3175,7 +3174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
   cam: {fileID: 903172761}
   layerIndex: 0
-  totalLayers: 4
+  totalLayers: 5
   globalScale: 0.2
 --- !u!1 &306812355
 GameObject:
@@ -26906,8 +26905,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
   cam: {fileID: 903172761}
-  layerIndex: 3
-  totalLayers: 4
+  layerIndex: 4
+  totalLayers: 5
   globalScale: 0.1
 --- !u!1 &767490360
 GameObject:
@@ -29976,6 +29975,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 993962783}
+  - component: {fileID: 993962784}
   m_Layer: 0
   m_Name: Shadow_Overlay
   m_TagString: Untagged
@@ -29992,7 +29992,7 @@ Transform:
   m_GameObject: {fileID: 993962782}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 53.375378, y: 14.82971, z: 2.7900002}
+  m_LocalPosition: {x: 53.46761, y: 10.14477, z: 4.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30006,8 +30006,24 @@ Transform:
   - {fileID: 934093381}
   - {fileID: 1674191086}
   - {fileID: 1263983836}
-  m_Father: {fileID: 305341679}
+  m_Father: {fileID: 1186425669}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &993962784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993962782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8ad8c5c7985c0459b6acdca0137041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
+  cam: {fileID: 903172761}
+  layerIndex: 1
+  totalLayers: 5
+  globalScale: 0.17
 --- !u!1 &1016016689
 GameObject:
   m_ObjectHideFlags: 0
@@ -31589,6 +31605,7 @@ Transform:
   - {fileID: 760650931}
   - {fileID: 1251941804}
   - {fileID: 1552251667}
+  - {fileID: 993962783}
   - {fileID: 305341679}
   - {fileID: 498590635}
   - {fileID: 477010545}
@@ -32631,8 +32648,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
   cam: {fileID: 903172761}
-  layerIndex: 2
-  totalLayers: 4
+  layerIndex: 3
+  totalLayers: 5
   globalScale: 0.15
 --- !u!1 &1253137656
 GameObject:
@@ -49819,8 +49836,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
   cam: {fileID: 903172761}
-  layerIndex: 1
-  totalLayers: 4
+  layerIndex: 2
+  totalLayers: 5
   globalScale: 0.1
 --- !u!1 &1570523886
 GameObject:
