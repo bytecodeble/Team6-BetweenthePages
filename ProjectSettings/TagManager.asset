@@ -58,7 +58,7 @@ TagManager:
   - name: VFX
     uniqueID: 1639490553
     locked: 0
-  - name: Fore_Dark
+  - name: Shadow_Overlay
     uniqueID: 2143206391
     locked: 0
   m_RenderingLayers:
