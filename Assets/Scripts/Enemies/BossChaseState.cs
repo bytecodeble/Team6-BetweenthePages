@@ -28,15 +28,36 @@ namespace Game.Enemies
                 return;
             }
 
-            float dist = Vector2.Distance(boss.transform.position, boss.player.position);
+            float radialDist = Vector2.Distance(boss.transform.position, boss.player.position);
 
             // if player left detection range -> back to patrol
-            if (dist > boss.detectionRange)
+            if (radialDist > boss.detectionRange)
             {
                 Debug.Log("BossChaseState.Update - player lost -> back to Patrol");
                 boss.ChangeState(new BossPatrolState(boss));
                 return;
             }
+
+            // separate distances for state decisions
+            float horizontalDist = Mathf.Abs(boss.player.position.x - boss.transform.position.x);
+            float verticalDist = Mathf.Abs(boss.player.position.y - boss.transform.position.y);
+
+            // force jump if player x close but y far
+            if (horizontalDist <= boss.meleeRange && verticalDist > boss.meleeVerticalRange) 
+            {
+                Debug.Log("BossChaseState.Update - player on different level, force jump");
+                boss.ChangeState(new BossJumpState(boss));
+                return;
+            }
+
+            // if within new melee range -> attack
+            if (horizontalDist <= boss.meleeRange && verticalDist <= boss.meleeVerticalRange)
+            {
+                Debug.Log("BossChaseState.Update - within melee range -> MeleeAttack");
+                boss.ChangeState(new BossMeleeState(boss));
+                return;
+            }
+
 
             // if we haven't decided whether to jump this chase, decide once
             if (!jumpDecisionMade)
@@ -46,18 +67,11 @@ namespace Game.Enemies
                 Debug.Log($"BossChaseState.Update - jumpDecisionMade = {willJump}");
             }
 
-            // if within melee range -> attack
-            if (dist <= boss.meleeRange)
-            {
-                Debug.Log("BossChaseState.Update - within melee range -> MeleeAttack");
-                boss.ChangeState(new BossMeleeState(boss));
-                return;
-            }
 
-            // if we decided to jump and player within detection (6..detection), trigger jump
-            if (willJump && dist > boss.meleeRange && dist <= boss.detectionRange)
+            // if we decided to jump and player is outside melee range, trigger jump
+            if (willJump && radialDist > boss.meleeRange)
             {
-                Debug.Log("BossChaseState.Update - willJump true -> JumpAttack");
+                Debug.Log("BossChaseState.Update - Jump");
                 boss.ChangeState(new BossJumpState(boss));
                 return;
             }

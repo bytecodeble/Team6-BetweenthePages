@@ -8,12 +8,16 @@ namespace Game.Enemies
         //Boss setting
         private float chaseSpeed = 3f;
         public float meleeRange = 4f;
+        public float meleeVerticalRange = 2f;
+
         public float restMin = 3f;
         public float restMax = 5f;
+
         public float jumpChance = 0.5f;
         public float jumpDuration = 1.5f;
         public float jumpPause = 0.5f;
         public float jumpApexHeight = 4f;
+
         public GameObject attackHitboxPrefab;
         public GameObject chargeEffectPrefab;
         [SerializeField] private GameObject redCloak;
