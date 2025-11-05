@@ -4908,6 +4908,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Splash
       objectReference: {fileID: 0}
+    - target: {fileID: 1803697775350335759, guid: 4d60f1aaf96234f468d225498a590403, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2908595099134451936, guid: 4d60f1aaf96234f468d225498a590403, type: 3}
       propertyPath: playOnAwake
       value: 1
@@ -4979,12 +4983,28 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 556543730432592260, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
+      propertyPath: lengthInSec
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 556543730432592260, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 556543730432592260, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 556543730432592260, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
+      propertyPath: InitialModule.startRotation.scalar
+      value: 3.1415925
       objectReference: {fileID: 0}
     - target: {fileID: 5444681222630307750, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
       propertyPath: m_Name
       value: Slash_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5444681222630307750, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6078440691936210275, guid: 551e5630fb2f61541bd177b9db11093b, type: 3}
       propertyPath: m_LocalPosition.x

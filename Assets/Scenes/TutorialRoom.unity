@@ -54954,6 +54954,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3765501929115545733, guid: c21e50ea394d00948a93a18c3f3aa5cc, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5072858473754909828, guid: c21e50ea394d00948a93a18c3f3aa5cc, type: 3}
       propertyPath: m_Name
       value: PauseCanvas

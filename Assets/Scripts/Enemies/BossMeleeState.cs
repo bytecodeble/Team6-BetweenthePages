@@ -11,6 +11,7 @@ namespace Game.Enemies
         private float recovery = 1.2f;
         private float totalDuration;
         private bool attackSpawned = false;
+        private bool chargeSpawned = false;
 
         private Vector2 hitboxOffset = new Vector2(2f, 1.5f);
         
@@ -24,6 +25,7 @@ namespace Game.Enemies
         {
             timer = 0f;
             attackSpawned = false;
+            chargeSpawned = false;
             boss.StopMovement();
             Debug.Log("BossMeleeState.Enter");
         }
@@ -33,7 +35,13 @@ namespace Game.Enemies
             timer += Time.deltaTime;
             boss.FacePlayer();
 
-            // Windup -> then spawn attack in attack window
+            // charge effect during windup
+            if (!chargeSpawned && timer < windup)
+            {
+                SpawnChargeEffect();
+            }
+
+            // attack window
             if (!attackSpawned && timer >= windup && timer < windup + attack)
             {
                 SpawnAttackHitbox();
@@ -43,6 +51,22 @@ namespace Game.Enemies
             {
                 Debug.Log("BossMeleeAttackState.Update: finished attack, returning to Patrol");
                 boss.ChangeState(new BossPatrolState(boss)); // return to patrol after attack
+            }
+        }
+
+        private void SpawnChargeEffect()
+        {
+            chargeSpawned = true;
+            if (boss.chargeEffectPrefab != null)
+            {
+                // offset
+                Vector3 effectPos = boss.transform.position + new Vector3(0, 2.5f, 0);
+                GameObject fx = Object.Instantiate(boss.chargeEffectPrefab, effectPos, Quaternion.identity, boss.transform);
+                Debug.Log("BossMeleeState.SpawnChargeEffect: charging effect spawned.");
+            }
+            else
+            {
+                Debug.LogWarning("BossMeleeState.SpawnChargeEffect: chargeEffectPrefab is null");
             }
         }
 
