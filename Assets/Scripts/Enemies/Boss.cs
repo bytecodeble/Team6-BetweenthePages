@@ -15,6 +15,7 @@ namespace Game.Enemies
         public float jumpPause = 0.5f;
         public float jumpApexHeight = 4f;
         public GameObject attackHitboxPrefab;
+        public GameObject chargeEffectPrefab;
         [SerializeField] private GameObject redCloak;
 
         //Debug gizmos

@@ -9,7 +9,7 @@ namespace Game.Environment
 
         //foreground is 0,middleground is 1,the bigger the number, the farther
         [SerializeField] private int layerIndex;
-        [SerializeField] private int totalLayers = 4;
+        [SerializeField] private int totalLayers = 5;
 
         [SerializeField, Range(0f, 1f)] private float globalScale = 0.5f;
 
