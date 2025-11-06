@@ -16,6 +16,7 @@ namespace Game.Enemies
         {
             // capture initial
             if (wolf.player != null) lastKnownPlayerPos = wolf.player.position;
+            Debug.Log("Wolf entering Chase State.");
         }
 
         public override void FixedUpdateState()
@@ -25,6 +26,7 @@ namespace Game.Enemies
             // If player enters dead zone -> stop chase and record last known
             if (wolf.IsInHorizontalDeadZone())
             {
+                Debug.Log("Player is in dead zone. -> Tracking State");
                 lastKnownPlayerPos = wolf.player.position;
                 wolf.ChangeState(new WolfTrackingState(wolf, lastKnownPlayerPos));
                 return;
@@ -34,6 +36,7 @@ namespace Game.Enemies
             if (!wolf.CanSeePlayer(wolf.lossRange))
             {
                 // store last known and start tracking
+                Debug.Log("Lost line of sight. -> Tracking State");
                 lastKnownPlayerPos = wolf.player.position;
                 wolf.ChangeState(new WolfTrackingState(wolf, lastKnownPlayerPos));
                 return;
@@ -51,6 +54,7 @@ namespace Game.Enemies
             float dist = Vector2.Distance(wolf.transform.position, wolf.player.position);
             if (dist > wolf.lossRange)
             {
+                Debug.Log("Player out of loss range. -> Patrol State");
                 wolf.ChangeState(new WolfPatrolState(wolf));
             }
         }

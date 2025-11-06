@@ -11,6 +11,11 @@ namespace Game.Enemies
             this.wolf = wolf;
         }
 
+        public override void EnterState()
+        {
+            Debug.Log("Wolf entering Patrol State.");
+        }
+
         public override void FixedUpdateState()
         {
             // simple left/right patrol
@@ -28,17 +33,19 @@ namespace Game.Enemies
             // rays for ground & wall like Mossmush
             if (!shouldFlip)
             {
-                Vector2 groundOrigin = wolf.groundCheck.position;
-                RaycastHit2D groundHit = Physics2D.Raycast(groundOrigin, Vector2.down, wolf.groundCheckDistance, wolf.groundLayer);
+                Vector2 forwardDir = new Vector2(dir, 0);
 
-                Vector2 wallOrigin = wolf.wallCheck.position;
-                RaycastHit2D wallHit = Physics2D.Raycast(wallOrigin, Vector2.right * dir, wolf.wallCheckDistance, wolf.groundLayer);
-
-                if (groundHit.collider == null || wallHit.collider != null)
+                // Check for ledge ahead
+                if (!Physics2D.Raycast(wolf.groundCheck.position, Vector2.down, wolf.groundCheckDistance, wolf.groundLayer))
+                {
                     shouldFlip = true;
+                }
 
-                Debug.DrawRay(groundOrigin, Vector2.down * wolf.groundCheckDistance, Color.green);
-                Debug.DrawRay(wallOrigin, Vector2.right * dir * wolf.wallCheckDistance, Color.red);
+                // Check for wall ahead
+                if (Physics2D.Raycast(wolf.wallCheck.position, forwardDir, wolf.wallCheckDistance, wolf.groundLayer))
+                {
+                    shouldFlip = true;
+                }
             }
 
             if (shouldFlip)
@@ -50,12 +57,12 @@ namespace Game.Enemies
             // detection: if can see player and not in unreachable dead zone -> switch to chase
             if (wolf.CanSeePlayer(wolf.detectionRangeClose) && !wolf.IsInHorizontalDeadZone())
             {
+                Debug.Log("Player spotted! -> Chase State");
                 wolf.ChangeState(new WolfChaseState(wolf));
             }
             else if (wolf.CanSeePlayer(wolf.detectionRangeClose) && wolf.IsInHorizontalDeadZone())
             {
                 // intentionally do nothing: player is detected but unreachable
-                // optionally we could play a sniff/alert animation here
             }
         }
     }

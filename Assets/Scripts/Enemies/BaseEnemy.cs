@@ -18,7 +18,7 @@ namespace Game.Enemies
         protected int currentHealth;
         protected EnemyState currentState;
 
-
+        public bool IsDead { get; protected set; } = false;
 
         protected virtual void Awake()
         {
@@ -33,6 +33,7 @@ namespace Game.Enemies
 
         protected virtual void Update()
         {
+            if (IsDead) return;
             currentState?.UpdateState();
         }
 
@@ -45,6 +46,7 @@ namespace Game.Enemies
 
         public virtual void ChangeState(EnemyState newState)
         {
+            if (IsDead) return;
             if (currentState != null)
                 currentState.ExitState();
             currentState = newState;
@@ -53,6 +55,7 @@ namespace Game.Enemies
 
         public virtual void TakeDamage(int damage)
         {
+            if (IsDead) return;
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
@@ -62,6 +65,8 @@ namespace Game.Enemies
 
         public virtual void ApplyKnockback(Vector2 hitSource, float force = 5f, float duration = 0.2f)
         {
+            if (IsDead) return;
+
             Vector2 knockbackDir = (transform.position - (Vector3)hitSource).normalized;
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.linearVelocity = Vector2.zero;
@@ -75,11 +80,14 @@ namespace Game.Enemies
 
         protected virtual void Die()
         {
+            IsDead = true;
+            ChangeState(null);
             Destroy(gameObject, 0.5f);
         }
 
         public bool PlayerInSight(float range)
         {
+            if (IsDead) return false;
             if (player == null) return false;
 
             Vector2 direction = player.position - transform.position;
@@ -97,6 +105,7 @@ namespace Game.Enemies
 
         public void FacePlayer()
         {
+            if (IsDead) return;
             if (player == null) return;
             Vector3 scale = transform.localScale;
             scale.x = (player.position.x > transform.position.x) ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);

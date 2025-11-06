@@ -19,6 +19,7 @@ namespace Game.Enemies
         public override void EnterState()
         {
             timer = 0f;
+            Debug.Log($"Wolf entering Tracking State, moving to {targetPos}.");
         }
 
         public override void FixedUpdateState()
@@ -34,6 +35,7 @@ namespace Game.Enemies
             // if in sight again and reachable -> chase
             if (wolf.CanSeePlayer(wolf.detectionRangeClose) && !wolf.IsInHorizontalDeadZone())
             {
+                Debug.Log("Player reacquired. -> Chase State");
                 wolf.ChangeState(new WolfChaseState(wolf));
                 return;
             }
@@ -41,6 +43,7 @@ namespace Game.Enemies
             // if reached last known position or timed out -> return to patrol
             if (Mathf.Abs(wolf.transform.position.x - targetPos.x) <= arriveThreshold || timer >= trackingTimeout)
             {
+                Debug.Log("Tracking timed out or destination reached. -> Patrol State");
                 wolf.ChangeState(new WolfPatrolState(wolf));
             }
         }

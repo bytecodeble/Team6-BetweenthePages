@@ -7,6 +7,8 @@ namespace Game.Enemies
         private Boss boss;
         private bool jumpDecisionMade = false;
         private bool willJump = false;
+        private float timeInChase;
+        private const float maxChaseTime = 5.0f;
 
         public BossChaseState(Boss boss) : base(boss)
         {
@@ -17,6 +19,7 @@ namespace Game.Enemies
         {
             jumpDecisionMade = false;
             willJump = false;
+            timeInChase = 0f;
             Debug.Log("BossChaseState.Enter");
         }
 
@@ -25,6 +28,15 @@ namespace Game.Enemies
             if (boss.player == null)
             {
                 boss.ChangeState(boss.GetInitialState());
+                return;
+            }
+
+            //prevent boss from getting stuck in the Chase state
+            timeInChase += Time.deltaTime;
+            if (timeInChase > maxChaseTime)
+            {
+                Debug.Log("BossChaseState.Update - Chase timed out, forcing jump.");
+                boss.ChangeState(new BossJumpState(boss));
                 return;
             }
 
