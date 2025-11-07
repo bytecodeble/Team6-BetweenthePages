@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Game.Enemies
@@ -23,12 +24,17 @@ namespace Game.Enemies
         // internal movement facing state
         private bool movingRight = true;
 
+        private SpriteRenderer sr;
+        private Collider2D col;
+
         protected override void Awake()
         {
             base.Awake();
             detectionRange = 6f;
 
             rb = GetComponent<Rigidbody2D>();
+            sr = GetComponent<SpriteRenderer>();
+            col = GetComponent<Collider2D>();
 
             // make sure player reference exists
             if (player == null)
@@ -43,9 +49,65 @@ namespace Game.Enemies
             return new WolfPatrolState(this);
         }
 
-        /// <summary>
-        /// Flip patrol direction and sprite scale.
-        /// </summary>
+        public override void TakeDamage(int damage)
+        {
+            if (IsDead) return; // prevent getting hit after death
+            base.TakeDamage(damage);
+            StartCoroutine(FlashWhite());
+        }
+
+        private IEnumerator FlashWhite()
+        {
+            if (sr == null) yield break;
+
+            Color original = sr.color;
+            Color flash = Color.grey;
+
+            for (int i = 0; i < 3; i++)
+            {
+                sr.color = flash;
+                yield return new WaitForSeconds(0.05f);
+                sr.color = original;
+                yield return new WaitForSeconds(0.05f);
+            }
+            sr.color = original;
+        }
+
+        protected override void Die()
+        {
+            if (IsDead) return;
+            IsDead = true;
+            StartCoroutine(DeathRoutine());
+        }
+
+        private IEnumerator DeathRoutine()
+        {
+            if (col != null)
+                col.enabled = false;
+            if (rb != null)
+                rb.simulated = false;
+
+            if (sr != null)
+            {
+                Color original = sr.color;
+                Color gray = Color.gray;
+
+                float fadeDuration = 0.5f;
+                float t = 0f;
+                while (t < fadeDuration)
+                {
+                    sr.color = Color.Lerp(original, gray, t / fadeDuration);
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+                sr.color = gray;
+            }
+
+            yield return new WaitForSeconds(1f);
+            Destroy(gameObject);
+        }
+
+        // Flip patrol direction and sprite scale.
         public void FlipDirection()
         {
             movingRight = !movingRight;
@@ -58,20 +120,15 @@ namespace Game.Enemies
         public Transform GetLeftLimit() => leftLimit;
         public Transform GetRightLimit() => rightLimit;
 
-        /// <summary>
-        /// Returns true if player is within range and not blocked by obstacles.
-        /// Uses BaseEnemy.PlayerInSight under the hood.
-        /// </summary>
+        // Returns true if player is within range and not blocked by obstacles.
+        
         public bool CanSeePlayer(float range)
         {
             if (player == null) return false;
             return PlayerInSight(range);
         }
 
-        /// <summary>
-        /// Move horizontally toward targetX using either chaseSpeed or moveSpeed.
-        /// This preserves vertical velocity.
-        /// </summary>
+        // Move horizontally toward targetX using either chaseSpeed or moveSpeed.
         public void MoveTowardsX(float targetX, float speed)
         {
             float dir = Mathf.Sign(targetX - transform.position.x);
