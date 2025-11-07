@@ -19,7 +19,6 @@ namespace Game.Enemies
         private Collider2D col;
 
         private bool movingRight = true;
-        private bool isDying = false;
 
         protected override void Awake()
         {
@@ -49,7 +48,7 @@ namespace Game.Enemies
 
         public override void TakeDamage(int damage)
         {
-            if (isDying) return; // prevent getting hit after death
+            if (IsDead) return; // prevent getting hit after death
             base.TakeDamage(damage);
             StartCoroutine(FlashWhite());
         }
@@ -73,8 +72,8 @@ namespace Game.Enemies
 
         protected override void Die()
         {
-            if (isDying) return;
-            isDying = true;
+            if (IsDead) return;
+            IsDead = true;
             StartCoroutine(DeathRoutine());
         }
 
@@ -101,9 +100,9 @@ namespace Game.Enemies
                 sr.color = gray;
             }
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             Destroy(gameObject);
         }
 
-        }
+    }
 }

@@ -49,8 +49,17 @@ namespace Game.Enemies
 
             if (timer >= totalDuration)
             {
-                Debug.Log("BossMeleeAttackState.Update: finished attack, returning to Patrol");
-                boss.ChangeState(new BossPatrolState(boss)); // return to patrol after attack
+                if (boss.comboAttackCount >= boss.maxComboAttacks)
+                {
+                    Debug.Log("BossMeleeState.Update - max combo, jump to center");
+                    boss.comboAttackCount = 0;
+                    boss.ChangeState(new BossJumpState(boss, boss.roomCenterPos));
+                }
+                else
+                {
+                    Debug.Log("BossMeleeState.Update - attack finished, back to Patrol");
+                    boss.ChangeState(new BossPatrolState(boss));
+                }
             }
         }
 
@@ -83,7 +92,7 @@ namespace Game.Enemies
 
 
                 GameObject hitbox = Object.Instantiate(boss.attackHitboxPrefab, spawnWorldPos, Quaternion.identity, boss.transform);
-
+                boss.comboAttackCount++;
                 Debug.Log($"BossMeleeState.SpawnAttackHitbox: spawned hitbox at {spawnWorldPos}, facing {(facingDir > 0 ? "right" : "left")}");
             }
             else

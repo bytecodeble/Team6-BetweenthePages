@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Game.Enemies
@@ -5,28 +6,37 @@ namespace Game.Enemies
     [RequireComponent(typeof(Rigidbody2D))]
     public class Wolf : BaseEnemy
     {
-        [Header("Patrol")]
+        [Header("Patrol Points")]
         public Transform leftLimit;
         public Transform rightLimit;
-        public Transform groundCheck;
-        public Transform wallCheck;
+
+        [Header("Ground / Wall Checks")]
+        public Transform groundCheck;      // origin for down ray to detect cliff
+        public Transform wallCheck;        // origin for horizontal ray to detect wall
         public LayerMask groundLayer;
         public float groundCheckDistance = 1.0f;
         public float wallCheckDistance = 0.2f;
 
-        [Header("Detection")]
-        public float chaseSpeed = 3.0f;
-        public float detectionRangeClose = 6f;   // used for initial detection
-        public float lossRange = 8f;             // how far until give up completely
-        public float horizontalDeadZone = 1.0f;  // if player within this x delta but too high, stop chase
-        public float verticalReach = 0.6f;       // how high relative to enemy the player can be for chase to be valid
+        [Header("Detection / Combat")]
+        public float chaseSpeed = 3.5f;
+        public float meleeRange = 3f;
 
+        // internal movement facing state
         private bool movingRight = true;
+
+        private SpriteRenderer sr;
+        private Collider2D col;
 
         protected override void Awake()
         {
             base.Awake();
-            // ensure player is assigned
+            detectionRange = 6f;
+
+            rb = GetComponent<Rigidbody2D>();
+            sr = GetComponent<SpriteRenderer>();
+            col = GetComponent<Collider2D>();
+
+            // make sure player reference exists
             if (player == null)
             {
                 var p = GameObject.FindGameObjectWithTag("Player");
@@ -34,108 +44,145 @@ namespace Game.Enemies
             }
         }
 
-        protected override void Update()
-        {
-            base.Update();
-
-            // Flip sprite based on movement direction
-            if (rb.linearVelocity.x > 0.1f)
-                transform.localScale = new Vector3(1, 1, 1);
-            else if (rb.linearVelocity.x < -0.1f)
-                transform.localScale = new Vector3(-1, 1, 1);
-
-            DrawDebugRays();
-        }
-
-        private void DrawDebugRays()
-        {
-            // Player detection ray
-            Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
-            Vector2 origin = transform.position;
-            float detectionDistance = 8f; // whatever your detection range is
-
-            Debug.DrawRay(origin, direction * detectionDistance, Color.yellow);
-
-            // Wall detection ray
-            if (wallCheck != null)
-                Debug.DrawRay(wallCheck.position, direction * groundCheckDistance, Color.red);
-
-            // Ground check ray
-            if (groundCheck != null)
-                Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.green);
-        }
-
-
         public override EnemyState GetInitialState()
         {
             return new WolfPatrolState(this);
         }
 
+        public override void TakeDamage(int damage)
+        {
+            if (IsDead) return; // prevent getting hit after death
+            base.TakeDamage(damage);
+            StartCoroutine(FlashWhite());
+        }
+
+        private IEnumerator FlashWhite()
+        {
+            if (sr == null) yield break;
+
+            Color original = sr.color;
+            Color flash = Color.grey;
+
+            for (int i = 0; i < 3; i++)
+            {
+                sr.color = flash;
+                yield return new WaitForSeconds(0.05f);
+                sr.color = original;
+                yield return new WaitForSeconds(0.05f);
+            }
+            sr.color = original;
+        }
+
+        protected override void Die()
+        {
+            if (IsDead) return;
+            IsDead = true;
+            StartCoroutine(DeathRoutine());
+        }
+
+        private IEnumerator DeathRoutine()
+        {
+            if (col != null)
+                col.enabled = false;
+            if (rb != null)
+                rb.simulated = false;
+
+            if (sr != null)
+            {
+                Color original = sr.color;
+                Color gray = Color.gray;
+
+                float fadeDuration = 0.5f;
+                float t = 0f;
+                while (t < fadeDuration)
+                {
+                    sr.color = Color.Lerp(original, gray, t / fadeDuration);
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+                sr.color = gray;
+            }
+
+            yield return new WaitForSeconds(1f);
+            Destroy(gameObject);
+        }
+
+        // Flip patrol direction and sprite scale.
         public void FlipDirection()
         {
             movingRight = !movingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1f;
-            transform.localScale = localScale;
+            Vector3 s = transform.localScale;
+            s.x = -s.x;
+            transform.localScale = s;
         }
 
         public bool IsMovingRight() => movingRight;
         public Transform GetLeftLimit() => leftLimit;
         public Transform GetRightLimit() => rightLimit;
 
-        // returns true if player is within given range AND visible (no obstacles)
+        // Returns true if player is within range and not blocked by obstacles.
+        
         public bool CanSeePlayer(float range)
         {
             if (player == null) return false;
-            Vector2 dir = player.position - transform.position;
-            float dist = dir.magnitude;
-            if (dist > range) return false;
-
-            // check obstacle blocking
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir.normalized, dist, obstacleLayer);
-            if (hit.collider != null) return false;
-
-            // ensure it's actually the player collider (small overlap)
-            return Physics2D.OverlapCircle(player.position, 0.3f, playerLayer) != null;
+            return PlayerInSight(range);
         }
 
-        // Dead zone test: true if player is vertically out of reach while horizontally very close.
-        // If true => unreachable (stop chasing)
-        public bool IsInHorizontalDeadZone()
-        {
-            if (player == null) return false;
-            float dx = Mathf.Abs(player.position.x - transform.position.x);
-            float dy = player.position.y - transform.position.y; // positive = player above
-            // If player is horizontally close but vertically out of reach (higher than verticalReach)
-            return dx <= horizontalDeadZone && Mathf.Abs(dy) > verticalReach;
-        }
-
-        // helper to set chase-facing and movement speed
+        // Move horizontally toward targetX using either chaseSpeed or moveSpeed.
         public void MoveTowardsX(float targetX, float speed)
         {
             float dir = Mathf.Sign(targetX - transform.position.x);
-            if (Mathf.Approximately(dir, 0f)) dir = transform.localScale.x >= 0 ? 1f : -1f;
+            if (Mathf.Approximately(dir, 0f))
+            {
+                // keep previous facing if targetX is very close
+                dir = transform.localScale.x >= 0 ? 1f : -1f;
+            }
+
             rb.linearVelocity = new Vector2(dir * speed, rb.linearVelocity.y);
 
-            // face direction
+            // face movement direction
             Vector3 s = transform.localScale;
             s.x = (dir > 0) ? Mathf.Abs(s.x) : -Mathf.Abs(s.x);
             transform.localScale = s;
         }
 
-        // optional visualization
+        public void MovePatrol(float speed)
+        {
+            float dir = IsMovingRight() ? 1f : -1f;
+            rb.linearVelocity = new Vector2(dir * speed, rb.linearVelocity.y);
+
+            // sprite facing
+            Vector3 s = transform.localScale;
+            s.x = (dir > 0) ? Mathf.Abs(s.x) : -Mathf.Abs(s.x);
+            transform.localScale = s;
+        }
+
+        public void StopMovement()
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
+
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, detectionRangeClose);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, lossRange);
+            // draw ground and wall check rays plus detection ranges for easier debugging
+            Gizmos.color = Color.green;
+            if (groundCheck != null)
+            {
+                Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
+            }
 
-            // dead zone rectangle visualization
+            Gizmos.color = Color.red;
+            if (wallCheck != null)
+            {
+                Vector3 dir = transform.localScale.x >= 0 ? Vector3.right : Vector3.left;
+                Gizmos.DrawLine(wallCheck.position, wallCheck.position + dir * wallCheckDistance);
+            }
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, detectionRange);
+
             Gizmos.color = Color.cyan;
-            Vector3 center = transform.position + Vector3.right * (transform.localScale.x >= 0 ? horizontalDeadZone * 0.5f : -horizontalDeadZone * 0.5f);
-            Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + verticalReach * 0.5f, transform.position.z),
-                                new Vector3(horizontalDeadZone, verticalReach * 2f, 0.1f));
+            Gizmos.DrawWireSphere(transform.position, meleeRange);
         }
     }
 }

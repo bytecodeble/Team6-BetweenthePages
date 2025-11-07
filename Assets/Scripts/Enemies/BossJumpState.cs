@@ -11,16 +11,23 @@ namespace Game.Enemies
         private float pause;
         private float duration;
         private float apex;
+        private Vector2? specificTargetPos;
 
         public BossJumpState(Boss boss) : base(boss)
         {
             this.boss = boss;
         }
 
+        public BossJumpState(Boss boss, Vector2 specificTarget) : base(boss)
+        {
+            this.boss = boss;
+            this.specificTargetPos = specificTarget;
+        }
+
         public override void EnterState()
         {
             startPos = boss.transform.position;
-            targetPos = boss.player != null ? (Vector2)boss.player.position : startPos;
+            targetPos = specificTargetPos ?? (boss.player != null ? (Vector2)boss.player.position : startPos);
             timer = 0f;
             pause = boss.jumpPause;
             duration = boss.jumpDuration;
