@@ -13,57 +13,71 @@ namespace Game.Enemies
 
         public override void EnterState()
         {
-            Debug.Log("Wolf entering Patrol State.");
+            Debug.Log("WolfPatrolState.Enter");
         }
 
         public override void FixedUpdateState()
         {
-            // simple left/right patrol
-            float dir = wolf.IsMovingRight() ? 1f : -1f;
-            wolf.rb.linearVelocity = new Vector2(dir * wolf.moveSpeed, wolf.rb.linearVelocity.y);
+            // basic left/right patrol movement
+            wolf.MovePatrol(wolf.moveSpeed);
 
             bool shouldFlip = false;
-
-            // limits
+            // flip when reaching the patrol limits
             if (wolf.IsMovingRight() && wolf.transform.position.x >= wolf.GetRightLimit().position.x)
-                shouldFlip = true;
-            else if (!wolf.IsMovingRight() && wolf.transform.position.x <= wolf.GetLeftLimit().position.x)
-                shouldFlip = true;
-
-            // rays for ground & wall like Mossmush
-            if (!shouldFlip)
             {
-                Vector2 forwardDir = new Vector2(dir, 0);
+                shouldFlip = true;
+            }
+            else if (!wolf.IsMovingRight() && wolf.transform.position.x <= wolf.GetLeftLimit().position.x)
+            {
+                shouldFlip = true;
+            }
 
-                // Check for ledge ahead
-                if (!Physics2D.Raycast(wolf.groundCheck.position, Vector2.down, wolf.groundCheckDistance, wolf.groundLayer))
+            // check for cliff (no ground ahead)
+            if (!shouldFlip && wolf.groundCheck != null)
+            {
+                Vector2 groundOrigin = wolf.groundCheck.position;
+                RaycastHit2D groundHit = Physics2D.Raycast(groundOrigin, Vector2.down, wolf.groundCheckDistance, wolf.groundLayer);
+                Debug.DrawRay(groundOrigin, Vector2.down * wolf.groundCheckDistance, Color.green);
+
+                if (groundHit.collider == null)
                 {
                     shouldFlip = true;
                 }
+            }
 
-                // Check for wall ahead
-                if (Physics2D.Raycast(wolf.wallCheck.position, forwardDir, wolf.wallCheckDistance, wolf.groundLayer))
+            // check for wall ahead
+            if (!shouldFlip && wolf.wallCheck != null)
+            {
+                Vector2 wallOrigin = wolf.wallCheck.position;
+                Vector2 dir = wolf.IsMovingRight() ? Vector2.right : Vector2.left;
+                RaycastHit2D wallHit = Physics2D.Raycast(wallOrigin, dir, wolf.wallCheckDistance, wolf.groundLayer);
+                Debug.DrawRay(wallOrigin, dir * wolf.wallCheckDistance, Color.red);
+
+                if (wallHit.collider != null)
                 {
                     shouldFlip = true;
                 }
             }
 
             if (shouldFlip)
+            {
                 wolf.FlipDirection();
+            }
         }
 
         public override void UpdateState()
         {
-            // detection: if can see player and not in unreachable dead zone -> switch to chase
-            if (wolf.CanSeePlayer(wolf.detectionRangeClose) && !wolf.IsInHorizontalDeadZone())
+            // constantly check for player in sight
+            if (wolf.CanSeePlayer(wolf.detectionRange))
             {
-                Debug.Log("Player spotted! -> Chase State");
+                Debug.Log("WolfPatrolState.Update - player detected -> switching to Chase");
                 wolf.ChangeState(new WolfChaseState(wolf));
             }
-            else if (wolf.CanSeePlayer(wolf.detectionRangeClose) && wolf.IsInHorizontalDeadZone())
-            {
-                // intentionally do nothing: player is detected but unreachable
-            }
+        }
+
+        public override void ExitState()
+        {
+            Debug.Log("WolfPatrolState.Exit");
         }
     }
 }
