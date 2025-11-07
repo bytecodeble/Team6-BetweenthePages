@@ -388,6 +388,9 @@ PlayerSettings:
   - m_BuildTarget: WebGL
     m_StaticBatching: 0
     m_DynamicBatching: 0
+  - m_BuildTarget: Standalone
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
   m_BuildTargetGraphicsJobMode: []
@@ -776,11 +779,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 34fe69db-65e2-4ba9-82b8-cbd4ebc91939
+  cloudProjectId: 5e3345d1-6f82-4e82-afca-194ce22c14f3
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Team6-2DMetroidvania 2025-09-17_13-15-52
-  organizationId: tingyup
+  projectName: Between the Pages
+  organizationId: cosolas
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
