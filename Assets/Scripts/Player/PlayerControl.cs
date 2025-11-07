@@ -17,7 +17,7 @@ namespace Game.Player
         [Header("Walk")]
         private float maxHorizontalSpeed = 7.5f;
         private float horizontalAcceleration = 140;
-        private float groundFriction = 80;
+        private float groundFriction = 150;
         private float airFriction = 20;
 
         [Header("Jump")]

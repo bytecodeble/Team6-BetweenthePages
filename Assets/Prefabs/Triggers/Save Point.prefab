@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
   saveHintUI: {fileID: 5122770447078417559}
   saveKey: 101
+  saveEffectPrefab: {fileID: 7808268524627651839, guid: 1158e3ab6f64fe1469acf3285edc91ea, type: 3}
 --- !u!1 &1241128881744202548
 GameObject:
   m_ObjectHideFlags: 0
