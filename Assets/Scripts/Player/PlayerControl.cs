@@ -28,6 +28,7 @@ namespace Game.Player
         private float fallingMultiplier = 1.6f; // make falling faster
         private float coyoteTime = 0.2f;
         private float jumpBufferTime = 0.15f;
+        private bool isJumpCut = false;
 
         [Header("Double Jump")]
         private float doubleJumpPower = 18.25f;
@@ -220,7 +221,8 @@ namespace Game.Player
             // If player released jump button while jumping
             if (Input.GetKeyUp(KeyCode.Space) && isJumping && frameVelocity.y > 0)
             {
-                frameVelocity.y /= jumpCutMultiplier;
+                // frameVelocity.y /= jumpCutMultiplier;
+                isJumpCut = true;
                 isJumping = false;
             }
         }
@@ -312,12 +314,15 @@ namespace Game.Player
 
             if (frameVelocity.y > 0)
             {
-                // release early, stronger gravity
-                currentGravity = isHoldingJump ? riseGravity : (riseGravity * jumpCutMultiplier);
+                if (!isHoldingJump || isJumpCut)
+                {
+                    currentGravity *= jumpCutMultiplier;
+                }
+
             }
             else if (frameVelocity.y < 0)
             {
-                currentGravity = riseGravity * fallingMultiplier;
+                currentGravity *= fallingMultiplier;
             }
 
             float currentYSpeed = frameVelocity.y;
@@ -332,6 +337,7 @@ namespace Game.Player
             jumpBufferTimer = 0;
             coyoteTimer = 0f;
             isJumping = true;
+            isJumpCut = false;
 
             JumpStartAnimation();
 
