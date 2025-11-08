@@ -9,8 +9,9 @@ namespace Game.UI
     public class ScreenFader : MonoBehaviour
     {
         public static ScreenFader Instance;
-
+        private bool isTransitioning = false;
         [SerializeField] private Image overlay;
+
         private void Awake()
         {
             if (Instance == null)
@@ -66,7 +67,6 @@ namespace Game.UI
                     return;
                 }
             }
-            SetAlpha(0f);
         }
 
         public IEnumerator FadeOutCoroutine(float duration)
@@ -109,6 +109,9 @@ namespace Game.UI
 
         public IEnumerator FadeToSceneCoroutine(GameObject playerGO, string sceneName, float duration, bool destroyPlayer)
         {
+            isTransitioning = true;
+            Scene currentScene = SceneManager.GetActiveScene();
+
             // lock player input and stop physics
             if (playerGO != null)
             {
@@ -138,16 +141,30 @@ namespace Game.UI
                 }
             }
 
-            var loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            var loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive); 
             if (loadOp == null)
             {
                 Debug.LogError($"[ScreenFader] Failed start loading scene '{sceneName}'");
+                isTransitioning = false;
                 yield break;
             }
 
             yield return new WaitUntil(() => loadOp.isDone);
+
+            Scene newScene = SceneManager.GetSceneByName(sceneName);
+            if (newScene.IsValid() && newScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(newScene);
+            }
+            if (currentScene.isLoaded && currentScene.name != sceneName)
+            {
+                yield return SceneManager.UnloadSceneAsync(currentScene);
+            }
+
             yield return new WaitForSecondsRealtime(0.05f);
             yield return FadeInCoroutine(duration);
+
+            isTransitioning = false;
         }
     }
 }
