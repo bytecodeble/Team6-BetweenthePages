@@ -23,6 +23,7 @@ namespace Game.Enemies
 
         public override void UpdateState()
         {
+            if (boss.IsDead) return;
             timer += Time.deltaTime;
 
             if (timer >= 3f)

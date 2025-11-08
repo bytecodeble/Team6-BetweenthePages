@@ -146,7 +146,7 @@ namespace Game.Enemies
                 sr.color = gray;
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             Destroy(gameObject);
         }
 
