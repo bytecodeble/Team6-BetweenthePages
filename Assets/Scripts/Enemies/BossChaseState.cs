@@ -25,6 +25,7 @@ namespace Game.Enemies
 
         public override void UpdateState()
         {
+            if (boss.IsDead) return;
             if (boss.player == null)
             {
                 boss.ChangeState(boss.GetInitialState());

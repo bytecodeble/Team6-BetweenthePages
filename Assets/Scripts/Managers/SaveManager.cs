@@ -11,6 +11,7 @@ namespace Game.Managers
 
         [Header("Save Settings")]
         [SerializeField] private KeyCode saveKey = KeyCode.E;
+        [SerializeField] private GameObject saveEffectPrefab;
 
         //Check if player get into savePoint range
         private bool playerInRange = false;
@@ -38,6 +39,13 @@ namespace Game.Managers
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
+                // Instantiate the save effect if it's assigned
+                if (saveEffectPrefab != null)
+                {
+                    GameObject effectInstance = Instantiate(saveEffectPrefab, transform.position, Quaternion.identity);
+                    Destroy(effectInstance, 2f);
+                }
+
                 // Record player's world position, current scene name, and this save object's name
                 Vector3 pos = player.transform.position;
                 string sceneName = SceneManager.GetActiveScene().name;

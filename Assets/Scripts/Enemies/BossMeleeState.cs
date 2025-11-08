@@ -32,6 +32,8 @@ namespace Game.Enemies
 
         public override void UpdateState()
         {
+            if (boss.IsDead) return;
+
             timer += Time.deltaTime;
             boss.FacePlayer();
 

@@ -17,7 +17,7 @@ namespace Game.Player
         [Header("Walk")]
         private float maxHorizontalSpeed = 7.5f;
         private float horizontalAcceleration = 140;
-        private float groundFriction = 80;
+        private float groundFriction = 150;
         private float airFriction = 20;
 
         [Header("Jump")]
@@ -28,7 +28,6 @@ namespace Game.Player
         private float fallingMultiplier = 1.6f; // make falling faster
         private float coyoteTime = 0.2f;
         private float jumpBufferTime = 0.15f;
-        private bool isJumpCut = false;
 
         [Header("Double Jump")]
         private float doubleJumpPower = 18.25f;
@@ -56,7 +55,7 @@ namespace Game.Player
 
         [Header("Knockback")]
         private float knockbackHorizontal = 12f;
-        private float knockbackVertical = 8f; 
+        private float knockbackVertical = 8f;
         private float knockbackDuration = 0.25f;
         private float knockbackHorizontalDecay = 20f;
         private bool isKnockback = false;
@@ -221,8 +220,7 @@ namespace Game.Player
             // If player released jump button while jumping
             if (Input.GetKeyUp(KeyCode.Space) && isJumping && frameVelocity.y > 0)
             {
-                // frameVelocity.y /= jumpCutMultiplier;
-                isJumpCut = true;
+                frameVelocity.y /= jumpCutMultiplier;
                 isJumping = false;
             }
         }
@@ -314,15 +312,12 @@ namespace Game.Player
 
             if (frameVelocity.y > 0)
             {
-                if (!isHoldingJump || isJumpCut)
-                {
-                    currentGravity *= jumpCutMultiplier;
-                }
-
+                // release early, stronger gravity
+                currentGravity = isHoldingJump ? riseGravity : (riseGravity * jumpCutMultiplier);
             }
             else if (frameVelocity.y < 0)
             {
-                currentGravity *= fallingMultiplier;
+                currentGravity = riseGravity * fallingMultiplier;
             }
 
             float currentYSpeed = frameVelocity.y;
@@ -337,7 +332,6 @@ namespace Game.Player
             jumpBufferTimer = 0;
             coyoteTimer = 0f;
             isJumping = true;
-            isJumpCut = false;
 
             JumpStartAnimation();
 
@@ -629,7 +623,7 @@ namespace Game.Player
 
             yield return new WaitUntil(() => finished);
 
-        
+
         }
 
 
@@ -691,4 +685,3 @@ namespace Game.Player
 
     }
 }
-

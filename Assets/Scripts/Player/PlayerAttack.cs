@@ -9,7 +9,7 @@ namespace Game.Player
         [SerializeField] private GameObject attackHitbox;
         [SerializeField] private GameObject attackEffect;
         private float hitboxWindow = 0.10f;
-        private float hardstun = 0.15f;
+        private float hardstun = 0.3f;
         private float attackLockDuration = 0.41f;
         private float recovery = 0.16f;
         private float inputBufferWindow = 0.12f;

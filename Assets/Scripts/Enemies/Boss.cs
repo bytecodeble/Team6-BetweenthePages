@@ -105,6 +105,8 @@ namespace Game.Enemies
         {
             if (IsDead) return;
             IsDead = true;
+            currentState = null;
+            StopAllCoroutines();
 
             Debug.Log("Boss.Die: Boss defeated.");
 
@@ -116,7 +118,6 @@ namespace Game.Enemies
                 rb.linearVelocity = Vector2.zero;
             }
 
-            StopAllCoroutines();
             StartCoroutine(FadeAndDestroy());
 
             Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
@@ -145,7 +146,7 @@ namespace Game.Enemies
                 sr.color = gray;
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             Destroy(gameObject);
         }
 
