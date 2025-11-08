@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Game.Player;
 
 namespace Game.UI
 {
@@ -56,12 +57,16 @@ namespace Game.UI
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if(overlay == null)
+            if (overlay == null)
             {
-                overlay = GetComponentInChildren<Image>();
-                if (overlay != null)
-                    SetAlpha(0f);
+                overlay = GetComponentInChildren<Image>(true);
+                if (overlay == null)
+                {
+                    Debug.LogWarning($"[ScreenFader] No overlay image found after loading {scene.name}!");
+                    return;
+                }
             }
+            SetAlpha(0f);
         }
 
         public IEnumerator FadeOutCoroutine(float duration)
@@ -100,6 +105,49 @@ namespace Game.UI
             Color c = overlay.color;
             c.a = a;
             overlay.color = c;
+        }
+
+        public IEnumerator FadeToSceneCoroutine(GameObject playerGO, string sceneName, float duration, bool destroyPlayer)
+        {
+            // lock player input and stop physics
+            if (playerGO != null)
+            {
+                var pc = playerGO.GetComponent<PlayerControl>();
+                if (pc != null) pc.LockInput();
+
+                var rb = playerGO.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    rb.angularVelocity = 0f;
+                    rb.Sleep();
+                }
+            }
+
+            yield return FadeOutCoroutine(duration);
+
+            if (playerGO != null)
+            {
+                if (destroyPlayer)
+                {
+                    Destroy(playerGO);
+                }
+                else
+                {
+                    playerGO.SetActive(false);
+                }
+            }
+
+            var loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            if (loadOp == null)
+            {
+                Debug.LogError($"[ScreenFader] Failed start loading scene '{sceneName}'");
+                yield break;
+            }
+
+            yield return new WaitUntil(() => loadOp.isDone);
+            yield return new WaitForSecondsRealtime(0.05f);
+            yield return FadeInCoroutine(duration);
         }
     }
 }
