@@ -1415,6 +1415,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 152816835}
+  - component: {fileID: 152816836}
   m_Layer: 0
   m_Name: foreground
   m_TagString: Untagged
@@ -1454,6 +1455,22 @@ Transform:
   - {fileID: 1881362019}
   m_Father: {fileID: 1778374018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &152816836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152816834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8ad8c5c7985c0459b6acdca0137041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
+  cam: {fileID: 903172761}
+  layerIndex: 0
+  totalLayers: 5
+  globalScale: 0.2
 --- !u!1 &159197454
 GameObject:
   m_ObjectHideFlags: 0
@@ -22196,6 +22213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 562208405}
+  - component: {fileID: 562208406}
   m_Layer: 0
   m_Name: middleground
   m_TagString: Untagged
@@ -22224,6 +22242,22 @@ Transform:
   - {fileID: 1643219244}
   m_Father: {fileID: 1778374018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &562208406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562208404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8ad8c5c7985c0459b6acdca0137041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
+  cam: {fileID: 903172761}
+  layerIndex: 2
+  totalLayers: 5
+  globalScale: 0.1
 --- !u!1 &565067785
 GameObject:
   m_ObjectHideFlags: 0
@@ -34305,9 +34339,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
   cam: {fileID: 903172761}
-  layerIndex: 3
-  totalLayers: 4
-  globalScale: 0.5
+  layerIndex: 4
+  totalLayers: 5
+  globalScale: 0.1
 --- !u!1 &763223153
 GameObject:
   m_ObjectHideFlags: 0
@@ -35855,6 +35889,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 910562817}
+  - component: {fileID: 910562818}
   m_Layer: 0
   m_Name: Shadow_Overlay
   m_TagString: Untagged
@@ -35891,6 +35926,22 @@ Transform:
   - {fileID: 687576442}
   m_Father: {fileID: 1778374018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &910562818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910562816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8ad8c5c7985c0459b6acdca0137041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
+  cam: {fileID: 903172761}
+  layerIndex: 1
+  totalLayers: 5
+  globalScale: 0.17
 --- !u!1 &914793614
 GameObject:
   m_ObjectHideFlags: 0
@@ -36800,6 +36851,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1078161260}
+  - component: {fileID: 1078161261}
   m_Layer: 0
   m_Name: Backgrounds
   m_TagString: Untagged
@@ -36836,6 +36888,22 @@ Transform:
   - {fileID: 465865248}
   m_Father: {fileID: 1778374018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1078161261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078161259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8ad8c5c7985c0459b6acdca0137041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.ParallaxController
+  cam: {fileID: 903172761}
+  layerIndex: 3
+  totalLayers: 5
+  globalScale: 0.15
 --- !u!1 &1095189886
 GameObject:
   m_ObjectHideFlags: 0
