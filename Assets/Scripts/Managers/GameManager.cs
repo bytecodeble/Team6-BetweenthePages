@@ -204,7 +204,7 @@ namespace Game.Managers
                 yield return new WaitForSeconds(0.1f);
             }
 
-            RespawnPlayer(Invinci: true);
+            yield return RespawnPlayerCoroutine(Invinci: true);
 
             // same frame to ensure player exists
             yield return new WaitForSeconds(postRespawnSettle);
