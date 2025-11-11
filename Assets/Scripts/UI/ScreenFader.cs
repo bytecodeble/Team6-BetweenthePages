@@ -46,6 +46,16 @@ namespace Game.UI
                 c.a = 0f;
                 overlay.color = c;
             }
+
+            //make sure RectTransform in overlay fullscreen
+            if (overlay != null)
+            {
+                RectTransform rt = overlay.rectTransform;
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
         }
 
         private void OnDestroy()

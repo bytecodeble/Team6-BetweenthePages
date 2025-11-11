@@ -27,6 +27,10 @@ namespace Game.Player
         private bool isAttacking = false;
         private bool queuedAttack = false;
         private float attackStartTime = 0f;
+        //cooling timer
+        private float nextAttackTime = 0f;
+        // cooldown between clicks
+        [SerializeField] private float attackCooldown = 0.1f;
 
 
         void Awake()
@@ -44,8 +48,11 @@ namespace Game.Player
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J))
+            if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
             {
+                //set cooldown timer for the next allowed attack
+                nextAttackTime = Time.time + attackCooldown;
+
                 if (!isAttacking)
                 {
                     StartCoroutine(PerformAttack());
@@ -55,7 +62,8 @@ namespace Game.Player
                     // if already attacking, allow buffer or queue only within the inputBuffer near the end
                     float t = Time.time - attackStartTime;
                     float timeUntilLockEnds = attackLockDuration - t;
-                    if (timeUntilLockEnds <= inputBufferWindow && timeUntilLockEnds > 0f)
+                    //Extend the input buffer by 1.5x to allow slightly earlier inputs for smoother and more responsive consecutive attacks
+                    if (timeUntilLockEnds <= inputBufferWindow * 1.8f && timeUntilLockEnds > 0f)
                     {
                         queuedAttack = true;
                     }
