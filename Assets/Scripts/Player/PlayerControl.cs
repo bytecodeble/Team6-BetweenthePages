@@ -21,16 +21,16 @@ namespace Game.Player
         private float airFriction = 20;
 
         [Header("Jump")]
-        private float jumpPower = 20.25f;
-        private float maxFallSpeed = 50f;
-        private float riseGravity = 50.625f;
-        private float jumpCutMultiplier = 2.5f; // gravity multiplier added when jump is released early
-        private float fallingMultiplier = 1.6f; // make falling faster
-        private float coyoteTime = 0.2f;
-        private float jumpBufferTime = 0.15f;
+        private float jumpPower = 19.18f;//
+        private float maxFallSpeed = 42f;
+        private float riseGravity = 46f;//
+        private float jumpCutMultiplier = 1.9f; // gravity multiplier added when jump is released early
+        private float fallingMultiplier = 1.1f; // make falling faster
+        private float coyoteTime = 0.1f;
+        private float jumpBufferTime = 0.07f;
 
         [Header("Double Jump")]
-        private float doubleJumpPower = 18.25f;
+        private float doubleJumpPower = 17.28f;//
         public int maxDoubleJump = 0;
 
         private float accelerationRate;
