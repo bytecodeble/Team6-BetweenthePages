@@ -21,16 +21,16 @@ namespace Game.Player
         private float airFriction = 20;
 
         [Header("Jump")]
-        private float jumpPower = 20.25f;
-        private float maxFallSpeed = 50f;
-        private float riseGravity = 50.625f;
-        private float jumpCutMultiplier = 2.5f; // gravity multiplier added when jump is released early
-        private float fallingMultiplier = 1.6f; // make falling faster
-        private float coyoteTime = 0.2f;
-        private float jumpBufferTime = 0.15f;
+        private float jumpPower = 19.18f;//
+        private float maxFallSpeed = 42f;
+        private float riseGravity = 46f;//
+        private float jumpCutMultiplier = 1.9f; // gravity multiplier added when jump is released early
+        private float fallingMultiplier = 1.1f; // make falling faster
+        private float coyoteTime = 0.1f;
+        private float jumpBufferTime = 0.07f;
 
         [Header("Double Jump")]
-        private float doubleJumpPower = 18.25f;
+        private float doubleJumpPower = 17.28f;//
         public int maxDoubleJump = 0;
 
         private float accelerationRate;
@@ -78,7 +78,7 @@ namespace Game.Player
         private const string ANIM_JUMPRISE = "jump_rise";
         private const string ANIM_JUMPFALL = "jump_fall";
         private const string ANIM_JUMPLAND = "jump_land";
-        private const string ANIM_DOUBLEJUMPRISE = "double_jump";
+        //private const string ANIM_DOUBLEJUMPRISE = "double_jump";
         private const string ANIM_ATTACK = "attack";
         private const string ANIM_HURT = "hurt";
         private const string ANIM_DEATH = "death";
@@ -151,9 +151,30 @@ namespace Game.Player
                 spineAnimation.AnimationState.Data.SetMix(ANIM_IDLE, ANIM_HURT, 0.05f);
             }
 
-            playerHealth.OnDamageTaken += PlayHurtAnimation;
-            playerAttack.OnAttackPerformed += PlayerAttackAnimation;
+            if (playerHealth != null)
+            {
+                playerHealth.OnDamageTaken += PlayHurtAnimation;
+                playerHealth.OnDeath += OnPlayerDeath; // lock input immediately on death
+            }
 
+            if (playerAttack != null)
+            {
+                playerAttack.OnAttackPerformed += PlayerAttackAnimation;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (playerHealth != null)
+            {
+                playerHealth.OnDamageTaken -= PlayHurtAnimation;
+                playerHealth.OnDeath -= OnPlayerDeath;
+            }
+
+            if (playerAttack != null)
+            {
+                playerAttack.OnAttackPerformed -= PlayerAttackAnimation;
+            }
         }
 
         void Update()
@@ -406,15 +427,15 @@ namespace Game.Player
         {
             if (spineAnimation == null) return;
             //playingDoubleJump = true;
-            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DOUBLEJUMPRISE, false);
-            entry.Complete += (te) =>
-            {
-                //playingDoubleJump = false;
-                if (frameVelocity.y > 0.1f)
-                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
-                else
-                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
-            };
+            //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DOUBLEJUMPRISE, false);
+            //entry.Complete += (te) =>
+            //{
+            //    //playingDoubleJump = false;
+            //    if (frameVelocity.y > 0.1f)
+            //        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
+            //    else
+            //        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
+            //};
         }
 
         private void UpdateAnimationState()
@@ -682,6 +703,24 @@ namespace Game.Player
             Debug.Log($"[JumpStats #{jumpRecords.Count}] airtime={airtime:F3}s | peakHeight={peakHeight:F3}u | landingHorizontal={landingXDisplacement:F3}u | maxHorizontalDelta={maxHorizontalDelta:F3}u | startY={airborneStartPos.y:F3} | peakY={airbornePeakY:F3}");
         }
 
+        private void OnPlayerDeath()
+        {
+            // immediately stop control and movement when dead
+            inputLocked = true;
+            animationLocked = true;
+            CancelInvoke(nameof(UnlockAnimation));
 
+            horizontalInput = 0f;
+            frameVelocity = Vector2.zero;
+            if (RB != null)
+            {
+                RB.linearVelocity = Vector2.zero;
+            }
+
+            if (playerAttack != null)
+            {
+                playerAttack.enabled = false;
+            }
+        }
     }
 }
