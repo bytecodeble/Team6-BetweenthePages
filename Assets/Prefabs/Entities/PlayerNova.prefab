@@ -165,8 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212976d81d1db414eafa0ef7a3362bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
-  maxDoubleJump: 0
-  hasDoubleJump: 0
+  maxDoubleJump: 1
+  hasDoubleJump: 1
   groundPoint: {fileID: 8136481306993496983}
   whatIsGround:
     serializedVersion: 2
