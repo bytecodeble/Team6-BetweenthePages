@@ -22,6 +22,10 @@ namespace Game.Player
         [SerializeField] private float invincibleTime = 1.5f;
         public bool isInvincible = false;
 
+        // death state
+        private bool isDead = false;
+        public bool IsDead => isDead;
+
         public delegate void PlayerEvent();
         public event PlayerEvent OnDamageTaken;
         public event PlayerEvent OnDeath;
@@ -30,7 +34,6 @@ namespace Game.Player
         {
             currentHealth = maxHealth;
             UpdateHearts();
-
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -43,10 +46,9 @@ namespace Game.Player
 
         public void TakeDamage(int damage, Vector2? sourcePosition = null)
         {
-            //if player in invincible status,jump out of the TakeDamage()
-            if (isInvincible) return;
+            // if player is invincible or already dead, ignore
+            if (isInvincible || isDead) return;
 
-            //if player is not vincible,go on
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -54,7 +56,6 @@ namespace Game.Player
 
             if (currentHealth <= 0)
             {
-                OnDeath?.Invoke();
                 Die();
             }
             else
@@ -73,8 +74,6 @@ namespace Game.Player
 
                 StartCoroutine(DamageEffect());
             }
-
-
         }
 
         private IEnumerator DamageEffect()
@@ -87,7 +86,6 @@ namespace Game.Player
             {
                 pc.StartInvincibleFlicker(invincibleTime);
             }
-
 
             //get into invincibale time
             yield return new WaitForSeconds(invincibleTime);
@@ -106,26 +104,30 @@ namespace Game.Player
 
         private void Die()
         {
+            if (isDead) return; // guard against multiple death handling
+
+            isDead = true;
+            isInvincible = true; // prevent any further damage while dying
+
             OnDeath?.Invoke();
 
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.StartCoroutine(GameManager.Instance.DeathSequence(gameObject));
             }
-
         }
 
         public float GetInvincibleTime()
-        {
-            return invincibleTime;
-        }
+        { return invincibleTime; }
+
 
         public void RestoreFullHealth()
         {
             currentHealth = maxHealth;
+            isDead = false;
+            isInvincible = false;
             UpdateHearts();
         }
     }
-
 
 }
