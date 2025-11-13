@@ -7,18 +7,24 @@ namespace Game.Enemies
     public class Boss : BaseEnemy
     {
         //Boss setting
-        private float chaseSpeed = 3f;
+        private float chaseSpeed = 4f;
         public float meleeRange = 4f;
         public float meleeVerticalRange = 2f;
 
-        public float restMin = 3f;
-        public float restMax = 5f;
+        public float restMin = 0.7f;
+        public float restMax = 1.5f;
 
         // jump attack settings
-        public float jumpChance = 0.5f;
+        public float jumpChance = 0.3f;
         public float jumpDuration = 1.5f;
         public float jumpPause = 0.5f;
         public float jumpApexHeight = 4f;
+
+        // dash attack settings
+        public float dashChance = 0.5f;
+        public float dashWindupTime = 0.4f;
+        public float dashAttackDuration = 0.2f;
+        public float dashStunDuration = 0.4f;
 
         // limit combo attacks prevent soft lock
         public int maxComboAttacks = 2;

@@ -31,7 +31,17 @@ namespace Game.Enemies
                 if (boss.IsPlayerInRangeFloat(boss.detectionRange))
                 {
                     Debug.Log("Player detected!");
-                    boss.ChangeState(new BossChaseState(boss));
+                    // 50% chance to enter dash attack vs chase
+                    if (Random.value < boss.dashChance)
+                    {
+                        Debug.Log("BossPatrolState.Update - choosing DashAttack");
+                        boss.ChangeState(new BossDashState(boss));
+                    }
+                    else
+                    {
+                        Debug.Log("BossPatrolState.Update - choosing Chase");
+                        boss.ChangeState(new BossChaseState(boss));
+                    }
                     return;
                 }
 
