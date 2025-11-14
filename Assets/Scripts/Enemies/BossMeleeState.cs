@@ -8,7 +8,7 @@ namespace Game.Enemies
         private float timer;
         private float windup = 0.8f;
         private float attack = 0.3f;
-        private float recovery = 1.2f;
+        private float recovery = 0.8f;
         private float totalDuration;
         private bool attackSpawned = false;
         private bool chargeSpawned = false;
