@@ -26,6 +26,14 @@ namespace Game.UI
             bool isActive = optionsPanel.activeSelf;
             optionsPanel.SetActive(!isActive);
         }
+
+        public void CloseOptions(GameObject optionsPanel)
+        {
+            if (optionsPanel != null && optionsPanel.activeSelf)
+            {
+                optionsPanel.SetActive(false);
+            }
+        }
     }
 
 }
