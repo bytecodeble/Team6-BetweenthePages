@@ -264,3 +264,4 @@ MonoBehaviour:
   wallCheckDistance: 0.2
   chaseSpeed: 3
   meleeRange: 3
+  soulOrbPrefab: {fileID: 1611416339726665228, guid: b64c7c0fbe8e218449c6f4fea09edbab, type: 3}

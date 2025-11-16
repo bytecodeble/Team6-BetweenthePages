@@ -1,3 +1,5 @@
+using Game.Environment;
+using Game.Managers;
 using System.Collections;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -19,6 +21,8 @@ namespace Game.Enemies
         private Collider2D col;
 
         private bool movingRight = true;
+
+        [SerializeField] private GameObject soulOrbPrefab;
 
         protected override void Awake()
         {
@@ -74,6 +78,18 @@ namespace Game.Enemies
         {
             if (IsDead) return;
             IsDead = true;
+
+            /*
+            // get score when killed  
+            if (ScoreManager.Instance != null) {
+
+                ScoreManager.Instance.AddScore(1);
+            }*/
+
+            //call DropSoulOrb function which in this script
+            DropSoulOrb(1);
+
+
             StartCoroutine(DeathRoutine());
         }
 
@@ -102,6 +118,16 @@ namespace Game.Enemies
 
             yield return new WaitForSeconds(1f);
             Destroy(gameObject);
+        }
+
+        //drop a SoulOrb when enemy die
+        private void DropSoulOrb(int score)
+        {
+            if (soulOrbPrefab != null)
+            {
+                GameObject orb = Instantiate(soulOrbPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+                orb.GetComponent<SoulOrb>().SetValue(score);
+            }
         }
 
     }

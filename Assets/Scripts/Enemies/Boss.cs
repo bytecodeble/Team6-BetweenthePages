@@ -1,5 +1,6 @@
-using UnityEngine;
+using Game.Managers;
 using System.Collections;
+using UnityEngine;
 
 namespace Game.Enemies
 {
@@ -112,6 +113,14 @@ namespace Game.Enemies
             if (IsDead) return;
             IsDead = true;
             currentState = null;
+
+            // get score when killed  
+            if (ScoreManager.Instance != null)
+            {
+
+                ScoreManager.Instance.AddScore(1);
+            }
+
             StopAllCoroutines();
 
             Debug.Log("Boss.Die: Boss defeated.");
@@ -123,6 +132,7 @@ namespace Game.Enemies
                 rb.simulated = false;
                 rb.linearVelocity = Vector2.zero;
             }
+            //drop light ball
 
             StartCoroutine(FadeAndDestroy());
 
