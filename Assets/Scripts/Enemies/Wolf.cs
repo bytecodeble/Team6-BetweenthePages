@@ -30,7 +30,11 @@ namespace Game.Enemies
         private Collider2D col;
 
         [Header("SoulOrb")]
-        [SerializeField]private GameObject soulOrbPrefab;
+        [SerializeField] private GameObject soulOrbPrefab;
+
+        // coroutine handle for deferred player lookup
+        private Coroutine findPlayerRoutine;
+
         protected override void Awake()
         {
             base.Awake();
@@ -40,11 +44,25 @@ namespace Game.Enemies
             sr = GetComponent<SpriteRenderer>();
             col = GetComponent<Collider2D>();
 
-            // make sure player reference exists
-            if (player == null)
+            // initial attempt (may fail if Player not spawned yet)
+            TryAcquirePlayer();
+        }
+
+        private void OnEnable()
+        {
+            // If Player isn't ready yet, keep trying until found
+            if (player == null && findPlayerRoutine == null)
             {
-                var p = GameObject.FindGameObjectWithTag("Player");
-                if (p) player = p.transform;
+                findPlayerRoutine = StartCoroutine(FindPlayerUntilFound());
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (findPlayerRoutine != null)
+            {
+                StopCoroutine(findPlayerRoutine);
+                findPlayerRoutine = null;
             }
         }
 
@@ -138,11 +156,14 @@ namespace Game.Enemies
         public Transform GetRightLimit() => rightLimit;
 
         // Returns true if player is within range and not blocked by obstacles.
-        
         public bool CanSeePlayer(float range)
         {
-            if (player == null) return false;
-            return PlayerInSight(range);
+            if (player == null)
+            {
+                // self-heal if Player was created after this enemy
+                TryAcquirePlayer();
+            }
+            return player != null && PlayerInSight(range);
         }
 
         // Move horizontally toward targetX using either chaseSpeed or moveSpeed.
@@ -212,5 +233,29 @@ namespace Game.Enemies
             }
         }
 
+        // --- Player acquisition helpers ---
+
+        private void TryAcquirePlayer()
+        {
+            if (player != null) return;
+
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null)
+            {
+                player = p.transform;
+            }
+        }
+
+        private IEnumerator FindPlayerUntilFound()
+        {
+            // Try each frame until Player exists in the scene
+            while (player == null)
+            {
+                TryAcquirePlayer();
+                if (player != null) break;
+                yield return null; // wait one frame
+            }
+            findPlayerRoutine = null;
+        }
     }
 }
