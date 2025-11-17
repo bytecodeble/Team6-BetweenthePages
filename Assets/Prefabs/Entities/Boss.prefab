@@ -182,6 +182,8 @@ MonoBehaviour:
   attackHitboxPrefab: {fileID: 1599291260836444165, guid: a4aa37678ad9311489626f8cebb49966, type: 3}
   chargeEffectPrefab: {fileID: 1183854279400575128, guid: ab8bd9ca354e1cc4e9b23aa7ce021cd9, type: 3}
   redCloak: {fileID: 8618084531564640110, guid: 6513fdbd14291f44f9c081969d95170b, type: 3}
+  spineAnimation: {fileID: 0}
+  soulOrbPrefab: {fileID: 1611416339726665228, guid: b64c7c0fbe8e218449c6f4fea09edbab, type: 3}
 --- !u!23 &3595876523415777778
 MeshRenderer:
   m_ObjectHideFlags: 0

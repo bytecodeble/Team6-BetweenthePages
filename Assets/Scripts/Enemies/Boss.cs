@@ -1,3 +1,4 @@
+using Game.Environment;
 using Game.Managers;
 using Spine;
 using Spine.Unity;
@@ -55,6 +56,10 @@ namespace Game.Enemies
         private Color detectionColor = Color.yellow;
         private Color meleeColor = Color.red;
         private float gizmoYOffset = 2.55f;
+
+        //soulorb 
+        [Header("SoulOrb VFX")]
+        [SerializeField] private GameObject soulOrbPrefab;
 
         protected override void Awake()
         {
@@ -125,12 +130,10 @@ namespace Game.Enemies
             if (IsDead) return;
             IsDead = true;
             currentState = null;
+            
 
-            // get score when killed  
-            if (ScoreManager.Instance != null)
-            {
-                ScoreManager.Instance.AddScore(1);
-            }
+            //call DropSoulOrb function which in this script
+            DropSoulOrb(100);
 
             StopAllCoroutines();
 
@@ -144,7 +147,7 @@ namespace Game.Enemies
                 rb.linearVelocity = Vector2.zero;
             }
 
-            // drop light orbs
+            
 
             // Play death animation and cleanup on completion
             DeathAnimation(() =>
@@ -243,6 +246,16 @@ namespace Game.Enemies
             
             Gizmos.color = meleeColor;
             Gizmos.DrawWireSphere(gizmoCenter, meleeRange);
+        }
+
+        //drop a SoulOrb when enemy die
+        private void DropSoulOrb(int score)
+        {
+            if (soulOrbPrefab != null)
+            {
+                GameObject orb = Instantiate(soulOrbPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+                orb.GetComponent<SoulOrb>().SetValue(score);
+            }
         }
     }
 }

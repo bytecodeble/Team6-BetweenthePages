@@ -100,16 +100,8 @@ namespace Game.Enemies
             if (IsDead) return;
             IsDead = true;
 
-            /*
-            // get score when killed 
-            if (ScoreManager.Instance != null)
-            {
-                ScoreManager.Instance.AddScore(1);
-            }
-            */
-
             //call DropSoulOrb function which in this script
-            DropSoulOrb(1);
+            DropSoulOrb(5);
 
 
             StartCoroutine(DeathRoutine());
