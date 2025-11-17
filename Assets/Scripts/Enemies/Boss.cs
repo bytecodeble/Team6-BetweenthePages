@@ -1,4 +1,6 @@
 using Game.Managers;
+using Spine;
+using Spine.Unity;
 using System.Collections;
 using UnityEngine;
 
@@ -32,12 +34,22 @@ namespace Game.Enemies
         public int comboAttackCount = 0;
         public Vector3 roomCenterPos = new Vector3(-30, -3, 0);
 
-        private SpriteRenderer sr;
         private Collider2D col;
 
         public GameObject attackHitboxPrefab;
         public GameObject chargeEffectPrefab;
         [SerializeField] private GameObject redCloak;
+
+        // Spine Animation
+        [Header("Animation")]
+        [SerializeField] private SkeletonAnimation spineAnimation;
+        private const int TRACK_INDEX = 0;
+
+        private const string ANIM_IDLE = "idle";
+        private const string ANIM_ATTACK = "attack";
+        private const string ANIM_JUMP = "jump";
+        private const string ANIM_HURT = "hurt";
+        private const string ANIM_DEATH = "death";
 
         //Debug gizmos
         private Color detectionColor = Color.yellow;
@@ -51,11 +63,23 @@ namespace Game.Enemies
             currentHealth = maxHealth;
 
             rb = GetComponent<Rigidbody2D>();
-            sr = GetComponent<SpriteRenderer>();
             col = GetComponent<Collider2D>();
 
             // use BaseEnemy.detectionRange, set it here to avoid hiding warning
             detectionRange = 10f;
+
+            if (spineAnimation == null)
+                spineAnimation = GetComponent<SkeletonAnimation>();
+
+            // Optional simple mixes following PlayerControl style
+            if (spineAnimation != null && spineAnimation.AnimationState != null && spineAnimation.AnimationState.Data != null)
+            {
+                var data = spineAnimation.AnimationState.Data;
+                data.SetMix(ANIM_IDLE, ANIM_HURT, 0.05f);
+                data.SetMix(ANIM_HURT, ANIM_IDLE, 0.1f);
+                data.SetMix(ANIM_ATTACK, ANIM_IDLE, 0.15f);
+                data.SetMix(ANIM_JUMP, ANIM_IDLE, 0.15f);
+            }
 
             var p = GameObject.FindGameObjectWithTag("Player");
             if (p != null)
@@ -84,28 +108,16 @@ namespace Game.Enemies
             if (IsDead) return;
 
             currentHealth -= damage;
-            if (currentHealth > 0) StartCoroutine(FlashWhite());
+
+            // Play hurt when still alive
+            if (currentHealth > 0)
+            {
+                HurtAnimation();
+            }
 
             Debug.Log($"Boss.TakeDamage: -{damage} HP, current = {currentHealth}");
 
             if (currentHealth <= 0) Die();
-        }
-
-        private IEnumerator FlashWhite()
-        {
-            if (sr == null) yield break;
-
-            Color original = sr.color;
-            Color flash = Color.grey;
-
-            for (int i = 0; i < 3; i++)
-            {
-                sr.color = flash;
-                yield return new WaitForSeconds(0.05f);
-                sr.color = original;
-                yield return new WaitForSeconds(0.05f);
-            }
-            sr.color = original;
         }
 
         protected override void Die()
@@ -117,7 +129,6 @@ namespace Game.Enemies
             // get score when killed  
             if (ScoreManager.Instance != null)
             {
-
                 ScoreManager.Instance.AddScore(1);
             }
 
@@ -132,38 +143,20 @@ namespace Game.Enemies
                 rb.simulated = false;
                 rb.linearVelocity = Vector2.zero;
             }
-            //drop light ball
 
-            StartCoroutine(FadeAndDestroy());
+            // drop light orbs
 
-            Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
-            if (redCloak != null)
+            // Play death animation and cleanup on completion
+            DeathAnimation(() =>
             {
-                Instantiate(redCloak, cloakSpawnPos, Quaternion.identity);
-            }
-
-        }
-
-        private IEnumerator FadeAndDestroy()
-        {
-            if (sr != null)
-            {
-                Color original = sr.color;
-                Color gray = Color.gray;
-
-                float fadeDuration = 0.5f;
-                float t = 0f;
-                while (t < fadeDuration)
+                Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
+                if (redCloak != null)
                 {
-                    sr.color = Color.Lerp(original, gray, t / fadeDuration);
-                    t += Time.deltaTime;
-                    yield return null;
+                    Instantiate(redCloak, cloakSpawnPos, Quaternion.identity);
                 }
-                sr.color = gray;
-            }
 
-            yield return new WaitForSeconds(0.5f);
-            Destroy(gameObject);
+                Destroy(gameObject);
+            });
         }
 
         public bool IsPlayerInRangeFloat(float range)
@@ -192,6 +185,53 @@ namespace Game.Enemies
         {
             if (IsDead) return;
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
+
+        // Animation helpers
+        public void IdleAnimation()
+        {
+            if (spineAnimation == null) return;
+            if (spineAnimation.AnimationName != ANIM_IDLE)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        }
+
+        public void AttackAnimation()
+        {
+            if (spineAnimation == null) return;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_ATTACK, false);
+        }
+
+        public void JumpAnimation()
+        {
+            if (spineAnimation == null) return;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMP, true);
+        }
+
+        public void HurtAnimation()
+        {
+            if (spineAnimation == null) return;
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
+            entry.Complete += (e) =>
+            {
+                // fallback to idle after hurt
+                if (!IsDead)
+                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+            };
+        }
+
+        public void DeathAnimation(System.Action onComplete = null)
+        {
+            if (spineAnimation == null)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
+            if (onComplete != null)
+            {
+                entry.Complete += (e) => onComplete();
+            }
         }
 
         private void OnDrawGizmosSelected()

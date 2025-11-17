@@ -27,6 +27,10 @@ namespace Game.Enemies
             attackSpawned = false;
             chargeSpawned = false;
             boss.StopMovement();
+
+            // Play attack animation for the melee sequence
+            boss.AttackAnimation();
+
             Debug.Log("BossMeleeState.Enter");
         }
 

@@ -18,6 +18,7 @@ namespace Game.Enemies
             restDuration = Random.Range(boss.restMin, boss.restMax);
             timer = 0f;
             boss.StopMovement();
+            boss.IdleAnimation();
             Debug.Log($"BossPatrolState.Enter - resting for {restDuration:F2}s");
         }
 
