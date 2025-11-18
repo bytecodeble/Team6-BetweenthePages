@@ -31,19 +31,30 @@ namespace Game.Enemies
             {
                 if (boss.IsPlayerInRangeFloat(boss.detectionRange))
                 {
-                    Debug.Log("Player detected!");
-                    // 50% chance to enter dash attack vs chase
-                    if (Random.value < boss.dashChance)
+                    // measure distances
+                    float horizontalDist = Mathf.Abs(boss.player.position.x - boss.transform.position.x);
+                    float verticalDist = Mathf.Abs(boss.player.position.y - boss.transform.position.y);
+                    float radialDist = Vector2.Distance(boss.transform.position, boss.player.position);
+
+                    // in melee range only melee
+                    if (horizontalDist <= boss.meleeRange && verticalDist <= boss.meleeVerticalRange)
                     {
-                        Debug.Log("BossPatrolState.Update - choosing DashAttack");
-                        boss.ChangeState(new BossDashState(boss));
+                        Debug.Log("BossPatrolState.Update - player in melee range -> Melee");
+                        boss.ChangeState(new BossMeleeState(boss));
+                        return;
                     }
-                    else
+
+                    // within detection but outside melee then 50% Dash, 50% Chase
+                    if (radialDist > boss.meleeRange && radialDist <= boss.detectionRange)
                     {
-                        Debug.Log("BossPatrolState.Update - choosing Chase");
-                        boss.ChangeState(new BossChaseState(boss));
+                        bool chooseDash = Random.value < boss.dashChance; // 0.5 by default
+                        Debug.Log($"BossPatrolState.Update - mid range ({radialDist:F2}). ChooseDash={chooseDash}");
+                        if (chooseDash)
+                            boss.ChangeState(new BossDashState(boss));
+                        else
+                            boss.ChangeState(new BossChaseState(boss));
+                        return;
                     }
-                    return;
                 }
 
                 if (timer >= restDuration)

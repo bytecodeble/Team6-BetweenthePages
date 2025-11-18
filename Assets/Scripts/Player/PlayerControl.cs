@@ -95,6 +95,9 @@ namespace Game.Player
         //private bool playingDoubleJump = false;
         private bool playingJumpLand = false;
 
+        // death state (mirror Boss.cs style)
+        private bool isDead = false;
+        public bool IsDead => isDead;
 
         #endregion
 
@@ -179,7 +182,7 @@ namespace Game.Player
 
         void Update()
         {
-            if (inputLocked) return;
+            if (inputLocked || isDead) return;
 
             GatherInput();
             CheckGround();
@@ -188,6 +191,8 @@ namespace Game.Player
 
         private void FixedUpdate()
         {
+            if (isDead) return;
+
             if (!isKnockback)
             {
                 HandleVerticalMovement();
@@ -248,6 +253,8 @@ namespace Game.Player
 
         private void CheckGround()
         {
+            if (isDead) return;
+
             bool wasOnGround = isOnGround;
             isOnGround = Physics2D.OverlapCircle(groundPoint.position, .2f, whatIsGround);
 
@@ -258,14 +265,13 @@ namespace Game.Player
                 var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPLAND, false);
                 entry.Complete += (te) =>
                 {
-                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+                    if (!isDead)
+                        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
                 };
 
                 coyoteTimer = 0f;
                 isJumping = false;
                 doubleJumpRemaining = maxDoubleJump; // reset double jump
-                //playingJumpStart = false;
-                //playingDoubleJump = false;
 
                 if (isTrackingAirborne)
                 {
@@ -385,7 +391,6 @@ namespace Game.Player
             inputLocked = false;
         }
 
-
         public void IdleAnimation()
         {
             if (spineAnimation.AnimationName != ANIM_IDLE)
@@ -400,13 +405,11 @@ namespace Game.Player
 
         private void JumpStartAnimation()
         {
-            if (spineAnimation == null) return;
-            //playingJumpStart = true;
+            if (spineAnimation == null || isDead) return;
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPSTART, false);
             entry.Complete += (te) =>
             {
-                //playingJumpStart = false;
-                // if still moving up, go to rise, otherwise fall
+                if (isDead) return;
                 if (frameVelocity.y > 0.1f)
                     spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
                 else
@@ -416,33 +419,20 @@ namespace Game.Player
 
         private void JumpFallAnimation()
         {
-            // cancel any jumpstart or doublejump playing flags so falling takes over
-            //playingJumpStart = false;
-            //playingDoubleJump = false;
+            if (isDead) return;
             spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
         }
 
-
         private void DoubleJumpAnimation()
         {
-            if (spineAnimation == null) return;
-            //playingDoubleJump = true;
-            //var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DOUBLEJUMPRISE, false);
-            //entry.Complete += (te) =>
-            //{
-            //    //playingDoubleJump = false;
-            //    if (frameVelocity.y > 0.1f)
-            //        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPRISE, true);
-            //    else
-            //        spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMPFALL, true);
-            //};
+            if (spineAnimation == null || isDead) return;
+            // intentionally disabled double jump anim setup here
         }
 
         private void UpdateAnimationState()
         {
             if (spineAnimation == null) return;
-
-            if (animationLocked) return;
+            if (animationLocked || isDead) return;
 
             if (spineAnimation.AnimationName == ANIM_JUMPLAND && Mathf.Abs(horizontalInput) > 0.1f)
             {
@@ -500,10 +490,9 @@ namespace Game.Player
             animationLocked = false;
         }
 
-
         public void PlayerAttackAnimation()
         {
-            if (animationLocked) return;
+            if (animationLocked || isDead) return;
             if (spineAnimation == null) return;
 
             LockAnimation(0.25f);
@@ -511,6 +500,7 @@ namespace Game.Player
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, "attack", false);
             entry.Complete += (e) =>
             {
+                if (isDead) return;
                 UnlockAnimation();
                 spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
             };
@@ -518,23 +508,23 @@ namespace Game.Player
 
         public void PlayHurtAnimation()
         {
-            if (animationLocked) return;
+            if (animationLocked || isDead) return;
             if (spineAnimation == null) return;
             LockAnimation(0.25f);
             var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
             entry.Complete += (e) =>
             {
+                if (isDead) return;
                 UnlockAnimation();
                 spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
             };
         }
 
-
-
         public void ApplyKnockback(Vector2 sourcePosition)
         {
+            if (isDead) return;
+
             isKnockback = true;
-            // only horizontal direction needed
             float dirX = transform.position.x - sourcePosition.x;
             float sign = Mathf.Sign(dirX);
             if (sign == 0) sign = transform.localScale.x >= 0 ? 1f : -1f; //fallback
@@ -542,7 +532,6 @@ namespace Game.Player
             Vector2 initialForce = new Vector2(sign * knockbackHorizontal, knockbackVertical);
 
             StartCoroutine(KnockbackCoroutine(initialForce, knockbackDuration));
-
         }
 
         private IEnumerator KnockbackCoroutine(Vector2 initialForce, float duration)
@@ -553,7 +542,6 @@ namespace Game.Player
             float timer = 0f;
             frameVelocity.x = initialForce.x;
             frameVelocity.y = Mathf.Max(frameVelocity.y, initialForce.y);
-
 
             while (timer < duration)
             {
@@ -623,9 +611,6 @@ namespace Game.Player
             flickerRoutine = null;
         }
 
-
-
-
         public IEnumerator PlayDeathAndWait()
         {
             if (spineAnimation == null) yield break;
@@ -643,11 +628,7 @@ namespace Game.Player
             };
 
             yield return new WaitUntil(() => finished);
-
-
         }
-
-
 
         private void OnDrawGizmos()
         {
@@ -657,7 +638,6 @@ namespace Game.Player
                 Gizmos.DrawWireSphere(groundPoint.position, .2f);
             }
         }
-
 
         private void BeginAirborneTrackingIfNeeded()
         {
@@ -705,6 +685,9 @@ namespace Game.Player
 
         private void OnPlayerDeath()
         {
+            // mark dead first to gate all logic
+            isDead = true;
+
             // immediately stop control and movement when dead
             inputLocked = true;
             animationLocked = true;
@@ -712,6 +695,11 @@ namespace Game.Player
 
             horizontalInput = 0f;
             frameVelocity = Vector2.zero;
+
+            // stop local coroutines that could still modify velocity/animation (knockback/flicker)
+            StopAllCoroutines();
+            isKnockback = false;
+
             if (RB != null)
             {
                 RB.linearVelocity = Vector2.zero;
@@ -720,6 +708,17 @@ namespace Game.Player
             if (playerAttack != null)
             {
                 playerAttack.enabled = false;
+            }
+
+            // clear any pending animation callbacks and force death animation
+            if (spineAnimation != null && spineAnimation.AnimationState != null)
+            {
+                // reset any flicker alpha
+                if (spineAnimation.Skeleton != null) spineAnimation.Skeleton.A = 1f;
+
+                spineAnimation.AnimationState.ClearTrack(TRACK_INDEX);
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
+                lastAnimName = ANIM_DEATH;
             }
         }
     }
