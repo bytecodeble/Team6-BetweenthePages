@@ -87,7 +87,7 @@ namespace Game.Enemies
             }*/
 
             //call DropSoulOrb function which in this script
-            DropSoulOrb(1);
+            DropSoulOrb(2);
 
 
             StartCoroutine(DeathRoutine());

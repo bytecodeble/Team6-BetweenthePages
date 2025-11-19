@@ -1,4 +1,7 @@
+using Game.Environment;
 using Game.Managers;
+using Spine;
+using Spine.Unity;
 using System.Collections;
 using UnityEngine;
 
@@ -32,17 +35,36 @@ namespace Game.Enemies
         public int comboAttackCount = 0;
         public Vector3 roomCenterPos = new Vector3(-30, -3, 0);
 
-        private SpriteRenderer sr;
         private Collider2D col;
 
         public GameObject attackHitboxPrefab;
         public GameObject chargeEffectPrefab;
         [SerializeField] private GameObject redCloak;
 
+        // Spine Animation
+        [Header("Animation")]
+        [SerializeField] private SkeletonAnimation spineAnimation;
+        private const int TRACK_INDEX = 0;
+
+        private const string ANIM_IDLE = "idle";
+        private const string ANIM_ATTACK = "attack";
+        private const string ANIM_JUMP = "jump";
+        private const string ANIM_DEATH = "death";
+        private const string ANIM_CHASE = "chase";
+
+        // Hurt flash settings
+        private Color hurtColor = new Color(1.0f, 0.5f, 0.5f, 1.0f);
+        private Coroutine hurtFlashRoutine;
+        private Color originalColor = Color.white;
+
         //Debug gizmos
         private Color detectionColor = Color.yellow;
         private Color meleeColor = Color.red;
         private float gizmoYOffset = 2.55f;
+
+        //soulorb 
+        [Header("SoulOrb VFX")]
+        [SerializeField] private GameObject soulOrbPrefab;
 
         protected override void Awake()
         {
@@ -51,11 +73,26 @@ namespace Game.Enemies
             currentHealth = maxHealth;
 
             rb = GetComponent<Rigidbody2D>();
-            sr = GetComponent<SpriteRenderer>();
             col = GetComponent<Collider2D>();
 
-            // use BaseEnemy.detectionRange, set it here to avoid hiding warning
             detectionRange = 10f;
+
+            if (spineAnimation == null)
+                spineAnimation = GetComponent<SkeletonAnimation>();
+
+            if (spineAnimation != null && spineAnimation.AnimationState != null && spineAnimation.AnimationState.Data != null)
+            {
+                var data = spineAnimation.AnimationState.Data;
+                data.SetMix(ANIM_ATTACK, ANIM_IDLE, 0.15f);
+                data.SetMix(ANIM_JUMP, ANIM_IDLE, 0.15f);
+                data.SetMix(ANIM_CHASE, ANIM_IDLE, 0.15f);
+            }
+
+            // cache original color from skeleton (RGB only; A controlled by attachments)
+            if (spineAnimation != null && spineAnimation.Skeleton != null)
+            {
+                originalColor = new Color(spineAnimation.Skeleton.R, spineAnimation.Skeleton.G, spineAnimation.Skeleton.B, 1f);
+            }
 
             var p = GameObject.FindGameObjectWithTag("Player");
             if (p != null)
@@ -73,10 +110,9 @@ namespace Game.Enemies
             return new BossPatrolState(this);
         }
 
-        // Boss should not be knocked back, override to do nothing
         public override void ApplyKnockback(Vector2 hitSource, float force = 5f, float duration = 0.2f)
         {
-            // intentionally empty 
+            // Boss immune to knockback
         }
 
         public override void TakeDamage(int damage)
@@ -84,28 +120,15 @@ namespace Game.Enemies
             if (IsDead) return;
 
             currentHealth -= damage;
-            if (currentHealth > 0) StartCoroutine(FlashWhite());
+
+            if (currentHealth > 0)
+            {
+                StartHurtFlash();
+            }
 
             Debug.Log($"Boss.TakeDamage: -{damage} HP, current = {currentHealth}");
 
             if (currentHealth <= 0) Die();
-        }
-
-        private IEnumerator FlashWhite()
-        {
-            if (sr == null) yield break;
-
-            Color original = sr.color;
-            Color flash = Color.grey;
-
-            for (int i = 0; i < 3; i++)
-            {
-                sr.color = flash;
-                yield return new WaitForSeconds(0.05f);
-                sr.color = original;
-                yield return new WaitForSeconds(0.05f);
-            }
-            sr.color = original;
         }
 
         protected override void Die()
@@ -114,14 +137,11 @@ namespace Game.Enemies
             IsDead = true;
             currentState = null;
 
-            // get score when killed  
-            if (ScoreManager.Instance != null)
-            {
-
-                ScoreManager.Instance.AddScore(1);
-            }
+            DropSoulOrb(100);
 
             StopAllCoroutines();
+            // ensure color reset before death animation
+            ResetSkeletonColor();
 
             Debug.Log("Boss.Die: Boss defeated.");
 
@@ -132,38 +152,67 @@ namespace Game.Enemies
                 rb.simulated = false;
                 rb.linearVelocity = Vector2.zero;
             }
-            //drop light ball
 
-            StartCoroutine(FadeAndDestroy());
-
-            Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
-            if (redCloak != null)
+            DeathAnimation(() =>
             {
-                Instantiate(redCloak, cloakSpawnPos, Quaternion.identity);
-            }
+                Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
+                if (redCloak != null)
+                {
+                    Instantiate(redCloak, cloakSpawnPos, Quaternion.identity);
+                }
 
+                Destroy(gameObject);
+            });
         }
 
-        private IEnumerator FadeAndDestroy()
+        private void StartHurtFlash()
         {
-            if (sr != null)
+            if (spineAnimation == null || spineAnimation.Skeleton == null) return;
+
+            if (hurtFlashRoutine != null)
+                StopCoroutine(hurtFlashRoutine);
+            hurtFlashRoutine = StartCoroutine(HurtFlashCoroutine(0.5f));
+        }
+
+        private IEnumerator HurtFlashCoroutine(float duration)
+        {
+            var skeleton = spineAnimation.Skeleton;
+            float timer = 0f;
+            float interval = 0.1f;
+            bool showRed = true;
+            while (timer < duration && !IsDead)
             {
-                Color original = sr.color;
-                Color gray = Color.gray;
-
-                float fadeDuration = 0.5f;
-                float t = 0f;
-                while (t < fadeDuration)
+                if (showRed)
                 {
-                    sr.color = Color.Lerp(original, gray, t / fadeDuration);
-                    t += Time.deltaTime;
-                    yield return null;
+                    skeleton.R = hurtColor.r;
+                    skeleton.G = hurtColor.g;
+                    skeleton.B = hurtColor.b;
+                    skeleton.A = hurtColor.a;
                 }
-                sr.color = gray;
+                else
+                {
+                    skeleton.R = originalColor.r;
+                    skeleton.G = originalColor.g;
+                    skeleton.B = originalColor.b;
+                    skeleton.A = 0.7f;
+                }
+                showRed = !showRed;
+                float step = Mathf.Min(interval, duration - timer);
+                timer += step;
+                yield return new WaitForSeconds(step);
             }
+            ResetSkeletonColor();
+            skeleton.A = 1f;
+            hurtFlashRoutine = null;
+        }
 
-            yield return new WaitForSeconds(0.5f);
-            Destroy(gameObject);
+        private void ResetSkeletonColor()
+        {
+            if (spineAnimation == null || spineAnimation.Skeleton == null) return;
+            var skeleton = spineAnimation.Skeleton;
+            skeleton.R = originalColor.r;
+            skeleton.G = originalColor.g;
+            skeleton.B = originalColor.b;
         }
 
         public bool IsPlayerInRangeFloat(float range)
@@ -177,7 +226,7 @@ namespace Game.Enemies
             }
             float dist = Vector2.Distance(transform.position, player.position);
             Debug.Log($"Distance Check: Boss Pos={transform.position}, Player Pos={player.position}, Calculated Dist={dist:F2}, Range={range}");
-            return Vector2.Distance(transform.position, player.position) <= range;
+            return dist <= range;
         }
 
         public void MoveTowardsPlayerX()
@@ -194,6 +243,48 @@ namespace Game.Enemies
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         }
 
+        // Animation helpers
+        public void IdleAnimation()
+        {
+            if (spineAnimation == null) return;
+            if (spineAnimation.AnimationName != ANIM_IDLE)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
+        }
+
+        public void AttackAnimation()
+        {
+            if (spineAnimation == null) return;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_ATTACK, false);
+        }
+
+        public void JumpAnimation()
+        {
+            if (spineAnimation == null) return;
+            spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMP, true);
+        }
+
+        public void ChaseAnimation()
+        {
+            if (spineAnimation == null) return;
+            if (spineAnimation.AnimationName != ANIM_CHASE)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_CHASE, true);
+        }
+
+        public void DeathAnimation(System.Action onComplete = null)
+        {
+            if (spineAnimation == null)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
+            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
+            if (onComplete != null)
+            {
+                entry.Complete += (e) => onComplete();
+            }
+        }
+
         private void OnDrawGizmosSelected()
         {
             Vector3 gizmoCenter = transform.position + Vector3.up * gizmoYOffset;
@@ -203,6 +294,16 @@ namespace Game.Enemies
             
             Gizmos.color = meleeColor;
             Gizmos.DrawWireSphere(gizmoCenter, meleeRange);
+        }
+
+        //drop a SoulOrb when enemy die
+        private void DropSoulOrb(int score)
+        {
+            if (soulOrbPrefab != null)
+            {
+                GameObject orb = Instantiate(soulOrbPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+                orb.GetComponent<SoulOrb>().SetValue(score);
+            }
         }
     }
 }

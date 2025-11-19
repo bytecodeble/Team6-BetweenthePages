@@ -33,6 +33,10 @@ namespace Game.Enemies
             duration = boss.jumpDuration;
             apex = boss.jumpApexHeight;
             boss.StopMovement();
+
+            // Play jump animation while jumping
+            boss.JumpAnimation();
+
             Debug.Log($"BossJumpState.Enter - target {targetPos}, pause {pause}, duration {duration}, apex {apex}");
         }
 

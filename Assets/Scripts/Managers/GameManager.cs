@@ -160,6 +160,9 @@ namespace Game.Managers
                 if (ph != null) ph.isInvincible = true;
             }
 
+            // ensure physics is sane at spawn
+            ResetPhysicsAfterRespawn();
+
             yield return new WaitForSecondsRealtime(0.05f);
 
             // optionally unload the fromScene if it's a different scene
@@ -206,6 +209,9 @@ namespace Game.Managers
 
             yield return RespawnPlayerCoroutine(Invinci: true);
 
+            // make sure the new player starts with zero horizontal speed and X unfrozen
+            ResetPhysicsAfterRespawn();
+
             // same frame to ensure player exists
             yield return new WaitForSeconds(postRespawnSettle);
 
@@ -245,6 +251,19 @@ namespace Game.Managers
             }
         }
 
+        // ensure player’s physics is clean after respawn
+        public void ResetPhysicsAfterRespawn()
+        {
+            if (currentPlayer == null) return;
+
+            var rb = currentPlayer.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                // clear any residual motion and unfreeze X (keep rotation frozen)
+                rb.linearVelocity = Vector2.zero;
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
+        }
 
         // search exact-named transform in a specific scene
         private Transform FindTransformInScene(Scene scene, string exactObjectName)

@@ -38407,18 +38407,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 3177808547145058664, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
-      propertyPath: m_text
-      value: 'Score: 0'
-      objectReference: {fileID: 0}
-    - target: {fileID: 3177808547145058664, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
-      propertyPath: m_margin.z
-      value: -42.21881
-      objectReference: {fileID: 0}
-    - target: {fileID: 5236077416659939532, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7554862299122086701, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
       propertyPath: m_Pivot.x
       value: 0

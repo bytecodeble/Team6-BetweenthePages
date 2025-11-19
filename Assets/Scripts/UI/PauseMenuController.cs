@@ -8,7 +8,6 @@ namespace Game.UI
     public class PauseMenuController : MonoBehaviour
     {
         public GameObject pausePanel;
-        public Button pauseButton;
         public Button resumeButton;
         public Button returnToMenuButton;
         public Slider musicSlider;
@@ -20,7 +19,6 @@ namespace Game.UI
         {
             pausePanel.SetActive(false);
 
-            pauseButton.onClick.AddListener(TogglePause);
             resumeButton.onClick.AddListener(Resume);
             returnToMenuButton.onClick.AddListener(ReturnToMenu);
 
