@@ -52,7 +52,7 @@ namespace Game.Enemies
         private const string ANIM_DEATH = "death";
         private const string ANIM_CHASE = "chase";
 
-        // Hurt flash settings (no hurt animation played)
+        // Hurt flash settings
         private Color hurtColor = new Color(1.0f, 0.5f, 0.5f, 1.0f);
         private Coroutine hurtFlashRoutine;
         private Color originalColor = Color.white;
@@ -171,25 +171,38 @@ namespace Game.Enemies
 
             if (hurtFlashRoutine != null)
                 StopCoroutine(hurtFlashRoutine);
-            hurtFlashRoutine = StartCoroutine(HurtFlashCoroutine(1f));
+            hurtFlashRoutine = StartCoroutine(HurtFlashCoroutine(0.5f));
         }
 
         private IEnumerator HurtFlashCoroutine(float duration)
         {
             var skeleton = spineAnimation.Skeleton;
             float timer = 0f;
-            // simple flash: set red immediately, hold, then revert
-            skeleton.R = hurtColor.r;
-            skeleton.G = hurtColor.g;
-            skeleton.B = hurtColor.b;
-
+            float interval = 0.1f;
+            bool showRed = true;
             while (timer < duration && !IsDead)
             {
-                timer += Time.deltaTime;
-                yield return null;
+                if (showRed)
+                {
+                    skeleton.R = hurtColor.r;
+                    skeleton.G = hurtColor.g;
+                    skeleton.B = hurtColor.b;
+                    skeleton.A = hurtColor.a;
+                }
+                else
+                {
+                    skeleton.R = originalColor.r;
+                    skeleton.G = originalColor.g;
+                    skeleton.B = originalColor.b;
+                    skeleton.A = 0.7f;
+                }
+                showRed = !showRed;
+                float step = Mathf.Min(interval, duration - timer);
+                timer += step;
+                yield return new WaitForSeconds(step);
             }
-
             ResetSkeletonColor();
+            skeleton.A = 1f;
             hurtFlashRoutine = null;
         }
 
