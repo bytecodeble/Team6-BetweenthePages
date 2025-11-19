@@ -44,6 +44,30 @@ TextureImporter:
   - first:
       213: -7074801905849214588
     second: boss_01_13
+  - first:
+      213: -7576506806866784830
+    second: boss_01_14
+  - first:
+      213: -3078001364295843931
+    second: boss_01_15
+  - first:
+      213: -8551634680921495722
+    second: boss_01_16
+  - first:
+      213: 491943593550294994
+    second: boss_01_17
+  - first:
+      213: -7340571763878419035
+    second: boss_01_18
+  - first:
+      213: -3149136571605225890
+    second: boss_01_19
+  - first:
+      213: -1481788430225503970
+    second: boss_01_20
+  - first:
+      213: 3629811521186478338
+    second: boss_01_21
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
