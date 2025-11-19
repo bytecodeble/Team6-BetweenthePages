@@ -702,7 +702,9 @@ namespace Game.Player
 
             if (RB != null)
             {
-                RB.linearVelocity = Vector2.zero;
+                // kill horizontal motion now and prevent any further X movement from physics
+                RB.linearVelocity = new Vector2(0f, RB.linearVelocity.y);
+                RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             }
 
             if (playerAttack != null)
@@ -719,6 +721,15 @@ namespace Game.Player
                 spineAnimation.AnimationState.ClearTrack(TRACK_INDEX);
                 spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_DEATH, false);
                 lastAnimName = ANIM_DEATH;
+            }
+        }
+
+        public void ResetPhysicsAfterRespawn()
+        {
+            if (RB != null)
+            {
+                RB.constraints = RigidbodyConstraints2D.FreezeRotation; // unfreeze X, keep rotation frozen
+                RB.linearVelocity = Vector2.zero;
             }
         }
     }

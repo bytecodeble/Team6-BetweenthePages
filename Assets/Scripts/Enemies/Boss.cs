@@ -49,8 +49,13 @@ namespace Game.Enemies
         private const string ANIM_IDLE = "idle";
         private const string ANIM_ATTACK = "attack";
         private const string ANIM_JUMP = "jump";
-        private const string ANIM_HURT = "hurt";
         private const string ANIM_DEATH = "death";
+        private const string ANIM_CHASE = "chase";
+
+        // Hurt flash settings (no hurt animation played)
+        private Color hurtColor = new Color(1.0f, 0.5f, 0.5f, 1.0f);
+        private Coroutine hurtFlashRoutine;
+        private Color originalColor = Color.white;
 
         //Debug gizmos
         private Color detectionColor = Color.yellow;
@@ -70,20 +75,23 @@ namespace Game.Enemies
             rb = GetComponent<Rigidbody2D>();
             col = GetComponent<Collider2D>();
 
-            // use BaseEnemy.detectionRange, set it here to avoid hiding warning
             detectionRange = 10f;
 
             if (spineAnimation == null)
                 spineAnimation = GetComponent<SkeletonAnimation>();
 
-            // Optional simple mixes following PlayerControl style
             if (spineAnimation != null && spineAnimation.AnimationState != null && spineAnimation.AnimationState.Data != null)
             {
                 var data = spineAnimation.AnimationState.Data;
-                data.SetMix(ANIM_IDLE, ANIM_HURT, 0.05f);
-                data.SetMix(ANIM_HURT, ANIM_IDLE, 0.1f);
                 data.SetMix(ANIM_ATTACK, ANIM_IDLE, 0.15f);
                 data.SetMix(ANIM_JUMP, ANIM_IDLE, 0.15f);
+                data.SetMix(ANIM_CHASE, ANIM_IDLE, 0.15f);
+            }
+
+            // cache original color from skeleton (RGB only; A controlled by attachments)
+            if (spineAnimation != null && spineAnimation.Skeleton != null)
+            {
+                originalColor = new Color(spineAnimation.Skeleton.R, spineAnimation.Skeleton.G, spineAnimation.Skeleton.B, 1f);
             }
 
             var p = GameObject.FindGameObjectWithTag("Player");
@@ -102,10 +110,9 @@ namespace Game.Enemies
             return new BossPatrolState(this);
         }
 
-        // Boss should not be knocked back, override to do nothing
         public override void ApplyKnockback(Vector2 hitSource, float force = 5f, float duration = 0.2f)
         {
-            // intentionally empty 
+            // Boss immune to knockback
         }
 
         public override void TakeDamage(int damage)
@@ -114,10 +121,9 @@ namespace Game.Enemies
 
             currentHealth -= damage;
 
-            // Play hurt when still alive
             if (currentHealth > 0)
             {
-                HurtAnimation();
+                StartHurtFlash();
             }
 
             Debug.Log($"Boss.TakeDamage: -{damage} HP, current = {currentHealth}");
@@ -130,12 +136,12 @@ namespace Game.Enemies
             if (IsDead) return;
             IsDead = true;
             currentState = null;
-            
 
-            //call DropSoulOrb function which in this script
             DropSoulOrb(100);
 
             StopAllCoroutines();
+            // ensure color reset before death animation
+            ResetSkeletonColor();
 
             Debug.Log("Boss.Die: Boss defeated.");
 
@@ -147,9 +153,6 @@ namespace Game.Enemies
                 rb.linearVelocity = Vector2.zero;
             }
 
-            
-
-            // Play death animation and cleanup on completion
             DeathAnimation(() =>
             {
                 Vector3 cloakSpawnPos = new Vector3(-30, -0.5f, 0);
@@ -160,6 +163,43 @@ namespace Game.Enemies
 
                 Destroy(gameObject);
             });
+        }
+
+        private void StartHurtFlash()
+        {
+            if (spineAnimation == null || spineAnimation.Skeleton == null) return;
+
+            if (hurtFlashRoutine != null)
+                StopCoroutine(hurtFlashRoutine);
+            hurtFlashRoutine = StartCoroutine(HurtFlashCoroutine(1f));
+        }
+
+        private IEnumerator HurtFlashCoroutine(float duration)
+        {
+            var skeleton = spineAnimation.Skeleton;
+            float timer = 0f;
+            // simple flash: set red immediately, hold, then revert
+            skeleton.R = hurtColor.r;
+            skeleton.G = hurtColor.g;
+            skeleton.B = hurtColor.b;
+
+            while (timer < duration && !IsDead)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            ResetSkeletonColor();
+            hurtFlashRoutine = null;
+        }
+
+        private void ResetSkeletonColor()
+        {
+            if (spineAnimation == null || spineAnimation.Skeleton == null) return;
+            var skeleton = spineAnimation.Skeleton;
+            skeleton.R = originalColor.r;
+            skeleton.G = originalColor.g;
+            skeleton.B = originalColor.b;
         }
 
         public bool IsPlayerInRangeFloat(float range)
@@ -173,7 +213,7 @@ namespace Game.Enemies
             }
             float dist = Vector2.Distance(transform.position, player.position);
             Debug.Log($"Distance Check: Boss Pos={transform.position}, Player Pos={player.position}, Calculated Dist={dist:F2}, Range={range}");
-            return Vector2.Distance(transform.position, player.position) <= range;
+            return dist <= range;
         }
 
         public void MoveTowardsPlayerX()
@@ -210,16 +250,11 @@ namespace Game.Enemies
             spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_JUMP, true);
         }
 
-        public void HurtAnimation()
+        public void ChaseAnimation()
         {
             if (spineAnimation == null) return;
-            var entry = spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_HURT, false);
-            entry.Complete += (e) =>
-            {
-                // fallback to idle after hurt
-                if (!IsDead)
-                    spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_IDLE, true);
-            };
+            if (spineAnimation.AnimationName != ANIM_CHASE)
+                spineAnimation.AnimationState.SetAnimation(TRACK_INDEX, ANIM_CHASE, true);
         }
 
         public void DeathAnimation(System.Action onComplete = null)
