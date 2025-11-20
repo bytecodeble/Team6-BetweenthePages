@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Environment.SoulOrb
   floatHeight: 0.3
-  floatSpeed: 3.5
+  floatSpeed: 4
 --- !u!1 &3991232711337690792
 GameObject:
   m_ObjectHideFlags: 0
