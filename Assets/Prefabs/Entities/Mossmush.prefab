@@ -190,6 +190,7 @@ MonoBehaviour:
   groundCheckDistance: 1
   wallCheckDistance: 0.2
   soulOrbPrefab: {fileID: 1611416339726665228, guid: b64c7c0fbe8e218449c6f4fea09edbab, type: 3}
+  damageEffect: {fileID: 2482578974944236034, guid: 8ca803dc5416d8a4d93ebf45db34ec8f, type: 3}
 --- !u!50 &7049245497032318747
 Rigidbody2D:
   serializedVersion: 5

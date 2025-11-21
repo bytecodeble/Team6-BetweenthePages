@@ -23,6 +23,8 @@ namespace Game.Enemies
         private bool movingRight = true;
 
         [SerializeField] private GameObject soulOrbPrefab;
+        [SerializeField] private GameObject damageEffect;
+
 
         protected override void Awake()
         {
@@ -54,6 +56,14 @@ namespace Game.Enemies
         {
             if (IsDead) return; // prevent getting hit after death
             base.TakeDamage(damage);
+
+            //spawn blood splash for mush
+            if (damageEffect != null)
+            {
+                GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
+                Destroy(effect,1f);
+            }
+
             StartCoroutine(FlashWhite());
         }
 
