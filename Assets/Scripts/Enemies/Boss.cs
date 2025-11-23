@@ -66,6 +66,8 @@ namespace Game.Enemies
         [Header("SoulOrb VFX")]
         [SerializeField] private GameObject soulOrbPrefab;
 
+        [SerializeField] private GameObject damageEffect;
+
         protected override void Awake()
         {
             base.Awake();
@@ -120,6 +122,13 @@ namespace Game.Enemies
             if (IsDead) return;
 
             currentHealth -= damage;
+
+            //spawn blood splash for boss
+            if (damageEffect != null)
+            {
+                GameObject effect = Instantiate(damageEffect, transform.position + Vector3.up * 1.7f, Quaternion.identity);
+                Destroy(effect, 1f);
+            }
 
             if (currentHealth > 0)
             {

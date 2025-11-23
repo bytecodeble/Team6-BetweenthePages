@@ -184,6 +184,7 @@ MonoBehaviour:
   redCloak: {fileID: 8618084531564640110, guid: 6513fdbd14291f44f9c081969d95170b, type: 3}
   spineAnimation: {fileID: 0}
   soulOrbPrefab: {fileID: 1611416339726665228, guid: 147ad87aba978724284a24f487d49074, type: 3}
+  damageEffect: {fileID: 3481650141887804339, guid: d68ecd192b7ac4041bede8e1a37b7cae, type: 3}
 --- !u!23 &3595876523415777778
 MeshRenderer:
   m_ObjectHideFlags: 0
