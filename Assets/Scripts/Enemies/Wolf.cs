@@ -29,8 +29,9 @@ namespace Game.Enemies
         private SpriteRenderer sr;
         private Collider2D col;
 
-        [Header("SoulOrb")]
+        [Header("Effect")]
         [SerializeField] private GameObject soulOrbPrefab;
+        [SerializeField] private GameObject damageEffect;
 
         // coroutine handle for deferred player lookup
         private Coroutine findPlayerRoutine;
@@ -75,6 +76,13 @@ namespace Game.Enemies
         {
             if (IsDead) return; // prevent getting hit after death
             base.TakeDamage(damage);
+            //spawn blood splash for wolf
+            if (damageEffect != null)
+            {
+                GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
+                Destroy(effect, 1f);
+            }
+
             StartCoroutine(FlashWhite());
         }
 

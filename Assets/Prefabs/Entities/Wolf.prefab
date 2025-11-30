@@ -265,3 +265,4 @@ MonoBehaviour:
   chaseSpeed: 3
   meleeRange: 3
   soulOrbPrefab: {fileID: 1611416339726665228, guid: b64c7c0fbe8e218449c6f4fea09edbab, type: 3}
+  damageEffect: {fileID: 5150520649059158743, guid: 99b33d8894990214e886c9cbae96b28e, type: 3}
