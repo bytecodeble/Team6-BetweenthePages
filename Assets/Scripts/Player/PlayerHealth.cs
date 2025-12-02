@@ -1,8 +1,9 @@
+using Game.Managers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
-using Game.Managers;
 
 namespace Game.Player
 {
@@ -21,6 +22,10 @@ namespace Game.Player
         //setting DamageEffect
         [SerializeField] private float invincibleTime = 1.5f;
         public bool isInvincible = false;
+
+        //Sounds for hurt
+        [SerializeField] private AudioClip hurtSound;
+        [SerializeField] private AudioSource audioSource;
 
         // death state
         private bool isDead = false;
@@ -53,6 +58,13 @@ namespace Game.Player
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
             UpdateHearts();
+
+            //play hurt sound when get hurts
+            if (hurtSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(hurtSound);
+            }
+
 
             if (currentHealth <= 0)
             {
