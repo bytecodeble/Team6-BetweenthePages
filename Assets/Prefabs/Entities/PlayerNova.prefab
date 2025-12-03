@@ -166,6 +166,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212976d81d1db414eafa0ef7a3362bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
+  audioSource: {fileID: 6341936431922908127}
+  jumpSound: {fileID: 8300000, guid: cf210be486bacb14e8c2fc3b6cadd552, type: 3}
+  doubleJumpSound: {fileID: 8300000, guid: cf210be486bacb14e8c2fc3b6cadd552, type: 3}
   maxDoubleJump: 0
   hasDoubleJump: 0
   groundPoint: {fileID: 8136481306993496983}

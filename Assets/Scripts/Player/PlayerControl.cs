@@ -13,6 +13,11 @@ namespace Game.Player
         private PlayerHealth playerHealth;
         private PlayerAttack playerAttack;
 
+        [Header("Sounds")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip jumpSound;
+        [SerializeField] private AudioClip doubleJumpSound;
+
         #region Movement Variables
         [Header("Walk")]
         private float maxHorizontalSpeed = 7.5f;
@@ -126,7 +131,7 @@ namespace Game.Player
 
         #endregion
 
-
+        
 
         private void Awake()
         {
@@ -362,6 +367,12 @@ namespace Game.Player
 
             JumpStartAnimation();
 
+            //play jump sound
+            if (jumpSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
+
             BeginAirborneTrackingIfNeeded();
         }
 
@@ -372,6 +383,12 @@ namespace Game.Player
             isJumping = true;
 
             DoubleJumpAnimation();
+
+            //play double jump sound
+            if (doubleJumpSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(doubleJumpSound);
+            }
 
             BeginAirborneTrackingIfNeeded();
         }
