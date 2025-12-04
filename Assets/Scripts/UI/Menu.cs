@@ -6,6 +6,7 @@ namespace Game.UI
 {
     public class Menu : MonoBehaviour
     {
+        public IntroPanelController introPanel;
         void Start()
         {
             Time.timeScale = 1.0f;
@@ -13,6 +14,7 @@ namespace Game.UI
 
         public void Play()
         {
+            /*
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.StartNewGame();
@@ -20,7 +22,8 @@ namespace Game.UI
             else
             {
                 Debug.LogError("[MenuController] GameManager instance not found!");
-            }
+            }*/
+            introPanel.ShowIntro();
         }
 
         public void LoadMainMenu()

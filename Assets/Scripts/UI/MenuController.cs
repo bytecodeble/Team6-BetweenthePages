@@ -7,7 +7,7 @@ namespace Game.UI
     {
 
 
-
+        /*
         public void OnPlayPressed()
         {
             if (GameManager.Instance != null)
@@ -19,7 +19,7 @@ namespace Game.UI
                 Debug.LogError("[MenuController] GameManager instance not found!");
             }
         }
-
+        */
 
         public void ToggleOptions(GameObject optionsPanel)
         {
