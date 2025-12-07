@@ -41488,6 +41488,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5823113002646882926, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823113002646882926, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823113002646882926, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7554862299122086701, guid: 2c9c2effbe236e64f9c6840d8d9234dc, type: 3}
       propertyPath: m_Pivot.x
       value: 0
