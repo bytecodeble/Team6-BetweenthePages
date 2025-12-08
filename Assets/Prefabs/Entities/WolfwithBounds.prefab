@@ -141,12 +141,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9020396044654301696}
     - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
+      propertyPath: maxHealth
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
+      propertyPath: chaseSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
+      propertyPath: meleeRange
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
       propertyPath: rightLimit
       value: 
       objectReference: {fileID: 7006368009667392992}
     - target: {fileID: 3085566959908949395, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
       propertyPath: detectionRange
-      value: 8
+      value: 8.5
       objectReference: {fileID: 0}
     - target: {fileID: 5795429100739084285, guid: 8256a0d5f58495d4081efa51cbed7040, type: 3}
       propertyPath: m_LocalPosition.x
