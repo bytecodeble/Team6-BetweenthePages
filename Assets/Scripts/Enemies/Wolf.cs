@@ -79,7 +79,7 @@ namespace Game.Enemies
             //spawn blood splash for wolf
             if (damageEffect != null)
             {
-                GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
+                GameObject effect = Instantiate(damageEffect, transform.position+ Vector3.up * 0.5f, Quaternion.identity);
                 Destroy(effect, 1f);
             }
 
