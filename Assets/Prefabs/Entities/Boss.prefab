@@ -184,6 +184,7 @@ MonoBehaviour:
   redCloak: {fileID: 8618084531564640110, guid: 6513fdbd14291f44f9c081969d95170b, type: 3}
   spineAnimation: {fileID: 0}
   soulOrbPrefab: {fileID: 1611416339726665228, guid: 147ad87aba978724284a24f487d49074, type: 3}
+  damageEffect: {fileID: 3481650141887804339, guid: d68ecd192b7ac4041bede8e1a37b7cae, type: 3}
 --- !u!23 &3595876523415777778
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -209,7 +210,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bf267500aa20bfc439679dc44017736d, type: 2}
+  - {fileID: 2100000, guid: 32598a4c386821c4bbc4c317740c309b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

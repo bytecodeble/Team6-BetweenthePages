@@ -7,9 +7,9 @@ namespace Game.Enemies
         private Wolf wolf;
 
         // timings (as requested)
-        private float windup = 0.5f;      // pause before dash
+        private float windup = 0.3f;      // pause before dash
         private float dashDuration = 0.2f; // actual dash time (tunable)
-        private float recovery = 0.75f;   // recovery after dash
+        private float recovery = 0.5f;   // recovery after dash
 
         private enum Phase { Windup, Dash, Recovery }
         private Phase phase;
